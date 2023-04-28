@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="bldTestDAO">
+
+	<select id="bldTestDAO.selectMode" parameterType="String" resultType="String">
+		<![CDATA[
+			SELECT TOP 1 COL FROM COMMSENDER.KIHA_TEST WHERE COL LIKE CONCAT('%',#{_parameter},'%')
+		]]>
+	</select>
+	
+	<insert id="bldTestDAO.insertMode" parameterType="String">
+		<![CDATA[
+			INSERT INTO COMMSENDER.KIHA_TEST (COL) VALUES (#{_parameter})
+		]]>
+	</insert>
+	
+	<update id="bldTestDAO.updateMode" parameterType="String">
+		<![CDATA[
+			UPDATE COMMSENDER.KIHA_TEST SET COL = CONCAT(COL, '업데이트') WHERE COL LIKE CONCAT('%',#{_parameter},'%')
+		]]>
+	</update>
+	
+	<delete id="bldTestDAO.deleteMode" parameterType="String">
+		<![CDATA[
+			DELETE FROM COMMSENDER.KIHA_TEST WHERE COL LIKE CONCAT('%',#{_parameter},'%')
+		]]>
+	</delete>
+    
+  
+    
+</mapper>

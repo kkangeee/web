@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice071">
+
+	<!-- 리스트 호출 -->
+	<select id="selectNoticeList" parameterType="CustomerVO" resultType="CustomerVO">
+      	  SELECT ROWNUM AS rnum
+				 , B.CONTENT_ID
+				 , B.TITLE
+				 , B.DISPLAY_USER
+				 , B.CNT
+				 , SUBSTR(regDt, 0, 10) AS regDt
+				 , B.BOARD_FILE 
+				 , B.BOARD_FILE_NAME 
+				 , B.CONTENT	
+		  FROM (
+			  	  SELECT  CONTENT_ID 
+				            , TITLE
+					        , DISPLAY_USER
+					        , CNT
+					        , CREATE_TIMESTAMP AS regDt
+					        , BOARD_FILE_NAME
+					        , BOARD_FILE
+					        , CONTENT
+			       FROM TB_KW50_NTC_BRD_CNTNT
+			       <trim prefix="WHERE" prefixOverrides="AND|OR">
+			           			AND BOARD_ID = 710
+						<if test="keyword != null and keyword != '' ">		
+						    <if test="searchType=='all'">
+								AND (TITLE LIKE '%'|| #{keyword} || '%'
+								OR CONTENT LIKE '%'|| #{keyword} || '%'
+								OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+							</if>
+							<if test="searchType=='title'">
+								AND TITLE LIKE '%'|| #{keyword} || '%'
+							</if>
+							<if test="searchType=='content'">
+								AND CONTENT LIKE '%' || #{keyword} || '%'
+							</if>
+							<if test="searchType=='displayUser'">
+								AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+							</if>
+						</if>
+					</trim>	
+			        ORDER BY regDt
+		      	  ) B  
+      	 ORDER BY rNum DESC
+         OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY 
+    </select>
+    
+	<!-- 총 게시글 수  -->
+	<select id="getBoardListCnt" resultType="int">
+        SELECT count(*) AS listCnt
+        FROM TB_KW50_NTC_BRD_CNTNT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            		AND BOARD_ID = 710
+			<if test="keyword != null and keyword != '' ">		
+			    <if test="searchType=='all'">
+					AND (TITLE LIKE '%'|| #{keyword} || '%'
+					OR CONTENT LIKE '%'|| #{keyword} || '%'
+					OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+				</if>
+				<if test="searchType=='title'">
+					AND TITLE LIKE '%'|| #{keyword} || '%'
+				</if>
+				<if test="searchType=='content'">
+					AND CONTENT LIKE '%' || #{keyword} || '%'
+				</if>
+				<if test="searchType=='displayUser'">
+					AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+				</if>
+			</if>
+		</trim>
+    </select>
+	
+	<!-- 공지사항 상세 페이지 조회 -->
+	<select id="noticeView" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT B.TITLE
+			 , B.CONTENT_ID
+			 , B.CONTENT
+			 , B.CNT
+			 , B.DISPLAY_USER
+			 , B.regDt
+			 , B.BOARD_FILE_NAME
+			 , B.BOARD_FILE
+			 , B.NEXT_CONTENT_ID
+			 , B.NEXT_TITLE
+			 , B.PRE_CONTENT_ID
+			 , B.PRE_TITLE
+		FROM  (  	  
+				SELECT  CONTENT_ID 
+					  , TITLE
+					  , DISPLAY_USER
+					  , SUBSTR(CREATE_TIMESTAMP, 0, 10) AS regDt
+					  , CONTENT
+					  , CNT
+					  , BOARD_FILE_NAME
+					  , BOARD_FILE
+					  , LEAD(CONTENT_ID,1, '') OVER(ORDER BY CONTENT_ID DESC) AS PRE_CONTENT_ID
+					  , LEAD(TITLE,1, '') OVER(ORDER BY CONTENT_ID DESC) AS PRE_TITLE  
+					  , LAG(CONTENT_ID,1, '') OVER(ORDER BY CONTENT_ID DESC) AS NEXT_CONTENT_ID
+					  , LAG(TITLE,1, '') OVER(ORDER BY CONTENT_ID DESC) AS NEXT_TITLE 
+				FROM TB_KW50_NTC_BRD_CNTNT  
+				WHERE BOARD_ID = 710	
+			  ) B
+		WHERE CONTENT_ID = #{contentId}
+	</select>
+
+	<!-- 공지사항 수정 페이지 -->
+	<select id="noticeUpdateForm" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT CONTENT_ID
+			,TITLE
+			,CONTENT
+			,DISPLAY_USER
+			,SUBSTR(CREATE_TIMESTAMP, 0, 10) AS regDt
+			,CNT
+			,BOARD_FILE_NAME
+			,BOARD_FILE
+		FROM TB_KW50_NTC_BRD_CNTNT
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 710
+	</select>
+
+	<!-- 공지사항 쓰기 -->
+	<insert id="noticeInsert" parameterType="CustomerVO">
+		INSERT INTO TB_KW50_NTC_BRD_CNTNT
+		(
+		  CONTENT_ID
+		, BOARD_ID
+		, PARENT_ID
+		, TITLE
+		, SECRET_YN
+		, TOP_YN
+		, DEL_YN
+		, CONTENT
+		, DISPLAY_USER
+		, BOARD_FILE
+		, CNT
+		, BOARD_FILE_NAME
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		VALUES
+		(
+		SQ_TB_KW50_NTC_BRD_CNTNT.NEXTVAL
+		, 710
+		, 0
+		, #{title}
+		, 'N'
+		, 'N'
+		, 'N'
+		, #{content}
+		, '관리자'
+		, #{boardFile}
+		, 0
+		, #{boardFileName}
+		, 'U'
+		, #{mbrNm}
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, #{mbrNm}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+	
+	<!-- 공지사항 수정 확인 -->
+	<update id="noticeUpdate" parameterType="CustomerVO">
+		UPDATE TB_KW50_NTC_BRD_CNTNT
+		SET   TITLE = #{title}
+			, CONTENT = #{content}
+			, BOARD_FILE_NAME = #{boardFileName}
+			, BOARD_FILE = #{boardFile}
+			, DISPLAY_USER = #{displayUser} 
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 710
+	</update>
+	
+	<!-- 조회수 증가  -->	 	
+   	<update id="cntUpdate" parameterType="int">
+	   	UPDATE TB_KW50_NTC_BRD_CNTNT
+	   	SET CNT = CNT+1
+	   	WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 710		
+   	</update>
+
+	<!-- 공지사항 삭제 -->
+	<delete id="noticeDelete" parameterType="CustomerVO">
+		DELETE FROM TB_KW50_NTC_BRD_CNTNT   
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 710
+	</delete>
+	
+	
+</mapper>

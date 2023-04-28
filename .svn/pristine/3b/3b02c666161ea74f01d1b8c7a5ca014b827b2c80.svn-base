@@ -1,0 +1,220 @@
+package iohp.page.KW30000.service;
+
+
+public class KW30000U1110VO {
+
+	private String tableNm; /* 사업자등록번호 */
+	private String bzRgstNo; /* 사업자등록번호 */
+	private int seq; /* 순번 */
+	private int rnum; /* 페이지 순번 */
+	private String roleNm; /* 역할명 */
+	private String empeNo; /* 사번 */
+	private String nm; /* 이름 */
+	private String deptNm; /* 부서명 */
+	private String asgnDd; /* 선임일자 */
+	private String endDd; /* 해촉일자 */
+	private String fnlEduDd; /* 최종교육일자 */
+	private String eduVlidStrDd; /* 교육유효개시일자 */
+	private String eduVlidEndDd; /* 교육유효종료일자 */
+	private String eduCertiPos; /* 교육수료증위치 */
+	private String wrkPlcMgtUniqNo; /* 사업장관리고유번호 */
+	private String mbrId; /* 로그인아이디 */
+	private String boardFileName; /* 파일 이름 */
+	private String boardFile; /* 파일 경로 */
+	private String deleteTp; /* 삭제 유무 */
+	private String createTimestamp; /* 생성일시 */
+	
+	/*넘겨줄값*/
+	private String searchNo;
+	private String searchNm;
+	private String searchPlcCd;
+	
+	public String getTableNm() {
+		return tableNm;
+	}
+	public void setTableNm(String tableNm) {
+		this.tableNm = tableNm;
+	}
+	public String getBzRgstNo() {
+		return bzRgstNo;
+	}
+	public void setBzRgstNo(String bzRgstNo) {
+		this.bzRgstNo = bzRgstNo;
+	}
+	public int getSeq() {
+		return seq;
+	}
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
+	public int getRnum() {
+		return rnum;
+	}
+	public void setRnum(int rnum) {
+		this.rnum = rnum;
+	}
+	public String getRoleNm() {
+		return roleNm;
+	}
+	public void setRoleNm(String roleNm) {
+		this.roleNm = roleNm;
+	}
+	public String getEmpeNo() {
+		return empeNo;
+	}
+	public void setEmpeNo(String empeNo) {
+		this.empeNo = empeNo;
+	}
+	public String getNm() {
+		return nm;
+	}
+	public void setNm(String nm) {
+		this.nm = nm;
+	}
+	public String getDeptNm() {
+		return deptNm;
+	}
+	public void setDeptNm(String deptNm) {
+		this.deptNm = deptNm;
+	}
+	public String getAsgnDd() {
+		return asgnDd;
+	}
+	public void setAsgnDd(String asgnDd) {
+		this.asgnDd = asgnDd;
+	}
+	public String getEndDd() {
+		return endDd;
+	}
+	public void setEndDd(String endDd) {
+		this.endDd = endDd;
+	}
+	public String getFnlEduDd() {
+		return fnlEduDd;
+	}
+	public void setFnlEduDd(String fnlEduDd) {
+		this.fnlEduDd = fnlEduDd;
+	}
+	public String getEduVlidStrDd() {
+		return eduVlidStrDd;
+	}
+	public void setEduVlidStrDd(String eduVlidStrDd) {
+		this.eduVlidStrDd = eduVlidStrDd;
+	}
+	public String getEduVlidEndDd() {
+		return eduVlidEndDd;
+	}
+	public void setEduVlidEndDd(String eduVlidEndDd) {
+		this.eduVlidEndDd = eduVlidEndDd;
+	}
+	public String getEduCertiPos() {
+		return eduCertiPos;
+	}
+	public void setEduCertiPos(String eduCertiPos) {
+		this.eduCertiPos = eduCertiPos;
+	}
+	public String getWrkPlcMgtUniqNo() {
+		return wrkPlcMgtUniqNo;
+	}
+	public void setWrkPlcMgtUniqNo(String wrkPlcMgtUniqNo) {
+		this.wrkPlcMgtUniqNo = wrkPlcMgtUniqNo;
+	}
+	public String getMbrId() {
+		return mbrId;
+	}
+	public void setMbrId(String mbrId) {
+		this.mbrId = mbrId;
+	}
+	public String getBoardFileName() {
+		return boardFileName;
+	}
+	public void setBoardFileName(String boardFileName) {
+		this.boardFileName = boardFileName;
+	}
+	public String getBoardFile() {
+		return boardFile;
+	}
+	public void setBoardFile(String boardFile) {
+		this.boardFile = boardFile;
+	}
+	public String getDeleteTp() {
+		return deleteTp;
+	}
+	public void setDeleteTp(String deleteTp) {
+		this.deleteTp = deleteTp;
+	}
+	public String getCreateTimestamp() {
+		return createTimestamp;
+	}
+	public void setCreateTimestamp(String createTimestamp) {
+		this.createTimestamp = createTimestamp;
+	}
+	public String getSearchNo() {
+		return searchNo;
+	}
+	public void setSearchNo(String searchNo) {
+		this.searchNo = searchNo;
+	}
+	public String getSearchNm() {
+		return searchNm;
+	}
+	public void setSearchNm(String searchNm) {
+		this.searchNm = searchNm;
+	}
+	public String getSearchPlcCd() {
+		return searchPlcCd;
+	}
+	public void setSearchPlcCd(String searchPlcCd) {
+		this.searchPlcCd = searchPlcCd;
+	}
+	
+	public KW30000U1110VO() {
+	}
+	
+	public KW30000U1110VO(String tableNm, String bzRgstNo, int seq, int rnum, String roleNm, String empeNo, String nm,
+			String deptNm, String asgnDd, String endDd, String fnlEduDd, String eduVlidStrDd, String eduVlidEndDd,
+			String eduCertiPos, String wrkPlcMgtUniqNo, String mbrId, String boardFileName, String boardFile,
+			String deleteTp, String createTimestamp, String searchNo, String searchNm, String searchPlcCd) {
+		this.tableNm = tableNm;
+		this.bzRgstNo = bzRgstNo;
+		this.seq = seq;
+		this.rnum = rnum;
+		this.roleNm = roleNm;
+		this.empeNo = empeNo;
+		this.nm = nm;
+		this.deptNm = deptNm;
+		this.asgnDd = asgnDd;
+		this.endDd = endDd;
+		this.fnlEduDd = fnlEduDd;
+		this.eduVlidStrDd = eduVlidStrDd;
+		this.eduVlidEndDd = eduVlidEndDd;
+		this.eduCertiPos = eduCertiPos;
+		this.wrkPlcMgtUniqNo = wrkPlcMgtUniqNo;
+		this.mbrId = mbrId;
+		this.boardFileName = boardFileName;
+		this.boardFile = boardFile;
+		this.deleteTp = deleteTp;
+		this.createTimestamp = createTimestamp;
+		this.searchNo = searchNo;
+		this.searchNm = searchNm;
+		this.searchPlcCd = searchPlcCd;
+	}
+	
+	@Override
+	public String toString() {
+		return "KW30000U1110VO [tableNm=" + tableNm + ", bzRgstNo=" + bzRgstNo + ", seq=" + seq + ", rnum=" + rnum
+				+ ", roleNm=" + roleNm + ", empeNo=" + empeNo + ", nm=" + nm + ", deptNm=" + deptNm + ", asgnDd="
+				+ asgnDd + ", endDd=" + endDd + ", fnlEduDd=" + fnlEduDd + ", eduVlidStrDd=" + eduVlidStrDd
+				+ ", eduVlidEndDd=" + eduVlidEndDd + ", eduCertiPos=" + eduCertiPos + ", wrkPlcMgtUniqNo="
+				+ wrkPlcMgtUniqNo + ", mbrId=" + mbrId + ", boardFileName=" + boardFileName + ", boardFile=" + boardFile
+				+ ", deleteTp=" + deleteTp + ", createTimestamp=" + createTimestamp + ", searchNo=" + searchNo
+				+ ", searchNm=" + searchNm + ", searchPlcCd=" + searchPlcCd + "]";
+	}
+	
+	
+	
+	
+	
+	
+
+}

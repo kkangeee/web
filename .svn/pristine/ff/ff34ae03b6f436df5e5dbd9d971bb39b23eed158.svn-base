@@ -1,0 +1,56 @@
+package iohp.customer.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.com.cmm.SearchHndlr;
+import iohp.customer.service.CustomerVO;
+import iohp.customer.service.PopupService;
+
+@Service("PopupService")
+public class PopupServiceImpl implements PopupService {
+
+	@Resource(name = "PopupDAO")
+	private PopupDAO popupDAO;
+
+	@Override
+	public CustomerVO popupView(int contentId) throws Exception {
+		popupDAO.cntUpdate(contentId);
+		return popupDAO.popupView(contentId);
+	}
+	
+	@Override
+	public void popupInsert(CustomerVO customerVO) throws Exception {
+		popupDAO.popupInsert(customerVO);
+	}
+	
+	@Override
+	public CustomerVO popupUpdateForm(int contentId) throws Exception {
+		return popupDAO.popupUpdateForm(contentId);
+	}
+	
+	@Override
+	public void popupUpdate(CustomerVO customerVO) throws Exception {
+		popupDAO.popupUpdate(customerVO);
+	}
+	
+	@Override
+	public void popupDelete(int contentId) throws Exception {
+		popupDAO.popupDelete(contentId);
+	}
+	
+	@Override
+	public int getPopupListCnt(SearchHndlr search) throws Exception {
+		return popupDAO.getPopupListCnt(search);
+	}
+	
+	@Override
+	public List<CustomerVO> selectList(SearchHndlr search) throws Exception {
+		List<CustomerVO> result = popupDAO.selectList(search);
+		return result;
+	}
+			
+}

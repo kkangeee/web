@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="faq072">
+
+	<!-- 자주하는 문의 리스트 -->
+	<select id="selectFaqList" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT CONTENT_ID
+			 , TITlE
+			 , CONTENT 
+		FROM TB_KW50_NTC_BRD_CNTNT
+		WHERE BOARD_ID = 720
+		ORDER BY CONTENT_ID  DESC
+	</select>
+	
+	<!-- 자주하는 문의  수정 페이지 -->
+	<select id="faqUpdateForm" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT CONTENT_ID
+			 , TITLE
+			 , CONTENT
+		FROM TB_KW50_NTC_BRD_CNTNT
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 720
+	</select>
+	
+	
+	<!-- 자주하는 문의  쓰기 -->
+	<insert id="faqInsert" parameterType="CustomerVO">
+	    INSERT INTO TB_KW50_NTC_BRD_CNTNT
+		(
+		  CONTENT_ID
+		, BOARD_ID
+		, PARENT_ID
+		, TITLE
+		, SECRET_YN
+		, TOP_YN
+		, DEL_YN
+		, CONTENT
+		, DISPLAY_USER
+		, CNT
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		)
+		VALUES
+		(
+		(SELECT NVL(MAX(TO_NUMBER(CONTENT_ID))+1, 1)
+		FROM TB_KW50_NTC_BRD_CNTNT
+		WHERE BOARD_ID = 720)
+		, 720
+		, 0
+		, #{title}
+		, 'N'
+		, 'N'
+		, 'N'
+		, #{content}
+		, #{mbrNm}
+		, 0
+		, 'U'
+		, #{mbrNm}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'U'
+		, #{mbrNm}
+		, 'SYSTEM'
+		, SYSDATE
+		)
+	</insert>
+	
+	<!-- 자주하는문의  수정 확인 -->
+	<update id="faqUpdate" parameterType="CustomerVO">
+		update TB_KW50_NTC_BRD_CNTNT
+		SET title = #{title}
+		, content = #{content}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 720
+	</update>
+	
+	<!-- 자주하는문의 삭제 -->
+	<delete id="faqDelete" parameterType="CustomerVO">
+		DELETE FROM TB_KW50_NTC_BRD_CNTNT   
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 720
+	</delete>
+	
+	
+	
+</mapper>

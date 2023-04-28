@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw20000u1000">
+
+	<select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM ${tableNm} 
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+    
+    <select id="page1200selectList" parameterType="KW20000U1200VO" resultType="KW20000U1200VO">
+		  SELECT  ROWNUM RNUM
+		  		, B.BZ_RGST_NO 
+		  		, B.UNIT_CO_NM 
+				, B.PRCS_NM
+				, B.MM_HNDL_QNTY
+				, B.UNIT
+				, B.USE_USE
+				, B.OWN_TP
+				, B.MAIN_CNTN_MTRL
+				, B.CON_QTY_MIN
+				, B.CON_QTY_MAX
+				, B.CAS_NO
+		FROM (SELECT A.* FROM TB_KW50_CHEM_PRDT_STUS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP DESC) B
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+    
+	<select id="page1300selectList" parameterType="KW20000U1300VO" resultType="KW20000U1300VO">
+		  SELECT  ROWNUM RNUM
+		  		, B.BZ_RGST_NO 
+		  		, B.SEQ 
+				, B.PRDT_NM
+				, B.SPPL_CMP
+				, SUBSTR(B.RCPT_DD, 0, 10) AS RCPT_DD
+				, B.RCPT_QNTY
+				, SUBSTR(B.ISS_DD, 0, 10) AS ISS_DD
+				, B.ISS_QNTY
+				, B.STCK_QNTY
+		FROM (SELECT A.* FROM TB_KW50_CHEM_MTRL_RCPT_ISS_STUS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP DESC) B
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1300delete" parameterType="KW20000U1300VO">
+		DELETE  
+		FROM TB_KW50_CHEM_MTRL_RCPT_ISS_STUS 
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete> 
+
+	<insert id="page1300insertSave" parameterType="KW20000U1300VO">
+	INSERT INTO TB_KW50_CHEM_MTRL_RCPT_ISS_STUS (
+			  SEQ
+			, BZ_RGST_NO 
+			, PRDT_NM						
+			, SPPL_CMP 
+			, RCPT_DD
+			, RCPT_QNTY
+			, ISS_DD
+			, ISS_QNTY
+			, STCK_QNTY
+			, CREATE_OBJECT_TYPE
+			, CREATE_OBJECT_ID
+			, CREATE_PROGRAM_ID
+			, CREATE_TIMESTAMP
+			, LAST_UPDATE_OBJECT_TYPE
+			, LAST_UPDATE_OBJECT_ID
+			, LAST_UPDATE_PROGRAM_ID
+			, LAST_UPDATE_TIMESTAMP
+	) VALUES (
+			(SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_CHEM_MTRL_RCPT_ISS_STUS WHERE BZ_RGST_NO = #{bzRgstNo}) 
+			, #{bzRgstNo} 
+			, #{prdtNm}
+			, #{spplCmp}
+			, #{rcptDd}
+			, #{rcptQnty}
+			, #{issDd}
+			, #{issQnty}
+			, #{stckQnty}
+			, 'U'
+			, 'admin'
+			, 'SYSTEM'
+			,  SYSDATE
+			, 'U'
+			, 'admin'
+			, 'SYSTEM'
+			, SYSDATE
+	)
+</insert> 
+	
+	<update id="page1300updateSave" parameterType="KW20000U1300VO">
+		UPDATE TB_KW50_CHEM_MTRL_RCPT_ISS_STUS
+		SET 	
+			 PRDT_NM = #{prdtNm}
+		 	,SPPL_CMP = #{spplCmp}
+		 	,RCPT_DD = #{rcptDd}
+		 	,RCPT_QNTY = #{rcptQnty}
+		 	,ISS_DD = #{issDd}
+		 	,ISS_QNTY = #{issQnty}
+		 	,STCK_QNTY = #{stckQnty}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE SEQ  = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+</mapper>

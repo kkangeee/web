@@ -1,0 +1,1537 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u1000">
+	 <!-- 조회 개수 --> 
+	 
+	 <select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM ${tableNm} 
+        WHERE BZ_RGST_NO = #{searchBzRgstNo} AND DELETE_TP != 'Y'
+        <if test="plnLrgClss != '' and plnLrgClss != null">
+   				 AND PLN_LRG_CLSS = #{plnLrgClss}
+  		</if>
+  		<if test="plnMidClss != '' and plnMidClss != null">
+   				 AND PLN_MID_CLSS = #{plnMidClss}
+  		</if>
+    </select>
+    
+    <select id="getBoardListCnt1110" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_SFTY_HLTH_ORG_CMPS 
+        WHERE BZ_RGST_NO = #{searchBzRgstNo} AND DELETE_TP != 'Y'
+	        <if test="comSearchValA == null or comSearchValA == '' or comSearchValB == null or comSearchValB == '' ">
+				    AND ASGN_DD <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+					AND END_DD <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')				
+			</if>
+		    <if test="comSearchValA != null and comSearchValA != '' "> 
+			    	AND ASGN_DD <![CDATA[>=]]> #{comSearchValA}				
+			</if>
+			<if test="comSearchValB != null and comSearchValB != '' ">
+			    	AND END_DD <![CDATA[<=]]> #{comSearchValB}				
+			</if>
+    </select>
+    
+	<select id="page1110selectList" parameterType="KW30000U1110VO" resultType="KW30000U1110VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.ROLE_NM
+		,B.NM
+		,B.EMPE_NO
+		,B.DEPT_NM
+		,B.BOARD_FILE_NAME
+		,B.BOARD_FILE
+		,TO_CHAR(B.ASGN_DD, 'YYYY-MM-DD') AS ASGN_DD
+		,TO_CHAR(B.END_DD, 'YYYY-MM-DD') AS END_DD
+		,TO_CHAR(B.FNL_EDU_DD, 'YYYY-MM-DD') AS FNL_EDU_DD
+		,TO_CHAR(B.EDU_VLID_STR_DD, 'YYYY-MM-DD') AS EDU_VLID_STR_DD
+		FROM 
+		(SELECT A.BZ_RGST_NO
+			,A.SEQ
+			,A.ROLE_NM
+			,A.NM
+			,A.EMPE_NO
+			,A.DEPT_NM
+			,A.BOARD_FILE_NAME
+			,A.BOARD_FILE
+			,A.ASGN_DD
+			,A.END_DD
+			,A.FNL_EDU_DD
+			,A.EDU_VLID_STR_DD
+			 FROM TB_KW50_SFTY_HLTH_ORG_CMPS A 
+				WHERE BZ_RGST_NO = #{searchBzRgstNo}  
+					<if test="comSearchValA == null or comSearchValA == '' or comSearchValB == null or comSearchValB == '' ">
+						    	AND ASGN_DD <![CDATA[<=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')
+								AND END_DD <![CDATA[>=]]> TO_CHAR(SYSDATE, 'YYYYMMDD')				
+					</if>
+				    <if test="comSearchValA != null and comSearchValA != '' "> 
+					    	AND ASGN_DD <![CDATA[>=]]> #{comSearchValA}				
+					</if>
+					<if test="comSearchValB != null and comSearchValB != '' "> 
+					    	AND END_DD <![CDATA[<=]]> #{comSearchValB}				
+					</if> 
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<select id="codeMngList" parameterType="KW30000U1110VO"  resultType="map">
+		SELECT CD_DTL_1 FROM TB_KW50_CD_STDD_MGT
+		WHERE CD_ITEM = 'ROLE_NM'
+	</select>
+	
+	<delete id="page1110delete" parameterType="KW30000U1110VO">
+		DELETE  
+		FROM TB_KW50_SFTY_HLTH_ORG_CMPS
+		WHERE SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete>
+	
+	<insert id="page1110insertSave" parameterType="KW30000U1110VO">
+		INSERT INTO TB_KW50_SFTY_HLTH_ORG_CMPS(
+		BZ_RGST_NO
+		,SEQ
+		,ROLE_NM
+		,EMPE_NO
+		,NM
+		,DEPT_NM
+		,ASGN_DD
+		,END_DD
+		,FNL_EDU_DD
+		,EDU_VLID_STR_DD
+		,BOARD_FILE_NAME
+		,BOARD_FILE
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		,DELETE_TP 
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_SFTY_HLTH_ORG_CMPS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{roleNm},
+		 #{empeNo},
+		 #{nm},
+		 #{deptNm},
+		 #{asgnDd},
+		 #{endDd},
+		 #{fnlEduDd},
+		 #{eduVlidStrDd},
+		 #{boardFileName},
+		 #{boardFile},
+		 'C',
+		 #{mbrId},
+		 '/page/KW30000/KW30000U2100.do',
+		 SYSDATE,
+		  'C',
+		 #{mbrId},
+		 '/page/KW30000/KW30000U2100.do',
+		 SYSDATE,
+		 'N'
+		 )
+	</insert> 
+	
+	<update id="page1110updateSave" parameterType="KW30000U1110VO">
+		UPDATE 	TB_KW50_SFTY_HLTH_ORG_CMPS
+		SET 	ROLE_NM = #{roleNm}
+		 	,NM = #{nm}
+		 	,EMPE_NO = #{empeNo}
+		 	,DEPT_NM = #{deptNm}
+		 	,ASGN_DD = #{asgnDd}
+		 	,END_DD = #{endDd}
+		 	,FNL_EDU_DD = #{fnlEduDd}
+		 	,EDU_VLID_STR_DD = #{eduVlidStrDd}
+		 	,BOARD_FILE_NAME = #{boardFileName}
+		 	,BOARD_FILE = #{boardFile}
+		 	,DELETE_TP = #{deleteTp}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = #{mbrId}
+			,LAST_UPDATE_PROGRAM_ID ='/page/KW30000/KW30000U2100.do'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="page1110popList" parameterType="KW30000U1110VO" resultType="KW30000U1110VO">	
+		   SELECT ROWNUM RNUM 
+			,B.BZ_RGST_NO
+			,B.SEQ
+			,B.ROLE_NM
+			,B.NM
+			,B.EMPE_NO
+			,B.DEPT_NM
+			,TO_CHAR(B.ASGN_DD, 'YYYY-MM-DD') AS ASGN_DD
+			,TO_CHAR(B.END_DD, 'YYYY-MM-DD') AS END_DD
+			FROM 
+			(SELECT A.* FROM TB_KW50_SFTY_HLTH_ORG_CMPS A 
+			WHERE BZ_RGST_NO = #{searchBzRgstNo}
+			<if test="comSearchValC != null and comSearchValC != '' ">
+			    	AND EMPE_NO	= #{comSearchValC}				
+			</if>
+			 ORDER BY A.CREATE_TIMESTAMP) B  
+			 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<select id="page1110upsert" parameterType="KW30000U1110VO" resultType="KW30000U1110VO">
+		SELECT 
+		 NM
+		,ROLE_NM
+		,EMPE_NO
+		,DEPT_NM
+		,TO_CHAR(ASGN_DD, 'YYYY-MM-DD') AS ASGN_DD
+		,TO_CHAR(END_DD, 'YYYY-MM-DD') AS END_DD
+		,TO_CHAR(FNL_EDU_DD, 'YYYY-MM-DD') AS FNL_EDU_DD
+		,TO_CHAR(EDU_VLID_STR_DD, 'YYYY-MM-DD') AS EDU_VLID_STR_DD
+		,BOARD_FILE
+		,BOARD_FILE_NAME
+		,CREATE_TIMESTAMP
+		FROM 
+		TB_KW50_SFTY_HLTH_ORG_CMPS  
+		WHERE BZ_RGST_NO = #{bzRgstNo} AND SEQ = #{seq}
+	</select>
+	
+	<select id="page1110CertiPopList" parameterType="KW30000U1110VO" resultType="KW30000U1110VO">	
+		   SELECT ROWNUM RNUM 
+			,B.BZ_RGST_NO
+			,B.SEQ
+			,B.ROLE_NM
+			,B.NM
+			,B.EMPE_NO
+			,B.DEPT_NM
+			,TO_CHAR(B.ASGN_DD, 'YYYY-MM-DD') AS ASGN_DD
+			,TO_CHAR(B.END_DD, 'YYYY-MM-DD') AS END_DD
+			,B.BOARD_FILE
+			,B.BOARD_FILE_NAME
+			FROM 
+			(SELECT A.* FROM TB_KW50_SFTY_HLTH_ORG_CMPS A 
+			WHERE BZ_RGST_NO = #{searchBzRgstNo}
+			<if test="comSearchValC != null and comSearchValC != '' ">
+			    	AND EMPE_NO	= #{comSearchValC}				
+			</if>
+			 ORDER BY A.CREATE_TIMESTAMP) B  
+			 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+    
+	<select id="page1120selectList" parameterType="KW30000U1120VO" resultType="KW30000U1120VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.ROLE_NM
+		,B.NM
+		,B.PSTN
+		,B.FON_NO
+		,B.APL_TGT_YN
+		,B.RMK
+		FROM 
+		(SELECT A.* FROM TB_KW50_SFTY_HLTH_ORG_CHRT A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1120delete" parameterType="KW30000U1120VO">
+		DELETE  
+		FROM TB_KW50_SFTY_HLTH_ORG_CHRT
+		WHERE SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1120insertSave" parameterType="KW30000U1120VO">
+		INSERT INTO TB_KW50_SFTY_HLTH_ORG_CHRT(
+		BZ_RGST_NO
+		,SEQ
+		,ROLE_NM
+		,NM
+		,PSTN	
+		,FON_NO	
+		,APL_TGT_YN	
+		,RMK	
+		,WRK_PLC_MGT_UNIQ_NO		
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_SFTY_HLTH_ORG_CHRT WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{roleNm},
+		 #{nm},
+		 #{pstn},
+		 #{fonNo},
+		 #{aplTgtYn},
+		 #{rmk},
+		 'Y',
+		 'C',
+		 #{bzRgstNo},
+		  'SYSTEM',
+		SYSDATE, 
+		'C',
+		  #{bzRgstNo},
+		  'SYSTEM',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<update id="page1120updateSave" parameterType="KW30000U1120VO">
+		UPDATE 	TB_KW50_SFTY_HLTH_ORG_CHRT
+		SET 	ROLE_NM = #{roleNm}
+		 	,NM = #{nm}
+		 	,PSTN = #{pstn}
+		 	,FON_NO = #{fonNo}
+		 	,APL_TGT_YN = #{aplTgtYn}
+		 	,RMK = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = #{bzRgstNo}
+			,LAST_UPDATE_PROGRAM_ID ='SYSTEM'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="page1130selectList" parameterType="KW30000U1130VO" resultType="KW30000U1130VO">
+		SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.EMPE_NO  
+		,B.EMPE_NM  
+		,B.DEPT_NM  
+		,B.PRCS_NM  
+		,B.PSTN  
+		,B.CMSNR_TP
+		,TO_CHAR(B.RGST_DD, 'YYYY-MM-DD') AS RGST_DD
+		,TO_CHAR(B.END_DD, 'YYYY-MM-DD') AS END_DD
+		FROM 
+		(SELECT A.* FROM TB_KW50_NDST_SFTY_HLTH_CMTE_CMPS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP) B 
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+	<delete id="page1130delete" parameterType="KW30000U1130VO">
+		DELETE  
+		FROM TB_KW50_NDST_SFTY_HLTH_CMTE_CMPS
+		WHERE SEQ = #{seq}
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1130insertSave" parameterType="KW30000U1130VO">
+		INSERT INTO TB_KW50_NDST_SFTY_HLTH_CMTE_CMPS(
+		BZ_RGST_NO
+		,SEQ
+		,EMPE_NO
+		,EMPE_NM
+		,DEPT_NM
+		,PRCS_NM
+		,PSTN
+		,CMSNR_TP
+		,RGST_DD
+		,END_DD
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_NDST_SFTY_HLTH_CMTE_CMPS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{empeNo},
+		 #{empeNm},
+		 #{deptNm},
+		 #{prcsNm},
+		 #{pstn},
+		 #{cmsnrTp},
+		 #{rgstDd},
+		 #{endDd},
+		 'C',
+		 #{bzRgstNo},
+		 'SYSTEM',
+		SYSDATE, 
+		'C',
+		 #{bzRgstNo},
+		 'SYSTEM',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<update id="page1130updateSave" parameterType="KW30000U1130VO">
+		UPDATE 	TB_KW50_NDST_SFTY_HLTH_CMTE_CMPS
+		SET 	EMPE_NO = #{empeNo}
+				,EMPE_NM = #{empeNm}
+				,DEPT_NM = #{deptNm}
+				,PRCS_NM = #{prcsNm}
+				,PSTN = #{pstn}
+				,CMSNR_TP = #{cmsnrTp}
+				,RGST_DD = #{rgstDd}
+				,END_DD = #{endDd}
+				,LAST_UPDATE_OBJECT_TYPE = 'U'
+				,LAST_UPDATE_OBJECT_ID = #{bzRgstNo}
+				,LAST_UPDATE_PROGRAM_ID ='SYSTEM'
+				,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+    
+	<select id="page1140selectList" parameterType="KW30000U1140VO" resultType="KW30000U1140VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.ROLE_NM
+		,B.NM
+		,B.PSTN
+		,B.FON_NO
+		,B.APL_TGT_YN
+		,B.RMK
+		FROM 
+		(SELECT A.* FROM TB_KW50_NDST_SFTY_HLTH_CMTE_ORG_CHRT A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1140delete" parameterType="KW30000U1140VO">
+		DELETE  
+		FROM TB_KW50_NDST_SFTY_HLTH_CMTE_ORG_CHRT
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1140insertSave" parameterType="KW30000U1140VO">
+		INSERT INTO TB_KW50_NDST_SFTY_HLTH_CMTE_ORG_CHRT(
+		BZ_RGST_NO
+		,SEQ
+		,ROLE_NM
+		,NM
+		,PSTN	
+		,FON_NO	
+		,APL_TGT_YN	
+		,RMK	
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_NDST_SFTY_HLTH_CMTE_ORG_CHRT WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{roleNm},
+		 #{nm},
+		 #{pstn},
+		 #{fonNo},
+		 #{aplTgtYn},
+		 #{rmk},
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<update id="page1140updateSave" parameterType="KW30000U1140VO">
+		UPDATE 	TB_KW50_NDST_SFTY_HLTH_CMTE_ORG_CHRT
+		SET 	ROLE_NM = #{roleNm}
+		 	,NM = #{nm}
+		 	,PSTN = #{pstn}
+		 	,FON_NO = #{fonNo}
+		 	,APL_TGT_YN = #{aplTgtYn}
+		 	,RMK = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+    
+	<select id="page1150selectList" parameterType="KW30000U1150VO" resultType="KW30000U1150VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,TO_CHAR(B.MEET_DT, 'YYYY-MM-DD') AS MEET_DT
+		,B.MEET_NM
+		,B.MEET_TP
+		,B.SGNR_RGST_POS
+		,B.RMK
+		FROM 
+		(SELECT A.* FROM TB_KW50_NDST_SFTY_HLTH_CMTE_MNTS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+			    <if test="comSearchValA != null and comSearchValA != '' "><!-- 시작날짜  -->
+				    	AND MEET_DT <![CDATA[>=]]> #{comSearchValA}				
+				</if>
+				<if test="comSearchValB != null and comSearchValB != '' "><!-- 수정날짜  -->
+				    	AND MEET_DT <![CDATA[<=]]> #{comSearchValB}				
+				</if>
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1150delete" parameterType="KW30000U1150VO">
+		DELETE  
+		FROM TB_KW50_NDST_SFTY_HLTH_CMTE_MNTS
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1150insertSave" parameterType="KW30000U1150VO">
+		INSERT INTO TB_KW50_NDST_SFTY_HLTH_CMTE_MNTS(
+		BZ_RGST_NO
+		,SEQ
+		,MEET_DT
+		,MEET_NM
+		,MEET_TP
+		,SGNR_RGST_POS
+		,RMK
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_NDST_SFTY_HLTH_CMTE_MNTS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{meetDt},
+		 #{meetNm},
+		 #{meetTp},
+		 #{sgnrRgstPos},
+		 #{rmk},
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<update id="page1150updateSave" parameterType="KW30000U1150VO">
+		UPDATE 	TB_KW50_NDST_SFTY_HLTH_CMTE_MNTS
+		SET 	MEET_DT = #{meetDt}
+		 	,MEET_NM = #{meetNm}
+		 	,MEET_TP = #{meetTp}
+		 	,SGNR_RGST_POS = #{sgnrRgstPos}
+		 	,RMK = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+		
+	</update>
+    
+	<select id="page1160selectList" parameterType="KW30000U1160VO" resultType="KW30000U1160VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.FRST_SYS_TP
+		,B.INST_NM	
+		,B.LOCATION
+		,B.MVNG_DSTNC
+		,B.REQMN_TM_MM
+		,B.FRCT_CAN_YN	
+		,B.ADCT_CAN_YN	
+		,B.BURN_CAN_YN	
+		,B.CHEM_MTRL_CAN_YN	
+		,B.OTHR_CAN_YN	
+		,B.FON_NO		
+		FROM 
+		(SELECT A.* FROM TB_KW50_FRST_MED_MGT_SYS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1160delete" parameterType="KW30000U1160VO">
+		DELETE  
+		FROM TB_KW50_FRST_MED_MGT_SYS
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1160insertSave" parameterType="KW30000U1160VO">
+		INSERT INTO TB_KW50_FRST_MED_MGT_SYS(
+		BZ_RGST_NO
+		,SEQ
+		,FRST_SYS_TP
+		,INST_NM
+		,LOCATION
+		,MVNG_DSTNC
+		,REQMN_TM_MM
+		,FRCT_CAN_YN
+		,ADCT_CAN_YN
+		,BURN_CAN_YN
+		,CHEM_MTRL_CAN_YN
+		,OTHR_CAN_YN
+		,FON_NO
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_FRST_MED_MGT_SYS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{frstSysTp},
+		 #{instNm},
+		 #{location},
+		 #{mvngDstnc},
+		 #{reqmnTmMm},
+		 #{frctCanYn},
+		 #{adctCanYn},
+		 #{burnCanYn},
+		 #{chemMtrlCanYn},
+		 #{othrCanYn},
+		 #{fonNo},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<update id="page1160updateSave" parameterType="KW30000U1160VO">
+		UPDATE 	TB_KW50_FRST_MED_MGT_SYS
+		SET 	FRST_SYS_TP	= #{frstSysTp}
+		 	,INST_NM = #{instNm}
+		 	,LOCATION = #{location}
+		 	,MVNG_DSTNC = #{mvngDstnc}
+		 	,REQMN_TM_MM = #{reqmnTmMm}
+		 	,FRCT_CAN_YN = #{frctCanYn}
+		 	,ADCT_CAN_YN = #{adctCanYn}
+		 	,BURN_CAN_YN = #{burnCanYn}
+		 	,CHEM_MTRL_CAN_YN = #{chemMtrlCanYn}
+		 	,OTHR_CAN_YN = #{othrCanYn}
+		 	,FON_NO = #{fonNo}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="page1171selectList" parameterType="KW30000U1171VO" resultType="KW30000U1171VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.MEDCN_NM
+		,B.USE
+        ,TO_CHAR(B.RCPT_DD, 'YYYY-MM-DD') AS RCPT_DD
+		,B.RCPT_QTY
+		,B.USE_QNTY
+		,B.STCK_QNTY
+		,TO_CHAR(B.VLID_TERM_END_DD, 'YYYY-MM-DD') AS VLID_TERM_END_DD
+		,TO_CHAR(B.DUSE_DD, 'YYYY-MM-DD') AS DUSE_DD
+		FROM 
+		(SELECT A.* FROM TB_KW50_FST_AID_MEDCN_MGT_RGST A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1171delete" parameterType="KW30000U1171VO">
+		DELETE  
+		FROM TB_KW50_FST_AID_MEDCN_MGT_RGST
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1171insertSave" parameterType="KW30000U1171VO">
+		INSERT INTO TB_KW50_FST_AID_MEDCN_MGT_RGST(
+			BZ_RGST_NO
+			,SEQ
+			,MEDCN_NM
+			,USE
+	        ,RCPT_DD
+			,RCPT_QTY
+			,USE_QNTY
+			,STCK_QNTY
+			,VLID_TERM_END_DD
+			,DUSE_DD
+			,WRK_PLC_MGT_UNIQ_NO
+			,CREATE_OBJECT_TYPE
+			,CREATE_OBJECT_ID
+			,CREATE_PROGRAM_ID
+			,CREATE_TIMESTAMP
+			,LAST_UPDATE_OBJECT_TYPE
+			,LAST_UPDATE_OBJECT_ID
+			,LAST_UPDATE_PROGRAM_ID
+			,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+			 (#{bzRgstNo},
+			 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_FST_AID_MEDCN_MGT_RGST WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+			 #{medcnNm},
+			 #{use},
+			 #{rcptDd},
+			 #{rcptQty},
+			 #{useQnty},
+			 #{stckQnty},
+			 #{vlidTermEndDd},
+			 #{duseDd},
+			 'Y',
+			 'U',
+			 'admin',
+			  'admin',
+			SYSDATE, 
+			'U',
+			  'admin',
+			  'admin',
+			SYSDATE
+			 )
+	</insert> 
+	
+	<update id="page1171updateSave" parameterType="KW30000U1171VO">
+		UPDATE 	TB_KW50_FST_AID_MEDCN_MGT_RGST
+		SET 	MEDCN_NM = #{medcnNm}
+		 	,USE = #{use}
+		 	,RCPT_DD = #{rcptDd}
+		 	,RCPT_QTY = #{rcptQty}
+		 	,USE_QNTY = #{useQnty}
+		 	,STCK_QNTY = #{stckQnty}
+		 	,VLID_TERM_END_DD = #{vlidTermEndDd}
+		 	,DUSE_DD = #{duseDd}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<!-- <select id="getBoardListCnt1172" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_FST_AID_MEDCN_PRVD_STUS   
+    </select> -->
+    
+	<select id="page1172selectList" parameterType="KW30000U1172VO" resultType="KW30000U1172VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,TO_CHAR(B.PRVD_DT, 'YYYY-MM-DD') AS PRVD_DT
+		,B.EMPE_NM
+		,B.UNIT_CO_NM
+		,B.PRCS_NM
+		,B.MEDCN_NM
+		,B.QTY
+		,B.PRVD_RSN
+		,NVL(B.RMK,'')
+		FROM 
+		(SELECT A.* FROM TB_KW50_FST_AID_MEDCN_PRVD_STUS A
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1172delete" parameterType="KW30000U1172VO">
+		DELETE  
+		FROM TB_KW50_FST_AID_MEDCN_PRVD_STUS
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete>
+	
+	<insert id="page1172insertSave" parameterType="KW30000U1172VO">
+		INSERT INTO TB_KW50_FST_AID_MEDCN_PRVD_STUS(
+		BZ_RGST_NO
+		,SEQ
+		,PRVD_DT
+		,EMPE_NM
+		,UNIT_CO_NM
+		,PRCS_NM
+		,MEDCN_NM
+		,QTY
+		,PRVD_RSN
+		,RMK
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_FST_AID_MEDCN_PRVD_STUS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{prvdDt},
+		 #{empeNm},
+		 #{unitCoNm},
+		 #{prcsNm},
+		 #{medcnNm},
+		 #{qty},
+		 #{prvdRsn},
+		 #{rmk},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<update id="page1172updateSave" parameterType="KW30000U1172VO">
+		UPDATE 	TB_KW50_FST_AID_MEDCN_PRVD_STUS
+		SET  PRVD_DT = #{prvdDt}
+		 	,EMPE_NM = #{empeNm}
+		 	,UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,MEDCN_NM = #{medcnNm}
+		 	,QTY = #{qty}
+		 	,PRVD_RSN = #{prvdRsn}
+		 	,RMK = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="page1173" parameterType="KW30000U1173VO" resultType="KW30000U1173VO">
+		SELECT  
+			,BZ_RGST_NO
+			,MGT_NO
+			,NSPT_DD
+		FROM  TB_KW50_AUTO_DFBR_MGT
+	</select>
+	
+	<!-- <select id="getBoardListCnt1173" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_AUTO_DFBR_MGT    
+    </select> -->
+    
+	<select id="page1173selectList" parameterType="KW30000U1173VO" resultType="KW30000U1173VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,TO_CHAR(B.NSPT_DD, 'YYYY-MM-DD') AS NSPT_DD
+		,B.NSPT_PRSN_NM
+		,B.NSPT_POS
+		,B.ABNM_YN
+		FROM 
+		(SELECT A.* FROM TB_KW50_AUTO_DFBR_MGT A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1173delete" parameterType="KW30000U1173VO">
+		DELETE  
+		FROM TB_KW50_AUTO_DFBR_MGT
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete>
+	
+	<insert id="page1173insertSave" parameterType="KW30000U1173VO">
+		INSERT INTO TB_KW50_AUTO_DFBR_MGT(
+		BZ_RGST_NO
+		,SEQ
+		,MGT_NO
+		,NSPT_DD
+		,NSPT_PRSN_NM
+		,NSPT_POS
+		,ABNM_YN
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_AUTO_DFBR_MGT WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 'AD0010',
+		 #{nsptDd},
+		 #{nsptPrsnNm},
+		 #{nsptPos},
+		 #{abnmYn},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<insert id="page1173exeInsert" parameterType="KW30000U1173VO">
+		INSERT INTO TB_KW50_AUTO_DFBR_NSPT_DTL(
+		BZ_RGST_NO
+		,SEQ
+		,MGT_NO
+		,NSPT_DD
+		,NSPT_PRSN_NM
+		,NSPT_POS
+		,ABNM_YN
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT MAX(SEQ) FROM TB_KW50_AUTO_DFBR_MGT) ,
+		 'AD0010',
+		 #{nsptDd},
+		 #{nsptPrsnNm},
+		 #{nsptPos},
+		 #{abnmYn},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert>
+	
+	<update id="page1173updateSave" parameterType="KW30000U1173VO">
+		UPDATE 	TB_KW50_AUTO_DFBR_MGT
+		SET 	NSPT_DD = #{nsptDd}
+		 	,NSPT_PRSN_NM = #{nsptPrsnNm}
+		 	,NSPT_POS = #{nsptPos}
+		 	,ABNM_YN = #{abnmYn}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="page1173popChkList" parameterType="KW30000U1173VO" resultType="KW30000U1173VO">
+		 SELECT
+		 CD_DTL_1 
+		,CD_DTL_2
+		FROM TB_KW50_CD_STDD_MGT 
+		WHERE	CD_ITEM = 'AED_CHK_LIST'
+	</select>
+	
+	<select id="page1173popSelect" parameterType="KW30000U1173VO" resultType="KW30000U1173VO">
+				 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO 
+		,TO_CHAR(B.NSPT_DD, 'YYYY-MM-DD') AS NSPT_DD
+		,B.NSPT_ITEM_NO
+		,B.NSPT_RSLT_YN
+		,B.NSPT_CHK_LIST
+		FROM 
+		(SELECT A.* FROM TB_KW50_AUTO_DFBR_NSPT_DTL A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} <!-- AND NSPT_DD = #{nsptDd} AND MGT_NO = #{mgtNo} -->
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<insert id="page1173popInsertSave" parameterType="KW30000U1173VO">
+		INSERT INTO TB_KW50_AUTO_DFBR_NSPT_DTL(
+		BZ_RGST_NO
+		,MGT_NO
+		,NSPT_DD
+		,NSPT_ITEM_NO
+		,NSPT_CHK_LIST
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 #{mgtNo},
+		 #{nsptDd},
+		 (SELECT NVL(MAX(NSPT_ITEM_NO), 0) + 1 FROM TB_KW50_AUTO_DFBR_NSPT_DTL WHERE BZ_RGST_NO = #{bzRgstNo}),
+		 #{nsptChkList},
+		 '00A09473',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+    
+	<select id="page1174selectList" parameterType="KW30000U1174VO" resultType="KW30000U1174VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,TO_CHAR(B.VSIT_DD, 'YYYY-MM-DD') AS VSIT_DD
+		,B.VSITR_NM
+		,B.UNIT_CO_NM
+		,B.PRCS_NM
+		,B.VSIT_DTL
+		,B.MAIN_SYMP
+		,B.CNSLT_DTL
+		,B.RMK
+		FROM 
+		(SELECT A.* FROM TB_KW50_HLTH_CARE_ROOM_VSITR A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1174delete" parameterType="KW30000U1174VO">
+		DELETE  
+		FROM TB_KW50_HLTH_CARE_ROOM_VSITR
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete>
+	
+	<insert id="page1174insertSave" parameterType="KW30000U1174VO">
+		INSERT INTO TB_KW50_HLTH_CARE_ROOM_VSITR(
+		BZ_RGST_NO
+		,SEQ
+		,VSIT_DD
+		,VSITR_NM
+		,UNIT_CO_NM
+		,PRCS_NM
+		,VSIT_DTL
+		,MAIN_SYMP
+		,CNSLT_DTL
+		,RMK
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_HLTH_CARE_ROOM_VSITR WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{vsitDd},
+		 #{vsitrNm},
+		 #{unitCoNm},
+		 #{prcsNm},
+		 #{vsitDtl},
+		 #{mainSymp},
+		 #{cnsltDtl},
+		 #{rmk},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<update id="page1174updateSave" parameterType="KW30000U1174VO">
+		UPDATE 	TB_KW50_HLTH_CARE_ROOM_VSITR
+		SET 	VSIT_DD = #{roleNm}
+		 	,VSITR_NM = #{vsitrNm}
+		 	,UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,VSIT_DTL = #{vsitDtl}
+		 	,MAIN_SYMP = #{mainSymp}
+		 	,CNSLT_DTL = #{cnsltDtl}
+		 	,RMK = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	<!-- 
+	<select id="getBoardListCnt1175" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_HSPTL_RQST_TRNSF_STUS    
+    </select> 
+    -->
+    
+	<select id="page1175selectList" parameterType="KW30000U1175VO" resultType="KW30000U1175VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.WRKR_NM
+		,B.UNIT_CO_NM
+		,B.PRCS_NM
+		,TO_CHAR(B.OCUR_DD, 'YYYY-MM-DD') AS OCUR_DD
+		,B.OCUR_DTL	
+		,B.FRST_AID_DTL	
+		,B.TRNSF_HSPTL_NM	
+		,B.PST_PRGS_STUS	
+		,B.RMK	
+		FROM 
+		(SELECT A.* FROM TB_KW50_HSPTL_RQST_TRNSF_STUS A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1175delete" parameterType="KW30000U1175VO">
+		DELETE  
+		FROM TB_KW50_HSPTL_RQST_TRNSF_STUS
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1175insertSave" parameterType="KW30000U1175VO">
+		INSERT INTO TB_KW50_HSPTL_RQST_TRNSF_STUS(
+		BZ_RGST_NO
+		,SEQ
+		,WRKR_NM
+		,UNIT_CO_NM
+		,PRCS_NM
+		,OCUR_DD
+		,OCUR_DTL	
+		,FRST_AID_DTL	
+		,TRNSF_HSPTL_NM	
+		,PST_PRGS_STUS	
+		,RMK	
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_HSPTL_RQST_TRNSF_STUS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{wrkrNm},
+		 #{unitCoNm},
+		 #{prcsNm},
+		 #{ocurDd},
+		 #{ocurDtl},
+		 #{frstAidDtl},
+		 #{trnsfHsptlNm},
+		 #{pstPrgsStus},
+		 #{rmk},
+		 'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<update id="page1175updateSave" parameterType="KW30000U1175VO">
+		UPDATE 	TB_KW50_HSPTL_RQST_TRNSF_STUS
+		SET 	WRKR_NM = #{wrkrNm}
+		 	,UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,OCUR_DD = #{ocurDd}
+		 	,OCUR_DTL = #{ocurDtl}
+		 	,FRST_AID_DTL = #{frstAidDtl}
+		 	,TRNSF_HSPTL_NM	 = #{trnsfHsptlNm}
+		 	,PST_PRGS_STUS = #{pstPrgsStus}
+		 	,RMK	 = #{rmk}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="pageSelectList" parameterType="KW30000_1200VO" resultType="KW30000_1200VO">
+			SELECT ROWNUM RNUM 
+			,B.BZ_RGST_NO
+			,B.PLN_LRG_CLSS
+			,B.PLN_MID_CLSS
+			,B.PLN_SML_CLSS
+			,B.SEQ
+			,B.TP
+			,B.PRID
+			,B.TTL
+			,TO_CHAR(B.PLN_SCH_DD, 'YYYY-MM-DD') AS PLN_SCH_DD
+			,TO_CHAR(B.LTL_IMPL_DD, 'YYYY-MM-DD') AS LTL_IMPL_DD
+			,B.PLN_DTL
+			,B.EXPS_LMIT_EXS_PRCS
+			FROM
+			(SELECT A.* FROM ${tableNm} A 
+			WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+			AND PLN_LRG_CLSS =  #{plnLrgClss}
+			<if test="plnMidClss != '' and plnMidClss != null">
+   				 AND PLN_MID_CLSS = #{plnMidClss}
+  			</if>
+			ORDER BY A.CREATE_TIMESTAMP) B  
+			ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<insert id="pageInsertSave" parameterType="KW30000_1200VO">
+		INSERT INTO ${tableNm}(
+		BZ_RGST_NO
+		,PLN_LRG_CLSS
+		,PLN_MID_CLSS
+		,PLN_SML_CLSS
+		,SEQ
+		,TP
+		,PRID
+		,TTL
+		,PLN_SCH_DD
+		,LTL_IMPL_DD
+		,PLN_DTL
+		,EXPS_LMIT_EXS_PRCS
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 #{plnLrgClss},
+		 #{plnMidClss},
+		 #{plnSmlClss},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_ANUAL_PLN_MGT WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{tp},
+		 #{prid},
+		 #{ttl},
+		 #{plnSchDd},
+		 #{ltlImplDd},
+		 #{plnDtl},
+		 #{expsLmitExsPrcs},
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+	
+	<delete id="pageDelete" parameterType="KW30000_1200VO">
+		DELETE  
+		FROM  ${tableNm}
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<update id="pageUpdateSave" parameterType="KW30000_1200VO">
+		UPDATE 	${tableNm}
+		SET 	PLN_LRG_CLSS = #{plnLrgClss}
+			,TP = #{tp}
+		 	,PLN_MID_CLSS = #{plnMidClss}
+		 	,PLN_SML_CLSS = #{plnSmlClss}
+		 	,PRID = #{prid}
+		 	,TTL = #{ttl}
+		 	,PLN_SCH_DD = #{plnSchDd}
+		 	,LTL_IMPL_DD	 = #{ltlImplDd}
+		 	,PLN_DTL = #{plnDtl}
+		 	,EXPS_LMIT_EXS_PRCS	 = #{expsLmitExsPrcs}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<!-- <select id="getBoardListCnt1240" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_ANUAL_PLN_MGT_EXAM_FLD
+    </select> -->
+    
+	<select id="page1240selectList" parameterType="KW30000U1240VO" resultType="KW30000U1240VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,TO_CHAR(B.EXAM_IMPL_DD, 'YYYY-MM-DD') AS EXAM_IMPL_DD
+		,B.SEQ	
+		,B.EXAM_TP	
+		,B.TGT_PPL_CNT
+		,B.HLTH_CARE_CNT_D1	
+		,B.HLTH_CARE_CNT_DN
+		,B.HLTH_CARE_CNT_C1
+		,B.HLTH_CARE_CNT_CN	
+		,B.HLTH_CARE_CNT_R
+		,B.HLTH_CARE_CNT_U	
+		,B.HLTH_CARE_CNT_D2
+		,B.HLTH_CARE_CNT_C2	
+		,B.MGT_PLN
+		,B.RMK
+		FROM 
+		(SELECT A.* FROM TB_KW50_ANUAL_PLN_MGT_EXAM_FLD A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1240delete" parameterType="KW30000U1240VO">
+		DELETE  
+		FROM TB_KW50_ANUAL_PLN_MGT_EXAM_FLD
+		WHERE SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete>
+	
+	<insert id="page1240insertSave" parameterType="KW30000U1240VO">
+		INSERT INTO TB_KW50_ANUAL_PLN_MGT_EXAM_FLD(
+		BZ_RGST_NO
+		,SEQ
+		,EXAM_TP
+		,EXAM_IMPL_DD
+		,TGT_PPL_CNT
+		,HLTH_CARE_CNT_D1	
+		,HLTH_CARE_CNT_DN
+		,HLTH_CARE_CNT_C1
+		,HLTH_CARE_CNT_CN	
+		,HLTH_CARE_CNT_R
+		,HLTH_CARE_CNT_U	
+		,HLTH_CARE_CNT_D2
+		,HLTH_CARE_CNT_C2	
+		,MGT_PLN	
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_ANUAL_PLN_MGT_EXAM_FLD WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{examTp},
+		 #{examImplDd},
+		 #{tgtPplCnt},
+		 #{hlthCareCntD1},
+		 #{hlthCareCntDn},
+		 #{hlthCareCntC1},
+		 #{hlthCareCntCn},
+		 #{hlthCareCntR},
+		 #{hlthCareCntU},
+		 #{hlthCareCntD2},
+		 #{hlthCareCntC2},
+		 #{mgtPln},
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<update id="page1240updateSave" parameterType="KW30000U1240VO">
+		UPDATE 	TB_KW50_ANUAL_PLN_MGT_EXAM_FLD
+		SET 	EXAM_TP = #{examTp}
+		 	,EXAM_IMPL_DD = #{examImplDd}
+		 	,TGT_PPL_CNT = #{tgtPplCnt}
+		 	,HLTH_CARE_CNT_D1 = #{hlthCareCntD1}
+		 	,HLTH_CARE_CNT_DN = #{hlthCareCntDn}
+		 	,HLTH_CARE_CNT_C1 = #{hlthCareCntC1}
+		 	,HLTH_CARE_CNT_CN = #{hlthCareCntCn}
+		 	,HLTH_CARE_CNT_R = #{hlthCareCntR}
+		 	,HLTH_CARE_CNT_U = #{hlthCareCntU}
+		 	,HLTH_CARE_CNT_D2 = #{hlthCareCntD2}
+		 	,HLTH_CARE_CNT_C2 = #{hlthCareCntC2}
+		 	,MGT_PLN = #{mgtPln}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} AND BZ_RGST_NO = #{bzRgstNo} 
+	</update> 
+	
+	<select id="getBoardListCnt1310" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM ${tableNm} 
+        WHERE BOARD_ID = '31310' AND BZ_RGST_NO = #{searchBzRgstNo} 
+    </select>
+	
+	
+	<select id="page1310selectList" parameterType="KW30000U1310VO" resultType="KW30000U1310VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,TO_CHAR(B.AMND_DD, 'YYYY-MM-DD') AS AMND_DD
+		FROM 
+		(SELECT A.* FROM TB_KW50_BZ_NTC_BRD_CNTNT A WHERE BOARD_ID = '31310' AND BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 1310 쓰기 -->
+	<insert id="page1310insertSave" parameterType="KW30000U1310VO">
+		insert into TB_KW50_BZ_NTC_BRD_CNTNT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, AMND_DD
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_BZ_NTC_BRD_CNTNT WHERE BOARD_ID = '31310' AND BZ_RGST_NO = #{bzRgstNo})
+		, 31310
+		, #{bzRgstNo}
+		, #{amndDd}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 1310 수정 확인 -->
+	<update id="page1310updateSave" parameterType="KW30000U1310VO">
+		UPDATE TB_KW50_BZ_NTC_BRD_CNTNT
+		SET AMND_DD = #{amndDd}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '31310' AND BZ_RGST_NO = #{bzRgstNo}
+	</update>
+	
+	
+	<!-- 1310 삭제 -->
+	<delete id="page1310delete" parameterType="KW30000U1310VO">
+		DELETE FROM TB_KW50_BZ_NTC_BRD_CNTNT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '31310' AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<select id="getBoardListCnt1320" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM ${tableNm} 
+        WHERE BOARD_ID = '31320' AND BZ_RGST_NO = #{searchBzRgstNo} 
+    </select>
+	
+	<select id="page1320selectList" parameterType="KW30000U1310VO" resultType="KW30000U1310VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,TO_CHAR(B.AMND_DD, 'YYYY-MM-DD') AS AMND_DD
+		FROM 
+		(SELECT A.* FROM TB_KW50_BZ_NTC_BRD_CNTNT A WHERE BOARD_ID = '31320' AND BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY A.CREATE_TIMESTAMP) B  
+		ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 1310 쓰기 -->
+	<insert id="page1320insertSave" parameterType="KW30000U1310VO">
+		insert into TB_KW50_BZ_NTC_BRD_CNTNT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, AMND_DD
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_BZ_NTC_BRD_CNTNT WHERE BOARD_ID = '31320' AND BZ_RGST_NO = #{bzRgstNo})
+		, 31320
+		, #{bzRgstNo}
+		, #{amndDd}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 1310 수정 확인 -->
+	<update id="page1320updateSave" parameterType="KW30000U1310VO">
+		UPDATE TB_KW50_BZ_NTC_BRD_CNTNT
+		SET AMND_DD = #{amndDd}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '31320' AND BZ_RGST_NO = #{bzRgstNo}
+	</update>
+	
+	
+	<!-- 1310 삭제 -->
+	<delete id="page1320delete" parameterType="KW30000U1310VO">
+		DELETE FROM TB_KW50_BZ_NTC_BRD_CNTNT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '31320' AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	
+
+</mapper>

@@ -1,0 +1,89 @@
+
+<%
+/************************************************************
+*   @ 화면명		: Top 메뉴
+*   @ JSP NAME	: /jsp/include/top.jsp
+*   @ JSP작성자	: 손우정
+*   @ 작성일		: 2022.08.22
+*   @ 작업이력	: 
+*************************************************************
+1		2022.08.22 	  		신규작성
+*************************************************************/
+%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ include file="/WEB-INF/jsp/include/common.jsp"%>
+<!DOCTYPE html>
+<section id="top_main" class="inner">
+	<span class="logo"> <a href="/main/main.do">대한산업보건협회</a>
+	</span>
+	<ul class="join_left">
+		<c:if test="${sessionScope.mbrId eq 'admin'}">
+			<li class="main_search">
+				<span style="cursor:pointer; " OnClick="newPopClick();" id="search">사업자 검색</span>
+			</li>
+			<li class="company_name">
+				<span>${sessionScope.popBzRgstNo}</span>
+			</li>
+			<li class="company_name">
+				<span>${sessionScope.popBzCoNm}</span>
+			</li> <!-- 회원아이디 -->
+			<li class="company_name">
+			</li> 
+		</c:if>
+	</ul>
+	<ul class="join">
+		<c:choose>
+			<c:when test="${empty sessionScope.authUser}">
+				<li><a href="http://testh.kiha21.or.kr" target="blank">대한산업보건협회홈</a></li>
+				<li><a href="/login/login.do">로그인</a></li>
+				<li><a href="/join/join01.do">회원가입</a></li>
+			</c:when>
+			<c:otherwise>
+				<li class="company_name"><span>${sessionScope.bzCoNm}</span></li>
+				<!--  <li><span>${sessionScope.bzRgstNo}</span></li> -->
+				<li><span>${sessionScope.mbrNm}님 반갑습니다.</span></li>  <!-- 회원이름 -->
+				<li><a href="http://testh.kiha21.or.kr" target="blank">대한산업보건협회홈</a></li>			
+				<li><a href="/login/logout.do">로그아웃</a></li>
+			</c:otherwise>
+		</c:choose>
+		<li><a href="#">사이트맵</a></li>
+	</ul>
+	<input type="hidden" id="sessionId" value="${sessionScope.mbrId}">
+</section>
+
+<script>
+//팝업 사이즈 설정
+let myWindow;
+
+var popupWidth = 700;
+var popupHeight = 500;
+
+var popupX = Math.ceil(( window.screen.width - popupWidth )/2);
+var popupY = Math.ceil(( window.screen.height - popupHeight )/2); 
+
+//검색 Enter Key     
+function show_keyword(e){
+ if(e.keyCode == 13){
+ 	newPopClick();
+ }
+}
+
+//팝업 클릭
+function newPopClick() {
+//open한 새창을 변수 저장
+window.open('/common/pop/pop.do', '_blank',
+		'location=no, status=no, width=' + popupWidth
+				+ ',height=' + popupHeight + ',left=' + popupX
+				+ ', top=' + popupY);
+}
+
+//팝업 닫기
+function closePopClick() {
+	$("#searchKeyword").val();
+	// 변수를 close해 새창을 닫음
+	myWindow.close();
+}
+
+
+</script>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+   <settings>
+      <setting name="mapUnderscoreToCamelCase" value="true"/>
+      <setting name="jdbcTypeForNull" value="NULL" />
+   </settings>
+    <typeAliases>
+      <typeAlias   alias="CustomerVO" type="iohp.customer.service.CustomerVO"/> <!-- noticeVO, FaqVO, QnaVO -->
+      <typeAlias   alias="JoinVO" type="iohp.join.service.JoinVO"/>
+      <typeAlias   alias="LoginVO" type="iohp.login.service.LoginVO"/> 
+      <typeAlias   alias="KW10000U1100VO" type="iohp.page.KW10000.service.KW10000U1100VO"/>
+      <typeAlias   alias="KW10000U1200VO" type="iohp.page.KW10000.service.KW10000U1200VO"/>
+      <typeAlias   alias="KW10000U1300VO" type="iohp.page.KW10000.service.KW10000U1300VO"/>
+      <typeAlias   alias="KW10000U2100VO" type="iohp.page.KW10000.service.KW10000U2100VO"/>
+      <typeAlias   alias="KW10000U3100VO" type="iohp.page.KW10000.service.KW10000U3100VO"/>
+      <typeAlias   alias="KW20000U1200VO" type="iohp.page.KW20000.service.KW20000U1200VO"/>
+      <typeAlias   alias="KW20000U1300VO" type="iohp.page.KW20000.service.KW20000U1300VO"/>
+      <typeAlias   alias="KW20000U1500VO" type="iohp.page.KW20000.service.KW20000U1500VO"/>
+      <typeAlias   alias="KW30000U1110VO" type="iohp.page.KW30000.service.KW30000U1110VO"/>
+      <typeAlias   alias="KW30000U1120VO" type="iohp.page.KW30000.service.KW30000U1120VO"/>
+      <typeAlias   alias="KW30000U1130VO" type="iohp.page.KW30000.service.KW30000U1130VO"/>
+      <typeAlias   alias="KW30000U1310VO" type="iohp.page.KW30000.service.KW30000U1310VO"/>
+      <typeAlias   alias="KW30000U1140VO" type="iohp.page.KW30000.service.KW30000U1140VO"/>
+      <typeAlias   alias="KW30000U1150VO" type="iohp.page.KW30000.service.KW30000U1150VO"/>
+      <typeAlias   alias="KW30000U1160VO" type="iohp.page.KW30000.service.KW30000U1160VO"/>
+      <typeAlias   alias="KW30000U1171VO" type="iohp.page.KW30000.service.KW30000U1171VO"/>
+      <typeAlias   alias="KW30000U1172VO" type="iohp.page.KW30000.service.KW30000U1172VO"/>
+      <typeAlias   alias="KW30000U1173VO" type="iohp.page.KW30000.service.KW30000U1173VO"/>
+      <typeAlias   alias="KW30000U1174VO" type="iohp.page.KW30000.service.KW30000U1174VO"/>
+      <typeAlias   alias="KW30000U1175VO" type="iohp.page.KW30000.service.KW30000U1175VO"/>
+      <typeAlias   alias="KW30000U1240VO" type="iohp.page.KW30000.service.KW30000U1240VO"/>
+      <typeAlias   alias="KW30000_1200VO" type="iohp.page.KW30000.service.KW30000_1200VO"/>
+      <typeAlias   alias="KW30000U2100VO" type="iohp.page.KW30000.service.KW30000U2100VO"/>
+      <typeAlias   alias="KW30000U2200VO" type="iohp.page.KW30000.service.KW30000U2200VO"/>
+      <typeAlias   alias="KW30000U2310VO" type="iohp.page.KW30000.service.KW30000U2310VO"/>
+      <typeAlias   alias="KW30000U2320VO" type="iohp.page.KW30000.service.KW30000U2320VO"/>
+      <typeAlias   alias="KW30000U2330VO" type="iohp.page.KW30000.service.KW30000U2330VO"/>
+      <typeAlias   alias="KW30000U4220VO" type="iohp.page.KW30000.service.KW30000U4220VO"/>
+      <typeAlias   alias="KW30000U4310VO" type="iohp.page.KW30000.service.KW30000U4310VO"/>
+      <typeAlias   alias="KW30000U4320VO" type="iohp.page.KW30000.service.KW30000U4320VO"/>
+      <typeAlias   alias="KW30000U4510VO" type="iohp.page.KW30000.service.KW30000U4510VO"/>
+      <typeAlias   alias="KW30000U4610VO" type="iohp.page.KW30000.service.KW30000U4610VO"/>
+      <typeAlias   alias="KW30000U4720VO" type="iohp.page.KW30000.service.KW30000U4720VO"/>
+      <typeAlias   alias="KW30000U4730VO" type="iohp.page.KW30000.service.KW30000U4730VO"/>
+      <typeAlias   alias="KW30000U4800VO" type="iohp.page.KW30000.service.KW30000U4800VO"/>
+      <typeAlias   alias="KW30000U5000VO" type="iohp.page.KW30000.service.KW30000U5000VO"/>
+      <typeAlias   alias="KW30000U6100VO" type="iohp.page.KW30000.service.KW30000U6100VO"/>
+      <typeAlias   alias="KW30000U6300VO" type="iohp.page.KW30000.service.KW30000U6300VO"/>
+      <typeAlias   alias="KW30000U7100VO" type="iohp.page.KW30000.service.KW30000U7100VO"/>
+      <typeAlias   alias="KW90000U1100VO" type="iohp.page.KW90000.service.KW90000U1100VO"/>
+      <typeAlias   alias="KW30000U2200psnlVO" type="iohp.page.KW30000.service.KW30000U2200psnlVO"/>
+      <typeAlias   alias="KW30000U1173chkVO" type="iohp.page.KW30000.service.KW30000U1173chkVO"/>
+	  <typeAlias   alias="KW30000U1310VO" type="iohp.page.KW30000.service.KW30000U1310VO"/>
+      <typeAlias   alias="KW50000U1100VO" type="iohp.page.KW50000.service.KW50000U1100VO"/>
+      <typeAlias   alias="KW80000U1100VO" type="iohp.mypage.service.KW80000U1100VO"/>
+      <typeAlias   alias="KW60000VO" type="iohp.page.KW60000.service.KW60000VO"/>
+      <typeAlias   alias="CommonPopVO" type="iohp.com.service.CommonPopVO"/> 
+    </typeAliases>   
+</configuration>

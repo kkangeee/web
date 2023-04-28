@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="popup074">
+	<!-- 리스트 호출 -->
+	<select id="selectPopupList" parameterType="CustomerVO" resultType="CustomerVO">
+      	  SELECT ROWNUM AS RNUM
+				 , B.POPUP_ID
+				 , B.TITLE
+				 , TO_CHAR(B.START_DATE, 'YYYY-MM-DD') AS START_DATE
+				 , TO_CHAR(B.END_DATE, 'YYYY-MM-DD') AS END_DATE
+				 , B.OPT01
+				 , B.OPT02
+				 , B.OPT03
+				 , B.OPT04
+				 , B.PUBLIC_YN			 
+		  FROM (
+			  	  SELECT  	A.POPUP_ID 
+				            , A.TITLE
+				            , A.START_DATE
+				            , A.END_DATE
+						    , A.OPT01
+						    , A.OPT02
+						    , A.OPT03
+						    , A.OPT04
+						    , A.PUBLIC_YN
+			       FROM KW50APUSER.TB_KW50_PPUP_MGT A WHERE DELETE_TP != 'Y'
+			       <if test="searchType == 'title' and (keyword != null or keyword != '')">
+						    AND TITLE LIKE '%' || #{keyword} || '%'	
+				   </if>
+				   <if test="searchType == 'all' and (keyword != null or keyword != '')">
+						    AND TITLE LIKE '%' || #{keyword} || '%' 
+				   </if>
+			        ORDER BY A.CREATE_TIMESTAMP
+		      	  ) B  
+      	 ORDER BY RNUM DESC 
+         OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY 
+    </select>
+    
+	<!-- 총 게시글 수  -->
+	<select id="getPopupListCnt" resultType="int">
+        SELECT count(*) AS listCnt
+        FROM KW50APUSER.TB_KW50_PPUP_MGT WHERE DELETE_TP != 'Y'
+      	   <if test="searchType == 'title' and (keyword != null or keyword != '')">
+				    AND TITLE LIKE '%' || #{keyword} || '%'	
+		   </if>
+		   <if test="searchType == 'all' and (keyword != null or keyword != '')">
+				    AND TITLE LIKE '%' || #{keyword} || '%' 
+		   </if>
+    </select>
+	
+	<!-- 공지사항 수정 페이지 -->
+	<select id="popupUpdateForm" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT    POPUP_ID
+			, TITLE
+			, TO_CHAR(START_DATE, 'YYYY-MM-DD') AS START_DATE
+			, TO_CHAR(END_DATE, 'YYYY-MM-DD') AS END_DATE
+			, OPT01 
+			, OPT02
+			, OPT03
+			, OPT04
+			, OPT05
+			, OPT06
+			, OPT07
+			, PUBLIC_YN
+			, LINK
+			, TARGET
+			, CONTENT			
+		FROM KW50APUSER.TB_KW50_PPUP_MGT
+		WHERE POPUP_ID = #{popupId}
+	</select>
+
+	<insert id="popupInsert" parameterType="CustomerVO">
+		INSERT INTO KW50APUSER.TB_KW50_PPUP_MGT
+		(
+		  POPUP_ID
+		, TITLE
+		, START_DATE
+		, END_DATE
+		, OPT01
+		, OPT02
+		, OPT03
+		, OPT04
+		, OPT05
+		, OPT06
+		, OPT07
+		, PUBLIC_YN
+		, LINK
+		, TARGET
+		, CONTENT
+		, BOARD_FILE
+		, BOARD_FILE_NAME
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		VALUES
+		(
+		  SQ_TB_KW50_PPUP_MGT.NEXTVAL
+		, #{title}
+		, #{startDate}
+		, #{endDate}
+		, #{opt01}		
+		, #{opt02}
+		, #{opt03}
+		, #{opt04}
+		, #{opt05}
+		, #{opt06}
+		, #{opt07}
+		, #{publicYn}
+		, #{link}
+		, #{target}
+		, #{content}
+		, #{boardFile}
+		, #{boardFileName}
+		, 'C'
+		, #{mbrId}
+		, 'popup_write'
+		,  SYSDATE
+		, 'C'
+		, #{mbrId}
+		, 'popup_write'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+	
+	<!-- 공지사항 수정 확인 -->
+	<update id="popupUpdate" parameterType="CustomerVO">
+		UPDATE KW50APUSER.TB_KW50_PPUP_MGT
+		SET   TITLE = #{title}
+			, START_DATE = #{startDate}
+			, END_DATE = #{endDate}
+			, OPT01 = #{opt01} 
+			, OPT02 = #{opt02}
+			, OPT03 = #{opt03}
+			, OPT04 = #{opt04}
+			, OPT05 = #{opt05}
+			, OPT06 = #{opt06}
+			, OPT07 = #{opt07}
+			, PUBLIC_YN = #{publicYn}
+			, LINK = #{link}
+			, TARGET = #{target}
+			, CONTENT = #{content}
+			, BOARD_FILE = #{boardFile}
+			, BOARD_FILE_NAME = #{boardFileName}
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrId}
+			, LAST_UPDATE_PROGRAM_ID = '/customer/popup/update.do'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE POPUP_ID = #{popupId}
+	</update>
+	
+
+	<!-- 공지사항 삭제 -->
+	<delete id="popupDelete" parameterType="CustomerVO">
+		UPDATE KW50APUSER.TB_KW50_PPUP_MGT   
+		SET DELETE_TP = 'Y'
+		WHERE POPUP_ID = #{popupId}
+	</delete>
+	
+	
+</mapper>

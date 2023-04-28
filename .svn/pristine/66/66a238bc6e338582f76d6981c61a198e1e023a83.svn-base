@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw90000u6100">
+	 <!-- 조회 개수 --> 
+	 
+	<select id="getBoardListCnt6100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_MBR_MGT WHERE DELETE_TP != 'Y' 
+      		<!-- <if test="searchType == '코드그룹명' and (keyword != null or keyword != '')">
+				    	AND CD_ITEM_NM LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test="searchType == '코드그룹' and (keyword != null or keyword != '')">
+				    	AND CD_ITEM LIKE '%' || #{keyword} || '%'		
+			</if>
+			<if test="searchType == '코드' and (keyword != null or keyword != '')">
+				    	AND CD_VAL LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="searchType == '코드명' and (keyword != null or keyword != '')">
+				    	AND CD_DTL_1 LIKE '%' || #{keyword} || '%'		
+			</if> -->
+    </select>
+	
+	<select id="page6100selectList" parameterType="loginVO" resultType="loginVO">
+		 SELECT ROWNUM RNUM 
+		 	,B.MBR_ID
+			,B.MBR_NM
+			,B.BZ_CO_NM
+			,B.BDT
+			,B.FON_NO
+			,B.GNDR_TP
+			,B.MBR_SEQ
+		FROM 
+		(SELECT A.* FROM TB_KW50_MBR_MGT A WHERE DELETE_TP != 'Y'
+					<!-- <if test="searchType == '코드그룹명' and (keyword != null or keyword != '')">
+						    	AND CD_ITEM_NM LIKE '%' || #{keyword} || '%'	
+					</if>
+					<if test="searchType == '코드그룹' and (keyword != null or keyword != '')">
+						    	AND CD_ITEM LIKE '%' || UPPER(#{keyword}) || '%'		
+					</if>
+					<if test="searchType == '코드' and (keyword != null or keyword != '')">
+						    	AND CD_VAL LIKE '%' || UPPER(#{keyword}) || '%'
+					</if>
+					<if test="searchType == '코드명' and (keyword != null or keyword != '')">
+						    	AND CD_DTL_1 LIKE '%' || #{keyword} || '%'		
+					</if>
+					<if test="searchType == '전체' and (keyword != null or keyword != '')">
+						    	AND (CD_ITEM_NM LIKE '%' || #{keyword} || '%'
+						    	OR CD_ITEM LIKE '%' || UPPER(#{keyword}) || '%'
+						    	OR CD_VAL LIKE '%' || UPPER(#{keyword}) || '%'
+						    	OR CD_DTL_1 LIKE '%' || #{keyword} || '%') 
+						    	
+					</if> -->
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+
+</mapper>

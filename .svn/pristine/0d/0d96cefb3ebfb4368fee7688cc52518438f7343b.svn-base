@@ -1,0 +1,264 @@
+<%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR"%>
+<%@ include file="/WEB-INF/jsp/include/common.jsp"%>
+<!DOCTYPE html>
+    
+    <!-- #container -->
+    <div id="container">
+            
+        <div class="headline sub_headline sub_headline01">
+          <div class="inner">
+              <h1>시스템관리</h1>
+          </div>
+        </div>      
+        <div class="inner">
+          <!-- 하단여백 섹션으로 구분 -->
+          <section id="content">
+            <div class="con_area">       
+        
+        <!-- ▼ 타이틀 영역 -->
+        <div class="con_section ">
+            <h2 class="con_sectionTit"><span class="subtit">사용자관리</span></h2>            
+        </div>
+        
+        <!-- ▼ 정보입력 영역 -->
+        <div class="mt20"> 
+            <!-- #content section////////////////////////////// -->
+  <section id="content">
+    <div class="button-group top">
+	<!-- ▼ 전체검색 영역 -->
+      <span class="board-search">
+          <input type="hidden" name="pageNum" value="1">
+          <select class="w130" id="searchOption">
+            <option value="전체">전체</option>
+            <option value="회원ID">회원ID</option>
+            <option value="회원이름">회원이름</option>
+            <option value="연락처">연락처</option>
+          </select>
+          <input type="text" name="searchKeyword" id="searchKeyword" value="" placeholder="검색어를 입력하세요.">
+          <button type="submit" id="btnSearch">검색</button>
+          <input type="hidden" id="searchType">
+          <input type="hidden" id="keyword">
+      </span> 
+
+        <!-- ▼ 버튼 영역 -->
+          <div class="btn_top">            
+        	<a href="javascript:void(0)" class="btn_round btn_plus btn_Tw" id="loginBtn"><span>로그인</span></a> 
+            <a href="javascript:void(0)" class="btn_round btn_save btn_Tw" id="saveBtn" ><span>저장</span></a>
+          </div> 
+    </div>
+        
+    <!-- 테이블01 --> 
+     			<div class="table-double">
+					<ul>
+						<li class="p60">
+							<span class="board_Ttxt">사용자목록</span> <!-- 테이블01 -->
+								<div>
+									<table class="board-list" >
+									<colgroup>
+										<col style="width: 8%">
+										<col style="width: 38%">
+										<col style="width: 20%">
+										<col style="width: 25%">
+									</colgroup>
+									<thead>
+										<tr>
+											<th>NO</th>
+											<th>회원ID</th>
+											<th>회원이름</th>
+											<th>사업자명</th>
+										</tr>
+									</thead>
+									</table>
+								</div>
+								<div class="TBover2 mb50" style="height: 800px;">
+										<table style="text-align: center">
+										<tbody class="TBover2" id="dataSection" name="tbody">
+										</tbody>
+										</table> <!-- //테이블01 -->
+								</div>
+						</li>
+						<li class="p30">
+							<span class="board_Ttxt">사용자 정보</span> <!-- 테이블01 -->
+								<div>
+									<table class="board-list">
+									<input type ="text" style ="display: none" id="userMbrSeq" value ="">
+										<colgroup>
+										</colgroup>
+										<thead>
+											<tr>
+											</tr>
+										</thead>
+										<tbody id="infoSection" name="tbody">
+										</tbody>
+									</table> <!-- //테이블01 -->
+								</div>
+						</li>
+					</ul>
+				</div>
+  </section>
+        </div>
+    </div>
+          </section>
+        </div>
+      </div>
+
+<!-- 컨텐츠 -->      
+    <!-- //#container -->
+
+    <div class="util-bottom">
+      <div class="inner">
+        <a class="btn-top" href="#wrap" onclick="$(window).scrollTop(0); return false;">위로</a>
+      </div>
+    </div>
+    
+<script>
+common.checkAll();
+
+$(document).ready(function() {
+	getPage();
+})
+
+//검색어 조회
+$("#btnSearch").click(function() {
+	let searchOption = $("#searchOption option:selected").val();
+	let searchKeyword = $("#searchKeyword").val();
+ 	$("#searchType").val($("#searchOption option:selected").val());
+	$("#keyword").val($("#searchKeyword").val()); 
+	getPage(); 
+});
+
+function getPage() {
+	var searchType = $("#searchType").val();
+	var search = $("#keyword").val();
+	console.log("::::11111:::::" + searchType);
+	console.log("::::22222:::::" + search);
+	$.ajax({
+				url : "/page/KW90000/KW90000U6100selectList", //서비스 주소 
+				data : {  //서비스 처리에 필요한 인자값
+					searchType : searchType,
+					keyword : search			
+				},
+				success : function(res) {
+					const list = res['resultList'];
+					var totalCnt = "";
+					var data = "";
+					var block = "";
+
+					if(list.length != 0){	
+					// 테이블의 row를 삽입하는 부분
+					for (var i = 0; i < list.length; i++) {
+						data += '<tr style="cursor: pointer; width:40px; height : 50px" onclick="rowClick(this)" data-mbrSeq="'+ list[i].mbrSeq +'">';
+						data += '<td class="rnum" style="width:8%;">' + list[i].rnum + '</td>';
+						data += '<td class="mbrId" style="width: 38%">' + list[i].mbrId + '</td>';
+						data += '<td class="mbrNm" style="width: 25%">' + list[i].mbrNm + '</td>';
+						data += '<td class="bzCoNm" style="width: 20%">' + list[i].bzCoNm + '</td>';
+						data += '</tr>';
+					}
+					} else {
+						data += "<tr id='deleteCol'>";
+						data += "<td colspan='4'>등록된 게시글이 없습니다.</td>";
+						data += "</tr>";						
+					} 
+
+					$("#dataSection").html(data);
+					$("#saveBtn").hide();
+					$("#loginBtn").hide();
+					$("#userMbrSeq").val(list[0].mbrSeq);
+					getInfoPage()
+				}
+			})
+}
+
+//사업장명 버튼 클릭  
+function rowClick(obj) {
+	//부모창의 id가 id인 input 이라는 문자열 저장하기   
+	let mbrSeq = obj.getAttribute("data-mbrSeq");
+	$("#userMbrSeq").val(mbrSeq);
+    getInfoPage();
+}
+	
+//사용자 정보 페이지
+function getInfoPage(){
+	var comSearchValA = $("#userMbrSeq").val();
+	console.log("comSearchValA  :: " + comSearchValA);
+	$.ajax({
+		url : "/page/KW90000/KW90000U6100infoList", //서비스 주소 
+		data : {  //서비스 처리에 필요한 인자값
+			//searchType : searchType,
+			//keyword : search,
+			comSearchValA : comSearchValA
+		},
+		success : function(res) {
+			const infoList = res['infoList'];
+			const codeMngList = res['codeMngList'];
+			var list =[];
+			for(i in codeMngList){
+				list.push(codeMngList[i].CD_VAL)				
+			}
+			console.log(":list:::::::"+list);
+				var data = "";
+				data += '<tr class="secondTb" style="display:none"><td>mbrSeq : <input id="mbrSeq" type="text" value="' +infoList[0].mbrSeq + '"></td></tr>';
+				data += '<tr class="secondTb"><td>  이름    : <input id="mbrNm" type="text" value="' +infoList[0].mbrNm + '"></td></tr>';
+				data += '<tr class="secondTb"><td>사업장 번호 : <input id="bzRgstNo" type="text" value="' +infoList[0].bzRgstNo + '"></td></tr>';
+				data += '<tr class="secondTb" ><td> 회원ID  : <input id="mbrId" type="text" value="' +infoList[0].mbrId + '"></td></tr>';
+				data += '<tr class="secondTb"><td> 비밀번호  : <input type="password" id="pswd" value="' +infoList[0].pswd + '"></td></tr>';
+				data += '<tr class="secondTb"><td> 사업자명  : <input id="bzCoNm" type="text" value="' +infoList[0].bzCoNm + '"></td></tr>';
+				data += '<tr class="secondTb"><td> 생년월일  : <input id="bdt" type="text" value="' +infoList[0].bdt + '"></td></tr>';
+				data += '<tr class="secondTb"><td> 연락처   : <input id="fonNo" type="text" value="' +infoList[0].fonNo + '"></td></tr>';
+				// 성별 콤보박스
+				if(infoList[0].gndrTp === "1"){
+					data += '<tr class="secondTb"><td> 성별 : <select style="width:80px" id="gndrTp" class="select_bd_tit_A"><option value = "1" selected>남자</option><option value = "2">여자</option></select></tr>';
+				} else {
+					data += '<tr class="secondTb"><td> 성별 : <select style="width:80px" id="gndrTp" class="select_bd_tit_A"><option value = "1">남자</option><option value = "2" selected>여자</option></select></tr>';
+				}
+				data += '<tr class="secondTb"><td> 회원구분  : <input id="mbrTp" type="text" value="' +infoList[0].mbrTp + '"></td></tr>';
+				// 역할 권한 콤보박스
+				if(infoList[0].roleAuthId === "ADMIN"){
+					data += '<tr class="secondTb"><td> 역할권한 : <select style="width:80px" id="roleAuthId" class="select_bd_tit_A"><option value = "ADMIN" selected>협회관리자</option><option value = "COM000">고객관리자</option><option value = "COM030">고객일반회원</option></select></tr>';
+				} else if (infoList[0].roleAuthId === "COM030") {
+					data += '<tr class="secondTb"><td> 역할권한 : <select style="width:80px" id="roleAuthId" class="select_bd_tit_A"><option value = "ADMIN">협회관리자</option><option value = "COM000" selected>고객관리자</option><option value = "COM030">고객일반회원</option></select></tr>';
+				} else {
+					data += '<tr class="secondTb"><td> 역할권한 : <select style="width:80px" id="roleAuthId" class="select_bd_tit_A"><option value = "ADMIN">협회관리자</option><option value = "COM000">고객관리자</option><option value = "COM030" selected>고객일반회원</option></select></tr>';
+				} 
+				data += '<tr class="secondTb"><td> 회원승인여부 : <input id="mbrAprvYn" type="text" value="' +infoList[0].mbrAprvYn + '"></td></tr>';
+		$("#infoSection").html(data);
+		$("#loginBtn").show();
+		$("#saveBtn").show();
+	 }
+	});	
+}
+
+	//저장(추가, 수정시 나오는 버튼) 버튼 클릭시 ajax호출 추가추가
+	$("#saveBtn").on("click", function() {
+		var arr = [];
+			arr.push({
+				//seq클래스에 input유무가 추가, 수정인지 구분 가능(input없으면 추가)
+				mbrSeq : $('#mbrSeq').val(),
+				mbrNm : $('#mbrNm').val(),
+				mbrId : $('#mbrId').val(),
+				bzRgstNo : $('#bzRgstNo').val(),
+				pswd : $('#pswd').val(),
+				bzCoNm : $('#bzCoNm').val(),
+				bdt : $('#bdt').val(),
+				fonNo : $('#fonNo').val(),
+				gndrTp : $('#gndrTp').val(), 
+				mbrTp : $('#mbrTp').val(),
+				roleAuthId : $('#roleAuthId').val(), 
+				mbrAprvYn : $('#mbrAprvYn').val()
+			});
+		
+		var param = {
+			"data" : JSON.stringify(arr)
+		};
+
+		if (confirm("저장하시겠습니까?")) {
+			common.ajaxaa("/page/KW90000/KW90000U6100save.do", param);
+			 getPage();
+	     }
+		$("#saveBtn").hide();
+		
+	});
+	
+
+	
+</script>

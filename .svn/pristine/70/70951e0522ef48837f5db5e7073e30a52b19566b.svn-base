@@ -1,0 +1,37 @@
+<sitemesh>
+	<!-- Map default decorator. This shall be applied to all paths if no other paths match. -->
+	<!-- <mapping decorator="/WEB-INF/deco/DefaultDeco.jsp"/> -->
+
+	<mime-type>text/jsp</mime-type>
+	<mime-type>text/html</mime-type>
+    <mime-type>application/vnd.wap.xhtml+xml</mime-type>
+    <mime-type>application/xhtml+xml</mime-type>
+    <mime-type>application/xml</mime-type>
+
+	<!-- Map decorators to path patterns. -->
+
+	<!-- 	사용자 Decorator설정(s) -->
+	<mapping path="/" decorator="/WEB-INF/jsp/decorators/layoutMain.jsp" />
+	<mapping path="/main/main.do" decorator="/WEB-INF/jsp/decorators/layoutMain.jsp" />
+	<mapping path="/**/*.do" decorator="/WEB-INF/jsp/decorators/layoutSub.jsp" />
+	<mapping path="/init.do" decorator="/WEB-INF/jsp/decorators/layoutSub.jsp" />
+<!-- 	<mapping path="/srvy.do" decorator="/WEB-INF/jsp/decorators/layoutSub.jsp" /> -->
+    <!-- 	사용자 Decorator설정(e) -->
+
+	
+	<!-- 	사용자 Decorator설정(s) -->
+    <mapping path="/index.do" exclude="true"/>
+    <mapping path="/**/*Ajax.do" exclude="true"/>
+    <mapping path="/**/*Pop.do" exclude="true"/>
+    <mapping path="/**/*Excel.do" exclude="true"/>
+    <mapping path="/**/insert*.do" exclude="true"/>
+    <mapping path="/**/update*.do" exclude="true"/>
+    <mapping path="/**/delete*.do" exclude="true"/>
+    <mapping path="/**/ipinProcess.do" exclude="true"/>
+    <mapping path="/**/ipinResult.do" exclude="true"/>
+    <mapping path="/**.html" exclude="true"/>
+    <mapping path="/push/*.do" exclude="true"/>
+    <!-- 	사용자 Decorator설정(e) -->
+<!--     <mapping path="/report/*.do" exclude="true"/> -->
+    
+</sitemesh>

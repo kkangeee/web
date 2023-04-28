@@ -1,0 +1,337 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<!DOCTYPE html>
+
+<head>
+	<meta charset="utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="google-site-verification" content="1UHfgpjQEfNiKkVVY2OtrC1sUC0r4blqPYTa2q4RzLk" />
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,target-densitydpi=medium-dpi" />
+	<meta property="og:title" content="Health keeper" />
+	<meta property="og:description" content="Health keeper" />
+	<meta name="format-detection" content="telephone=no" />
+	<title>통합보건시스템</title>
+	
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400&display=swap" rel="stylesheet">
+	
+	<link href="${pageContext.request.contextPath}/css/normalize.css" rel="stylesheet" type="text/css" />
+	<link href="${pageContext.request.contextPath}/css/calendar.css" rel="stylesheet" type="text/css" />
+	<link href="${pageContext.request.contextPath}/css/size.css" rel="stylesheet" type="text/css" />	
+	<link href="${pageContext.request.contextPath}/css/common.css" rel="stylesheet" type="text/css" />
+	<link href="${pageContext.request.contextPath}/css/main.css" rel="stylesheet" type="text/css" />
+<!-- 	<link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.8.0/main.min.css' rel='stylesheet' /> -->
+
+	<script type="text/javascript" language="javascript"  src="${pageContext.request.contextPath}/js/vendor/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" language="javascript"  src="${pageContext.request.contextPath}/js/vendor/modernizr.custom.min.js"></script>
+	<script type="text/javascript" language="javascript" src="${pageContext.request.contextPath}/js/main.js"></script>
+</head>	
+
+<c:choose>
+	<c:when test="${not empty sessionScope.authUser}">
+	<!-- #gnb -->
+	<section id="gnb">
+		<nav>
+			<ul>
+				<c:forEach var="roleName" items="${roleList}">
+					<c:if test="${roleName.MENU_LVL == '1'}">
+					<li class="${roleName.MENU_ID ==  act ? 'active' : ''}">
+						<a href="${roleName.PGM_ID}">${roleName.MENU_NM}</a>
+						<div class="gnb-spread">
+							<ul>
+								<c:set var="menuId" value="${roleName.MENU_ID}"/>
+								<c:forEach var="roleName" items="${roleList}">
+									<c:if test="${roleName.MENU_LVL == '2' && roleName.HG_RK_MENU_ID == menuId}">
+										<li class="${roleName.MENU_ID ==  act2 ? 'active' : ''}">
+											<a href="${roleName.PGM_ID}">${roleName.MENU_NM}</a>
+											<ul>
+												<c:set var="menuId2" value="${roleName.MENU_ID}"/>
+												<c:forEach var="roleName" items="${roleList}">
+													<c:if test="${roleName.MENU_LVL == '3'}">
+														<c:if test="${roleName.MENU_LVL == '3' && roleName.HG_RK_MENU_ID == menuId2}">
+															<li class="${roleName.MENU_ID ==  act3 ? 'active' : ''}">
+																<a target="${roleName.MENU_ID == 'KW20000U1400' ? '_blink' : ''}" href="${roleName.PGM_ID}">${roleName.MENU_NM}</a>
+															</li>
+														</c:if>
+													</c:if>
+												</c:forEach>
+											</ul>
+										</li>
+									</c:if>
+								</c:forEach>	
+							</ul>
+						</div>
+					</li>
+					</c:if>
+				</c:forEach>
+			</ul>
+			<ul class="util">
+				<li class="search">
+					<button type="button" onclick="$(this).next('.search-wrap').addClass('opened'); $('body').addClass('modal-opened');">검색</button>
+					<div class="search-wrap">
+						<div class="search-box">
+							<span class="search-bar">
+								<form action="/board/search/list">
+									<input type="text" name="searchKeyword"
+										placeholder="무엇을 찾고 계신가요?" />
+									<button type="submit">검색</button>
+								</form>
+							</span>
+							<button type="button" class="close" onclick="$(this).closest('.search-wrap').removeClass('opened'); $('body').removeClass('modal-opened');">닫기</button>
+						</div>
+					</div> 
+				</li>				
+			</ul>
+		</nav>
+	</section>
+		<!--  
+		<div class="gnb-spread">
+						<ul>
+							<li class="${act == 'KW10000U1100'?'active':''}">
+								<c:if test="${roleName.MENU_LVL == '2'}">
+									<a href="/page/KW10000/KW10000U1100.do">${roleName.MENU_NM}</a>
+								</c:if>
+								<ul>
+									<li class="${act == 'KW10000U1100'?'active':''}">
+										<c:if test="${roleName.MENU_LVL == '3'}">
+											<a href="/page/KW10000/KW10000U1100.do">${roleName.MENU_NM}</a>
+										</c:if>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+		
+		
+		-->
+		
+	
+		<!--  
+		
+			<nav>
+				<ul>
+					<li>																													   		
+					<li class="${act == 'KW10000U1100'?'active':''} ${act == 'KW10000U2100'?'active':''} ${act == 'KW10000U3100'?'active':''}"><a href="/page/KW10000/KW10000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'KW10000U1100'?'active':''}"><a href="/page/KW10000/KW10000U1100.do">기본정보관리</a></li>
+								<li class="${act == 'KW10000U2100'?'active':''}"><a href="/page/KW10000/KW10000U2100.do">공정정보관리</a></li>
+								<li class="${act == 'KW10000U3100'?'active':''}"><a href="/page/KW10000/KW10000U3100.do">근로자정보관리</a></li>
+							</ul>
+						</div>
+					</li>
+		
+					<li class="${act == 'KW20000U1100'?'active':''} ${act == 'KW20000U1100'?'active':''} ${act == 'KW20000U1200'?'active':''} 
+							   ${act == 'KW20000U1300'?'active':''} ${act == 'KW20000U1500'?'active':''} ${act == 'KW20000U2100'?'active':''}"><a href="/page/KW20000/KW20000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li style="font-family: 'Noto Sans KR', sans-serif;">
+									<a class="${act == 'KW20000U1100'?'active':''}" href="/page/KW20000/KW20000U1100.do">화학제품관리</a>
+									<ul>	
+										<li class="${act == 'KW20000U1100'?'active':''}"><a href="/page/KW20000/KW20000U1100.do">MSDS 조회 및등록</a></li>
+										<li class="${act == 'KW20000U1200'?'active':''}"><a href="/page/KW20000/KW20000U1200.do">화학제품 현황</a></li>
+										<li class="${act == 'KW20000U1300'?'active':''}"><a href="/page/KW20000/KW20000U1300.do">화학물질 입출고 현황</a></li>
+										<li class=""><a href="https://msds.kosha.or.kr/MSDSInfo/kcic/msds/msds.do?page=ghs02"  target="_blank">경고표지 작성</a></li>
+										<li class="${act == 'KW20000U1500'?'active':''}"><a href="/page/KW20000/KW20000U1500.do">경고표지 관리</a></li>
+									</ul>
+								</li>
+								<li class="${act == 'KW20000U2100'?'active':''}"><a href="/page/KW20000/KW20000U2100.do">유해인자정보관리</a></li>
+							</ul>
+						</div>
+					</li>
+		
+					<li class="${act == 'KW30000'?'active':''} ${act == 'KW30000U1110'?'active':''} ${act == 'KW30000U1210'?'active':''} ${act == 'KW30000U1310'?'active':''}
+							   ${act == 'KW30000U2100'?'active':''} ${act == 'KW30000U2200'?'active':''} ${act == 'KW30000U2310'?'active':''} ${act == 'KW30000U2510'?'active':''}
+							   ${act == 'KW30000U3100'?'active':''} ${act == 'KW30000U4100'?'active':''} ${act == 'KW30000U4210'?'active':''} ${act == 'KW30000U4310'?'active':''}
+							   ${act == 'KW30000U4400'?'active':''} ${act == 'KW30000U4510'?'active':''} ${act == 'KW30000U4610'?'active':''} ${act == 'KW30000U4720'?'active':''}
+							   ${act == 'KW30000U4800'?'active':''}	${act == 'KW30000U5110'?'active':''} ${act == 'KW30000U5200'?'active':''} ${act == 'KW30000U5310'?'active':''}
+							   ${act == 'KW30000U5400'?'active':''} ${act == 'KW30000U6110'?'active':''} ${act == 'KW30000U6210'?'active':''} ${act == 'KW30000U7100'?'active':''}
+							   ${act == 'KW30000U7200'?'active':''}	${act == 'KW30000U7300'?'active':''} ${act == 'KW30000U8100'?'active':''}">
+						<a href="/page/KW30000/KW30000U1110.do">${roleName3}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'KW30000U1110'?'active':''}"><a href="/page/KW30000/KW30000U1110.do">안전보건관리</a>
+									<ul>
+										<li class="${act == 'KW30000U1110'?'active':''}"><a href="/page/KW30000/KW30000U1110.do">안전보건관리체제</a></li>
+										<li class="${act == 'KW30000U1210'?'active':''}"><a href="/page/KW30000/KW30000U1210.do">연간계획수립</a></li>
+										<li class="${act == 'KW30000U1310'?'active':''}"><a href="/page/KW30000/KW30000U1310.do">규정관리</a></li>
+									</ul>
+								</li>
+								
+								<li class="${act == 'KW30000U2100'?'active':''}"><a href="/page/KW30000/KW30000U2100.do">건강관리</a>
+									<ul>
+										<li class="${act == 'KW30000U2100'?'active':''}"><a href="/page/KW30000/KW30000U2100.do">건강검진결과표 관리</a></li>
+										<li class="${act == 'KW30000U2200'?'active':''}"><a href="/page/KW30000/KW30000U2200.do">건강검진 현황</a></li>
+										<li class="${act == 'KW30000U2310'?'active':''}"><a href="/page/KW30000/KW30000U2310.do">건강검진결과 통계 </a></li>
+										<li class="${act == 'KW30000U2400'?'active':''}"><a href="/page/KW30000/KW30000U2400.do">근로자 건강상담 </a></li>
+										<li class="${act == 'KW30000U2510'?'active':''}"><a href="/page/KW30000/KW30000U2510.do">직업건강 평가</a></li>
+									</ul>
+								</li>
+		
+								<li class="${act == 'KW30000U3100'?'active':''}"><a href="/page/KW30000/KW30000U3100.do">예방관리프로그램</a>
+									<ul>
+										<li class="${act == 'KW30000U3100'?'active':''}"><a href="/page/KW30000/KW30000U3100.do">밀폐공간보건작업 프로그램</a></li>
+										<li class="${act == 'KW30000U3220'?'active':''}"><a href="/page/KW30000/KW30000U3210.do">청력보존프로그램</a></li> 
+										<li class="${act == 'KW30000U3300'?'active':''}"><a href="/page/KW30000/KW30000U3210.do">호흡기보존 프로그램 </a></li>
+									</ul>
+								</li>
+		
+								<li class="${act == 'KW30000U4100'?'active':''}"><a href="/page/KW30000/KW30000U4100.do">작업환경관리</a>
+									<ul>
+										<li class="${act == 'KW30000U4100'?'active':''}"><a href="/page/KW30000/KW30000U4100.do">작업환경측정결과표 관리</a></li>
+										<li class="${act == 'KW30000U4210'?'active':''}"><a href="/page/KW30000/KW30000U4210.do">작업환경측정결과 통계</a></li>
+										<li class="${act == 'KW30000U4310'?'active':''}"><a href="/page/KW30000/KW30000U4310.do">국소배기검사</a></li>
+										<li class="${act == 'KW30000U4400'?'active':''}"><a href="/page/KW30000/KW30000U4400.do">체크리스트</a></li>
+										<li class="${act == 'KW30000U4510'?'active':''}"><a href="/page/KW30000/KW30000U4510.do">보호구 관리 및 안전보건표지</a></li>
+										<li class="${act == 'KW30000U4610'?'active':''}"><a href="/page/KW30000/KW30000U4610.do">작업장 순회점검</a></li>
+										<li class="${act == 'KW30000U4720'?'active':''}"><a href="/page/KW30000/KW30000U4720.do">위험성 평가</a></li>
+										<li class="${act == 'KW30000U4800'?'active':''}"><a href="/page/KW30000/KW30000U4800.do">위험성평가 교육관리</a></li>
+									</ul>
+								</li>
+		
+								<li class="${act == 'KW30000U5110'?'active':''}"><a href="/page/KW30000/KW30000U5110.do">교육관리</a>
+									<ul>
+										<li class="${act == 'KW30000U5110'?'active':''}"><a href="/page/KW30000/KW30000U5110.do">교육종합관리</a></li>
+										<li class="${act == 'KW30000U5200'?'active':''}"><a href="/page/KW30000/KW30000U5200.do">외부 교육 승인</a></li>
+										<li class="${act == 'KW30000U5310'?'active':''}"><a href="/page/KW30000/KW30000U5310.do">교육계획/실시 등록</a></li>
+										<li class="${act == 'KW30000U5400'?'active':''}"><a href="/page/KW30000/KW30000U5400.do">교육자료 다운</a></li>
+									</ul>
+								</li>
+		
+								<li class="${act == 'KW30000U6110'?'active':''}"><a href="/page/KW30000/KW30000U6110.do">산업재해관리</a>
+									<ul>
+										<li class="${act == 'KW30000U6100'?'active':''}"><a href="/page/KW30000/KW30000U6100.do">산업재해 등록</a></li>
+										<li class="${act == 'KW30000U6200'?'active':''}"><a href="/page/KW30000/KW30000U6200.do">아차사고 등록</a></li>
+										<li class="${act == 'KW30000U6300'?'active':''}"><a href="/page/KW30000/KW30000U6300.do">무재해 등록</a></li>
+										<li class="${act == 'KW30000U6400'?'active':''}"><a href="/page/KW30000/KW30000U6400.do">무재해 관련서식</a></li>
+									</ul>
+								</li>
+		
+								<li class="${act == 'KW30000U7100'?'active':''}"><a href="/page/KW30000/KW30000U7100.do">도급관리</a>
+									<ul>
+										<li class="${act == 'KW30000U7100'?'active':''}"><a href="/page/KW30000/KW30000U7100.do">협의체 회의</a></li>
+										<li class="${act == 'KW30000U7200'?'active':''}"><a href="/page/KW30000/KW30000U7200.do">합동안전보건점검</a></li>
+										<li class="${act == 'KW30000U7300'?'active':''}"><a href="/page/KW30000/KW30000U7300.do">도급사업 순회점검</a></li>
+									</ul>
+								</li>
+		
+		
+								<li class="${act == 'KW30000U8100'?'active':''}"><a href="/page/KW30000/KW30000U8100.do">법정관리항목</a></li>
+							</ul>
+						</div>
+					</li>
+				
+					<li class="${act == 'KW40000U1100'?'active':''}"><a href="/page/KW40000/KW40000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'KW40000U1100'?'active':''}"><a href="/page/KW40000/KW40000U1100.do">${roleName}</a></li>		
+							</ul>
+						</div>
+					</li>
+									
+					<li class="${act == 'KW50000U1100'?'active':''}"><a href="/page/KW50000/KW50000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'KW50000U1100'?'active':''}"><a href="/page/KW50000/KW50000U1100.do">${roleName}</a></li>
+							</ul>
+						</div>
+					</li>
+					
+											
+						
+					<li class="${act == 'KW60000U1100'?'active':''} ${act == 'KW60000U2100'?'active':''} ${act == 'KW60000U3100'?'active':''} 
+							   ${act == 'KW60000U4100'?'active':''} ${act == 'KW60000U5100'?'active':''}"><a href="/page/KW60000/KW60000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'KW60000U1100'?'active':''}"><a href="/page/KW60000/KW60000U1100.do">관련법령</a></li>
+								<li class="${act == 'KW60000U2100'?'active':''}"><a href="/page/KW60000/KW60000U2100.do">공단지침</a></li>
+								<li class="${act == 'KW60000U3100'?'active':''}"><a href="/page/KW60000/KW60000U3100.do">산안법 핸드북</a></li>
+								<li class="${act == 'KW60000U4100'?'active':''}"><a href="/page/KW60000/KW60000U4100.do">관련서식</a></li>
+								<li class="${act == 'KW60000U5100'?'active':''}"><a href="/page/KW60000/KW60000U5100.do">관련정보</a></li>
+							</ul>
+						</div>
+					</li>
+		
+					<li class="${act == 'notice'?'active':''} ${act == 'faq'?'active':''} ${act == 'qna'?'active':''}"><a href="/customer/notice/notice.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'notice'?'active':''}"><a href="/customer/notice/notice.do">공지사항</a></li>
+								<li class="${act == 'faq'?'active':''}"><a href="/customer/faq/faq.do">자주하는 문의</a></li>
+								<li class="${act == 'qna'?'active':''}"><a href="/customer/qna/qna.do">Q&A</a></li>
+							</ul>
+						</div>
+					</li>
+						
+					<li class="${act == 'MY80000U1100'?'active':''} ${act == 'MY80000U2100'?'active':''} 
+							   ${act == 'MY80000U3100'?'active':''} ${act == 'MY80000U4100'?'active':''}"><a href="/mypage/MY80000U1100.do">${roleName}</a>
+						<div class="gnb-spread">
+							<ul>
+								<li class="${act == 'MY80000U1100'?'active':''}"><a href="/mypage/MY80000U1100.do">서비스 관리</a></li>
+								<li class="${act == 'MY80000U2100'?'active':''}"><a href="/mypage/MY80000U2100.do">내정보 관리</a></li>
+								<li class="${act == 'MY80000U3100'?'active':''}"><a href="/mypage/MY80000U3100.do">견적요청 및 예약하기</a></li>
+								<li class="${act == 'MY80000U4100'?'active':''}"><a href="/mypage/MY80000U4100.do">계산서 관리</a></li>
+		
+							</ul>
+						</div>
+					</li>
+		
+				</ul>
+				<ul class="util">
+					<li class="search">
+						<button type="button"
+							onclick="$(this).next('.search-wrap').addClass('opened'); $('body').addClass('modal-opened');">검색</button>
+					
+						<div class="search-wrap">
+							<div class="search-box">
+								<span class="search-bar">
+									<form action="/board/search/list">
+										<input type="text" name="searchKeyword"
+											placeholder="무엇을 찾고 계신가요?" />
+										<button type="submit">검색</button>
+									</form>
+								</span>
+								<button type="button" class="close"
+									onclick="$(this).closest('.search-wrap').removeClass('opened'); $('body').removeClass('modal-opened');">닫기</button>
+							</div>
+						</div> 
+					</li>
+					<li class="map">
+						<button onclick="openModal();">전체메뉴</button>
+							 <div id="m_nav">
+						        <i class="close_icon" href="javascript:void(0)" onclick="document.getElementById('m_nav').style.display = 'none'; document.getElementById('fade').style.display = 'none'">닫기</i>
+						        <ul class="deps1">
+						            <li class="title">MENU</li>
+						            <li><a href="/page/KW90000/KW90000U1100.do">1번</a></li>
+						            <li><a href="">2번</a></li>
+						            <li><a href="">3번</a></li>
+						            <li><a href="">4번</a></li>
+						        </ul>
+						    </div>
+						    <div id="fade" style="display :none" >
+						        <a class="close" href="javascript:void(0)" onclick="document.getElementById('m_nav').style.display = 'none'; document.getElementById('fade').style.display = 'none'" title="닫기">
+						        </a>
+						    </div>
+					</li>
+				</ul>
+			</nav>
+		</section>
+		-->
+	
+<!-- //#gnb -->
+	</c:when>
+	<c:otherwise>
+	</c:otherwise>
+</c:choose>
+
+  
+<script>
+
+$("#switch").click(function(){
+    $("#switch").addClass("active");
+});
+
+function openModal() {
+	document.getElementById('m_nav').style.display = 'block'; 
+	document.getElementById('fade').style.display = 'block'
+}
+
+</script>

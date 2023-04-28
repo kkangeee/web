@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw90000u1000">
+	 <!-- 조회 개수 --> 
+	 
+	<select id="getBoardListCnt1100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_CD_STDD_MGT WHERE DELETE_TP != 'Y' 
+      		<if test="searchType == '코드그룹명' and (keyword != null or keyword != '')">
+				    	AND CD_ITEM_NM LIKE '%' || #{keyword} || '%'	
+			</if>
+			<if test="searchType == '코드그룹' and (keyword != null or keyword != '')">
+				    	AND CD_ITEM LIKE '%' || #{keyword} || '%'		
+			</if>
+			<if test="searchType == '코드' and (keyword != null or keyword != '')">
+				    	AND CD_VAL LIKE '%' || #{keyword} || '%'
+			</if>
+			<if test="searchType == '코드명' and (keyword != null or keyword != '')">
+				    	AND CD_DTL_1 LIKE '%' || #{keyword} || '%'		
+			</if>
+    </select>
+	
+	<select id="page1100selectList" parameterType="KW90000U1100VO" resultType="KW90000U1100VO">
+		 SELECT ROWNUM RNUM 
+		 	,B.SEQ
+			,B.CD_ITEM
+			,B.CD_VAL
+			,B.CD_DTL_1
+			,B.CD_DTL_2
+			,B.CD_DTL_3
+			,B.CD_ITEM_NM
+			,B.CD_EXPLN
+			,B.SORT
+			,B.USE_YN
+		FROM 
+		(SELECT A.* FROM TB_KW50_CD_STDD_MGT A WHERE DELETE_TP != 'Y'
+					<if test="searchType == '코드그룹명' and (keyword != null or keyword != '')">
+						    	AND CD_ITEM_NM LIKE '%' || #{keyword} || '%'	
+					</if>
+					<if test="searchType == '코드그룹' and (keyword != null or keyword != '')">
+						    	AND CD_ITEM LIKE '%' || UPPER(#{keyword}) || '%'		
+					</if>
+					<if test="searchType == '코드' and (keyword != null or keyword != '')">
+						    	AND CD_VAL LIKE '%' || UPPER(#{keyword}) || '%'
+					</if>
+					<if test="searchType == '코드명' and (keyword != null or keyword != '')">
+						    	AND CD_DTL_1 LIKE '%' || #{keyword} || '%'		
+					</if>
+					<if test="searchType == '전체' and (keyword != null or keyword != '')">
+						    	AND (CD_ITEM_NM LIKE '%' || #{keyword} || '%'
+						    	OR CD_ITEM LIKE '%' || UPPER(#{keyword}) || '%'
+						    	OR CD_VAL LIKE '%' || UPPER(#{keyword}) || '%'
+						    	OR CD_DTL_1 LIKE '%' || #{keyword} || '%') 
+						    	
+					</if>
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 1100 쓰기 -->
+	<insert id="page1100insertSave" parameterType="KW90000U1100VO">
+		insert into TB_KW50_CD_STDD_MGT
+		(
+		SEQ
+		, CD_ITEM_NM
+		, CD_ITEM
+		, CD_VAL
+		, CD_DTL_1
+		, SORT
+		, USE_YN
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_CD_STDD_MGT WHERE CD_ITEM =#{cdItem})
+		, #{cdItemNm}
+		, #{cdItem}
+		, #{cdVal}
+		, #{cdDtl1}
+		, #{sort}
+		, #{useYn}
+		, 'C'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'C'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 1100 수정 확인 -->
+	<update id="page1100updateSave" parameterType="KW90000U1100VO">
+		UPDATE TB_KW50_CD_STDD_MGT
+		SET CD_ITEM_NM = #{cdItemNm}
+		, CD_ITEM = #{cdItem}
+		, CD_VAL = #{cdVal}
+		, CD_DTL_1 = #{cdDtl1}
+		, SORT = #{sort}
+		, USE_YN = #{useYn}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq} AND CD_ITEM = #{cdItem}
+	</update>
+	
+	<!-- 1100 삭제 -->
+	<update id="page1100delete" parameterType="KW90000U1100VO">
+		UPDATE TB_KW50_CD_STDD_MGT
+		SET DELETE_TP = 'Y'
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq} AND CD_ITEM = #{cdItem}
+	</update>
+
+</mapper>

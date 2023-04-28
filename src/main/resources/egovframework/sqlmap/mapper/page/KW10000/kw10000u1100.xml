@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw10000u1100">
+	<select id="page1100List" parameterType="KW10000U1100VO" resultType="KW10000U1100VO">
+	    SELECT BZ_UNIQ_NO AS bzUniqNo
+			 , BZ_RGST_NO AS bzRgstNo
+			 , BZ_CO_NM AS bzCoNm
+			 , HEAD_NM AS headNm
+			 , ZIP_CD AS zipCd
+			 , STRT_NM_ADD AS strtNmAdd
+			 , STRT_NM_DTL_ADD AS strtNmDtlAdd
+			 , (BZ_SCTR||'/'||INDS_TP|| '/'|| BZ_ITEM) AS bzItem 
+		FROM KH10APUSER.TB_KH10_BZ_CO_MSTR 
+		WHERE BZ_RGST_NO = #{bzRgstNo} 
+		OFFSET 0 ROWS FETCH FIRST 10 ROWS ONLY
+	</select>
+	
+</mapper>

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u2000">
+	<select id="getBoardListCnt2100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_HLTH_EXAM_RSLT_TB_MGT WHERE BZ_RGST_NO = #{searchBzRgstNo}   
+    </select>
+	
+	<select id="page2100selectList" parameterType="KW30000U2100VO" resultType="KW30000U2100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BZ_RGST_NO
+		,B.EXAM_YEAR
+		,B.RSLT_TB_NM
+        ,TO_CHAR(B.EXAM_STR_DD, 'YYYY-MM-DD') AS EXAM_STR_DD
+        ,TO_CHAR(B.EXAM_END_DD, 'YYYY-MM-DD') AS EXAM_END_DD
+		,B.CNT
+		,B.CREATE_OBJECT_ID
+		,SUBSTR(B.CREATE_TIMESTAMP, 0, 10) AS CREATE_TIMESTAMP
+		,B.BOARD_FILE_NAME
+		,B.BOARD_FILE
+		FROM 
+		(SELECT A.* FROM TB_KW50_HLTH_EXAM_RSLT_TB_MGT A WHERE BZ_RGST_NO = #{searchBzRgstNo} AND DELETE_TP != 'Y'
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+<!-- 2100 쓰기 -->
+	<insert id="page2100insertSave" parameterType="KW30000U2100VO">
+		insert into TB_KW50_HLTH_EXAM_RSLT_TB_MGT
+		(
+		SEQ
+		, BZ_RGST_NO
+		, EXAM_YEAR
+		, EXAM_STR_DD
+        , EXAM_END_DD
+		, RSLT_TB_NM
+		, BOARD_FILE_NAME
+		, BOARD_FILE
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_HLTH_EXAM_RSLT_TB_MGT WHERE BZ_RGST_NO = #{bzRgstNo})
+		, #{bzRgstNo}
+		, #{examYear}
+		, #{examStrDd}
+		, #{examEndDd}
+		, #{rsltTbNm}
+		, #{boardFileName}
+		, #{boardFile}
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 2100 수정 -->
+	<update id="page2100updateSave" parameterType="KW30000U2100VO">
+		UPDATE TB_KW50_HLTH_EXAM_RSLT_TB_MGT
+		SET RSLT_TB_NM = #{rsltTbNm}
+		, EXAM_YEAR = #{examYear}
+		, EXAM_STR_DD = #{examStrDd}
+		, EXAM_END_DD = #{examEndDd}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = #{mbrId}
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update>
+	
+	
+	<delete id="page2100delete" parameterType="KW30000U2100VO">
+		UPDATE TB_KW50_HLTH_EXAM_RSLT_TB_MGT
+		SET DELETE_YP = 'Y'
+		WHERE SEQ = #{seq}
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+
+	<select id="getBoardListCnt2200" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_HLTH_EXAM_RSLT_TB_MGT WHERE BZ_RGST_NO = #{searchBzRgstNo}   
+    </select>
+    
+	<select id="page2200selectList" parameterType="KW30000U2200VO" resultType="KW30000U2200VO">
+		 SELECT ROWNUM RNUM 
+			,B.	BZ_RGST_NO
+			,B.MED_EXAM_IMPL_YEAR
+			,B.MED_EXAM_SEQ
+			,B.MED_EXAM_TP
+			,SUBSTR(B.MED_EXAM_STR_DD, 0, 10) AS MED_EXAM_STR_DD
+			,SUBSTR(B.MED_EXAM_END_DD, 0, 10) AS MED_EXAM_END_DD
+			,B.WRK_PLC_MGT_UNIQ_NO
+		FROM 
+		(SELECT A.* FROM TB_KW50_MED_EXAM_STUS A WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.LAST_UPDATE_TIMESTAMP DESC) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page2200delete" parameterType="KW30000U2200VO">
+		DELETE  
+		FROM TB_KW50_MED_EXAM_STUS
+		WHERE MED_EXAM_SEQ = #{medExamSeq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page2200insertSave" parameterType="KW30000U2200VO">
+		INSERT INTO TB_KW50_MED_EXAM_STUS(
+			BZ_RGST_NO
+		,MED_EXAM_IMPL_YEAR
+		,MED_EXAM_SEQ
+		,MED_EXAM_TP
+		,MED_EXAM_STR_DD
+		,MED_EXAM_END_DD
+		,WRK_PLC_MGT_UNIQ_NO
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES(
+		 #{bzRgstNo},
+		 #{medExamImplYear},
+		 (SELECT NVL(MAX(MED_EXAM_SEQ), 0) + 1 FROM TB_KW50_MED_EXAM_STUS WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{medExamTp},
+		 #{medExamStrDd},
+		SYSDATE ,
+		'Y',
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+	</insert> 
+	
+	<update id="page2200updateSave" parameterType="KW30000U2200VO">
+		UPDATE 	TB_KW50_MED_EXAM_STUS
+		SET 	MED_EXAM_IMPL_YEAR = #{medExamImplYear}
+		 	,MED_EXAM_STR_DD = #{medExamStrDd}
+		 	,MED_EXAM_END_DD = #{medExamEndDd}
+		 	,MED_EXAM_TP = #{medExamTp}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	MED_EXAM_SEQ = #{medExamSeq}
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="getBoardListCnt2200Pop" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_MED_EXAM_PSNL_STUS WHERE BZ_RGST_NO = #{searchBzRgstNo} and EXAM_TP = #{comSearchValA}
+    </select>
+    
+    <select id="page2200chkPopList" parameterType="KW30000U2200psnlVO" resultType="KW30000U2200psnlVO">
+		 SELECT ROWNUM RNUM 
+			,B.	BZ_RGST_NO
+			,B.	SEQ
+			,TO_CHAR(B.MED_EXAM_DD, 'YYYY-MM-DD') AS MED_EXAM_DD 
+			,B. UNIT_CO_NM
+			,B. WRKR_NM
+			,B. GNDR
+			,B. BDT
+			,B. SRV_INDCTN_CRS
+			,B. EXAM_TP
+			,B. JDG_RSLT
+			,B. WRK_SUIT
+			,B. PRCS_NM
+			,B. HGT
+			,B. WGT
+			,B. BMI
+			,B. WST_CRCM
+			,B. SBP
+			,B. DBP
+			,B. HEMO
+			,B. FAST_GLUCO
+			,B. TOT_CHOL
+			,B. HDL
+			,B. NF
+			,B. LDL
+			,B. SCR
+			,B. EGFR
+			,B. AST
+			,B. ART
+			,B. GAMA_GTP
+			,B. URNE
+			,B. CHST_FOTO
+			,B. PST_MED_CASE_HST
+			,B. MD_CURE
+			,B. OTHR
+		FROM 
+		(SELECT A.* FROM TB_KW50_MED_EXAM_PSNL_STUS A WHERE BZ_RGST_NO = #{searchBzRgstNo}
+			AND EXAM_TP = #{comSearchValA} 
+			AND MED_EXAM_DD  <![CDATA[>=]]> #{comSearchValB} AND MED_EXAM_DD  <![CDATA[<=]]> #{comSearchValC}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+    
+    <select id="getBoardListCnt2310" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_MED_EXAM_RSLT_STST
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+    
+	<select id="page2310selectList" parameterType="KW30000U2310VO" resultType="KW30000U2310VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.NM
+		,B.UNIT_CO_NM
+		,B.PRCS_NM
+		,B.GNDR
+		,B.AGE
+		,B.BLD_PRES
+		,B.WST_CRCM
+		,B.BLD_SGAR
+		,B.TOT_CHOL
+		,B.HDL
+		,B.LDL
+		,B.NF
+		,B.JDG_TP
+		,B.WRK_FFL_SUIT_YN
+		FROM 
+		(SELECT A.* FROM TB_KW50_MED_EXAM_RSLT_STST A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page2310delete" parameterType="KW30000U2310VO">
+		DELETE  
+		FROM TB_KW50_MED_EXAM_RSLT_STST
+		WHERE SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page2310insertSave" parameterType="KW30000U2310VO">
+		INSERT INTO TB_KW50_MED_EXAM_RSLT_STST(
+		BZ_RGST_NO
+		,SEQ
+		,NM
+		,UNIT_CO_NM
+		,EMPE_NO
+		,PRCS_NM
+		,GNDR
+		,AGE
+		,BLD_PRES
+		,WST_CRCM
+		,BLD_SGAR
+		,TOT_CHOL
+		,HDL
+		,LDL
+		,NF
+		,JDG_TP
+		,WRK_FFL_SUIT_YN
+		,CREATE_OBJECT_TYPE
+		,CREATE_OBJECT_ID
+		,CREATE_PROGRAM_ID
+		,CREATE_TIMESTAMP
+		,LAST_UPDATE_OBJECT_TYPE
+		,LAST_UPDATE_OBJECT_ID
+		,LAST_UPDATE_PROGRAM_ID
+		,LAST_UPDATE_TIMESTAMP
+		 ) VALUES
+		 (#{bzRgstNo},
+		 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_MED_EXAM_RSLT_STST WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+		 #{nm},
+		 #{unitCoNm},
+		 #{prcsNm},
+		 #{gndr},
+		 #{age},
+		 #{bldPres},
+		 #{wstCrcm},
+		 #{bldSgar},
+		 #{totChol},
+		 #{hdl},
+		 #{ldl},
+		 #{nf},
+		 #{jdgTp},
+		 #{wrkFflSuitYn},
+		 'U',
+		 'admin',
+		  'admin',
+		SYSDATE, 
+		'U',
+		  'admin',
+		  'admin',
+		SYSDATE
+		 )
+		 
+	</insert> 
+
+	<update id="page2310updateSave" parameterType="KW30000U2310VO">
+		UPDATE 	TB_KW50_MED_EXAM_RSLT_STST
+		 	,NM = #{nm}
+		 	,UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,GNDR = #{gndr}
+		 	,AGE = #{age}
+		 	,BLD_PRES = #{bldPres}
+		 	,WST_CRCM = #{wstCrcm}
+		 	,BLD_SGAR = #{bldSgar}
+		 	,TOT_CHOL = #{totChol}
+		 	,HDL = #{hdl}
+		 	,LDL = #{ldl}
+		 	,NF = #{nf}
+		 	,JDG_TP = #{jdgTp}
+		 	,WRK_FFL_SUIT_YN = #{wrkFflSuitYn}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	<select id="getBoardListCnt2320" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_INQ_DTL_RSLT_STST
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+    
+	<select id="page2320selectList" parameterType="KW30000U2320VO" resultType="KW30000U2320VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.NM
+		,B.UNIT_CO_NM
+		,B.INQ_TP
+		,B.PRCS_NM
+		,B.GNDR
+		,B.AGE
+		,B.CARR
+		FROM 
+		(SELECT A.* FROM TB_KW50_INQ_DTL_RSLT_STST A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<select id="getBoardListCnt2330" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_C_HLTH_CARE_DN_STST
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+    
+	<select id="page2330selectList" parameterType="KW30000U2330VO" resultType="KW30000U2330VO">
+		 SELECT ROWNUM RNUM 
+		,B.BZ_RGST_NO
+		,B.SEQ
+		,B.UNIT_CO_NM
+		,B.PRCS_NM
+		,B.NM
+		,B.GNDR
+		,B.AGE
+		,B.SRV_INDCTN_CRS 
+		,B.JDG
+		,B.WRK_FFL_SUIT_YN
+		FROM 
+		(SELECT A.* FROM TB_KW50_C_HLTH_CARE_DN_STST A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+
+
+
+</mapper>

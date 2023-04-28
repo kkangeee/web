@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u5120">
+    
+    <select id="page5120selectList" parameterType="KW30000U5000VO" resultType="KW30000U5000VO">
+        	SELECT ROWNUM AS rNum
+        	       , B.BZ_RGST_NO
+			 	   , B.PRCS_NM
+				   , B.TGT_PPL_EMPE_NO
+				   , B.TGT_PPL_NM
+				   , B.EDU_KND
+				   , B.EDU_MTH
+				   , B.eduImplStrDd
+				   , B.eduTm
+			FROM (SELECT   BZ_RGST_NO
+						 , PRCS_NM
+						 , TGT_PPL_EMPE_NO
+						 , TGT_PPL_NM
+						 , EDU_KND
+						 , EDU_MTH
+						 , TO_CHAR(EDU_IMPL_STR_DD, 'YYYY-MM-DD')||' ~ '||TO_CHAR(EDU_IMPL_END_DD, 'YYYY-MM-DD') AS eduImplStrDd
+						 , NVL(EDU_TM||'[H]', '0[H]')  AS eduTm
+			FROM  TB_KW50_EDU_MGT_PSNL
+	 		ORDER BY CREATE_TIMESTAMP) B
+	 		WHERE B.BZ_RGST_NO = #{searchBzRgstNo}
+	 		ORDER BY rNum DESC
+	 		offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY    	
+    </select>
+    
+    <select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM KW50APUSER.TB_KW50_EDU_MGT_PSNL
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}    
+    </select>
+    
+</mapper>

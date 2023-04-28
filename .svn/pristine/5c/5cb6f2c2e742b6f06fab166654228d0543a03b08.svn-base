@@ -1,0 +1,163 @@
+package iohp.login.service;
+
+import iohp.com.service.DefaultVO;
+
+public class LoginVO extends DefaultVO {
+
+	private static final long serialVersionUID = -8274004534207618049L;
+
+	private int rnum; /* 순번 */
+	private String bzRgstNo; /* 사업자등록번호 */
+	private String mbrId; /* 회원ID */
+	private String pswd; /* 비밀번호 */
+	private String mbrNm; /* 회원이름 */
+	private String bzCoNm; /* 사업자명 */
+	private String bdt; /* 생년월일 */
+	private String fonNo; /* 연락처 */
+	private String gndrTp; /* 남여구분 */
+	private String mbrTp; /* 회원구분 */
+	private String roleAuthId; /* 역할권한ID */
+	private String mbrAprvYn; /* 회원승인여부 */
+	private int mbrSeq; /* 회원순번 */
+	private boolean statusValue; /* 로그인 상태값 */
+	
+	//팝업 검색 세션값
+	private String popBzRgstNo;
+	private String popBzCoNm;
+	
+	public int getRnum() {
+		return rnum;
+	}
+	public void setRnum(int rnum) {
+		this.rnum = rnum;
+	}
+	public String getBzRgstNo() {
+		return bzRgstNo;
+	}
+	public void setBzRgstNo(String bzRgstNo) {
+		this.bzRgstNo = bzRgstNo;
+	}
+	public String getMbrId() {
+		return mbrId;
+	}
+	public void setMbrId(String mbrId) {
+		this.mbrId = mbrId;
+	}
+	public String getPswd() {
+		return pswd;
+	}
+	public void setPswd(String pswd) {
+		this.pswd = pswd;
+	}
+	public String getMbrNm() {
+		return mbrNm;
+	}
+	public void setMbrNm(String mbrNm) {
+		this.mbrNm = mbrNm;
+	}
+	public String getBzCoNm() {
+		return bzCoNm;
+	}
+	public void setBzCoNm(String bzCoNm) {
+		this.bzCoNm = bzCoNm;
+	}
+	public String getBdt() {
+		return bdt;
+	}
+	public void setBdt(String bdt) {
+		this.bdt = bdt;
+	}
+	public String getFonNo() {
+		return fonNo;
+	}
+	public void setFonNo(String fonNo) {
+		this.fonNo = fonNo;
+	}
+	public String getGndrTp() {
+		return gndrTp;
+	}
+	public void setGndrTp(String gndrTp) {
+		this.gndrTp = gndrTp;
+	}
+	public String getMbrTp() {
+		return mbrTp;
+	}
+	public void setMbrTp(String mbrTp) {
+		this.mbrTp = mbrTp;
+	}
+	public String getRoleAuthId() {
+		return roleAuthId;
+	}
+	public void setRoleAuthId(String roleAuthId) {
+		this.roleAuthId = roleAuthId;
+	}
+	public String getMbrAprvYn() {
+		return mbrAprvYn;
+	}
+	public void setMbrAprvYn(String mbrAprvYn) {
+		this.mbrAprvYn = mbrAprvYn;
+	}
+	public int getMbrSeq() {
+		return mbrSeq;
+	}
+	public void setMbrSeq(int mbrSeq) {
+		this.mbrSeq = mbrSeq;
+	}
+	public boolean isStatusValue() {
+		return statusValue;
+	}
+	public void setStatusValue(boolean statusValue) {
+		this.statusValue = statusValue;
+	}
+	public String getPopBzRgstNo() {
+		return popBzRgstNo;
+	}
+	public void setPopBzRgstNo(String popBzRgstNo) {
+		this.popBzRgstNo = popBzRgstNo;
+	}
+	public String getPopBzCoNm() {
+		return popBzCoNm;
+	}
+	public void setPopBzCoNm(String popBzCoNm) {
+		this.popBzCoNm = popBzCoNm;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	public LoginVO() {
+	}
+	
+	public LoginVO(int rnum, String bzRgstNo, String mbrId, String pswd, String mbrNm, String bzCoNm, String bdt,
+			String fonNo, String gndrTp, String mbrTp, String roleAuthId, String mbrAprvYn, int mbrSeq,
+			boolean statusValue, String popBzRgstNo, String popBzCoNm) {
+		this.rnum = rnum;
+		this.bzRgstNo = bzRgstNo;
+		this.mbrId = mbrId;
+		this.pswd = pswd;
+		this.mbrNm = mbrNm;
+		this.bzCoNm = bzCoNm;
+		this.bdt = bdt;
+		this.fonNo = fonNo;
+		this.gndrTp = gndrTp;
+		this.mbrTp = mbrTp;
+		this.roleAuthId = roleAuthId;
+		this.mbrAprvYn = mbrAprvYn;
+		this.mbrSeq = mbrSeq;
+		this.statusValue = statusValue;
+		this.popBzRgstNo = popBzRgstNo;
+		this.popBzCoNm = popBzCoNm;
+	}
+	
+	@Override
+	public String toString() {
+		return "LoginVO [rnum=" + rnum + ", bzRgstNo=" + bzRgstNo + ", mbrId=" + mbrId + ", pswd=" + pswd + ", mbrNm="
+				+ mbrNm + ", bzCoNm=" + bzCoNm + ", bdt=" + bdt + ", fonNo=" + fonNo + ", gndrTp=" + gndrTp + ", mbrTp="
+				+ mbrTp + ", roleAuthId=" + roleAuthId + ", mbrAprvYn=" + mbrAprvYn + ", mbrSeq=" + mbrSeq
+				+ ", statusValue=" + statusValue + ", popBzRgstNo=" + popBzRgstNo + ", popBzCoNm=" + popBzCoNm + "]";
+	}
+	
+	
+	
+	
+}

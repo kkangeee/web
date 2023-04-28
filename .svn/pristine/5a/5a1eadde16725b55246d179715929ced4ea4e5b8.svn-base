@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qna073">
+	<!-- 리스트 호출 -->
+	<select id="selectQnaList" parameterType="CustomerVO" resultType="CustomerVO">     	
+       	 SELECT ROWNUM AS rNum
+				 , B.CONTENT_ID
+				 , B.TITLE
+				 , B.DISPLAY_USER
+				 , B.CNT
+				 , B.CATE
+				 , B.ANSWER_YN
+				 , B.SECRET_YN
+				 , SUBSTR(regDt, 0, 10) AS regDt
+				 , B.BOARD_FILE_NAME
+				 , B.CONTENT	
+				 , C.CNT AS rplyCnt
+		 FROM 
+			(SELECT  CONTENT_ID 
+				            , TITLE
+					        , DISPLAY_USER
+					        , CNT
+					        , CATE
+					        , ANSWER_YN
+					        , SECRET_YN
+					        , CREATE_TIMESTAMP AS regDt
+					        , BOARD_FILE_NAME
+					        , CONTENT
+			   FROM TB_KW50_NTC_BRD_CNTNT
+		       <trim prefix="WHERE" prefixOverrides="AND|OR">
+		           			AND BOARD_ID = 730
+		           	<if test="keyword != null and keyword != ''">
+		           	    <choose>
+		           	        <when test="searchType=='all'">
+		           	            AND (TITLE LIKE '%'|| #{keyword} || '%'
+								OR CONTENT LIKE '%'|| #{keyword} || '%'
+								OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+		           	        </when>
+		           	        <when test="searchType=='title'">
+		           	            AND TITLE LIKE '%'|| #{keyword} || '%'
+		           	        </when>
+		           	        <when test="searchType=='content'">
+		           	            AND CONTENT LIKE '%' || #{keyword} || '%'
+		           	        </when>
+		           	        <when test="searchType=='displayUser'">
+		           	            AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+		           	        </when>
+		           	    </choose>
+		           	</if>
+	           	    <if test="comSearchValA != null and comSearchValA != '' ">
+	           	        AND CATE = #{comSearchValA}
+	           	    </if>
+	           	    <if test="comSearchValB != null and comSearchValB != '' ">
+	           	        AND ANSWER_YN = #{comSearchValB}
+	           	    </if>
+				</trim>	
+		      	ORDER BY regDt
+		      ) B
+		      LEFT JOIN (
+		      SELECT CONTENT_ID,COUNT(CONTENT_ID) AS CNT
+				FROM TB_KW50_NTC_BRD_RPLY		 
+				GROUP BY  CONTENT_ID
+		      ) C   	
+		      ON B. CONTENT_ID = C.CONTENT_ID
+		ORDER BY rNum DESC
+        OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY 
+    </select>
+	
+	<!-- 총 게시글 수  -->
+	<select id="getBoardListCnt" resultType="int">
+        SELECT count(*) AS listCnt
+        FROM TB_KW50_NTC_BRD_CNTNT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+            		AND BOARD_ID = 730
+			<if test="keyword != null and keyword != '' ">		
+			    <if test="searchType=='all'">
+					AND (TITLE LIKE '%'|| #{keyword} || '%'
+					OR CONTENT LIKE '%'|| #{keyword} || '%'
+					OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+				</if>
+				<if test="searchType=='title'">
+					AND TITLE LIKE '%'|| #{keyword} || '%'
+				</if>
+				<if test="searchType=='content'">
+					AND CONTENT LIKE '%' || #{keyword} || '%'
+				</if>
+				<if test="searchType=='displayUser'">
+					AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+				</if>
+			</if>
+		</trim>
+    </select>
+    
+    <!-- 댓글 리스트 가져오기 -->
+	<select id="selectRplyList" parameterType="int" resultType="CustomerVO"> 
+			   SELECT RPLY_ID
+					, CONTENT_ID AS rplyContentId
+					, PARENT_ID	
+					, CONTENT AS rplyContent
+					, RPLY_USER
+					, RPLY_SECRET_YN
+					, RPLY_SECRET_PW
+					, TO_CHAR(CREATE_TIMESTAMP, 'YYYY-MM-DD HH24:MI:SS') AS rplyRegDt
+			   FROM TB_KW50_NTC_BRD_RPLY	
+			   WHERE CONTENT_ID = #{contentId}
+			   ORDER BY RPLY_ID
+	</select>
+		
+	<select id="count" resultType="int">
+        SELECT count(*) 
+        FROM TB_KW50_NTC_BRD_CNTNT
+        WHERE BOARD_ID = 730
+    </select>
+    
+	<!-- QnA 페이지 조회 -->
+	<select id="qnaView" parameterType="CustomerVO" resultType="CustomerVO">
+		SELECT CONTENT_ID
+				, TITLE
+				, CONTENT
+				, DISPLAY_USER
+				, SUBSTR(CREATE_TIMESTAMP, 0, 10) AS regDt
+				, CNT
+				, BOARD_FILE_NAME
+				, SECRET_YN
+				, SECRET_PW
+				, NAME_SECRET_YN
+				, CATE
+				, USER_PHONE
+				, USER_EMAIL AS email
+				, CREATE_TIMESTAMP AS regDt
+		FROM TB_KW50_NTC_BRD_CNTNT
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 730
+	</select>
+	
+	<!-- Qna 쓰기  -->
+	<insert id="qnaInsert" parameterType="CustomerVO">
+	    INSERT INTO TB_KW50_NTC_BRD_CNTNT
+			(
+			  CONTENT_ID
+			, BOARD_ID
+			, PARENT_ID
+			, TITLE
+			, SECRET_YN
+			, SECRET_PW
+			, CONTENT
+			, DISPLAY_USER
+			, ANSWER_YN 
+			, USER_EMAIL 
+			, USER_PHONE 
+			, AGREEMENT
+			, NAME_SECRET_YN	
+			, CNT
+			, CATE
+			, RESERVED_DAY	
+			, CREATE_OBJECT_TYPE
+			, CREATE_OBJECT_ID
+			, CREATE_PROGRAM_ID
+			, CREATE_TIMESTAMP
+			, LAST_UPDATE_OBJECT_TYPE
+			, LAST_UPDATE_OBJECT_ID
+			, LAST_UPDATE_PROGRAM_ID
+			, LAST_UPDATE_TIMESTAMP
+			, DELETE_TP
+			)
+		VALUES
+			(
+			  SQ_TB_KW50_NTC_BRD_CNTNT.NEXTVAL
+			, 730
+			, 0
+			, #{title}			  
+			, #{secretYn}  
+			, #{secretPw}         
+			, #{content}          
+			, #{displayUser}      
+			, #{answerYn}         
+			, #{email}			  
+			, #{userPhone}        
+			, #{agreement}        
+			, #{nameSecretYn}     
+			,  0
+			, #{cate}             
+			, SYSDATE
+			, 'U'
+			, #{mbrNm}
+			, 'SYSTEM'
+			, SYSDATE
+			, 'U'
+			, #{mbrNm}
+			, 'SYSTEM'
+			,  SYSDATE
+			, 'N'
+			)
+	</insert>
+		
+	<!-- qna 수정 확인 -->
+	<update id="qnaUpdate" parameterType="CustomerVO">
+		UPDATE TB_KW50_NTC_BRD_CNTNT
+			SET 
+			  TITLE = #{title}
+			, CONTENT = #{content}
+			, CATE = #{cate}
+			, SECRET_YN = #{secretYn}
+			, DISPLAY_USER = #{displayUser}
+			, USER_PHONE = #{userPhone}
+			, USER_EMAIL = #{email}
+			, NAME_SECRET_YN = #{nameSecretYn}
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 730
+	</update>
+	
+	<!-- qna 삭제 -->
+	<delete id="qnaDelete" parameterType="CustomerVO">
+		DELETE FROM TB_KW50_NTC_BRD_CNTNT   
+		WHERE CONTENT_ID = #{contentId}
+		<if test="secretPw != null and secretPw != '' " >
+		    AND SECRET_PW = #{secretPw}
+		</if>
+		AND BOARD_ID = 730
+	</delete>
+	
+	<!-- 댓글 전체 삭제 -->
+	<delete id="qnaRplyDeleteAll" parameterType="CustomerVO">
+		DELETE TB_KW50_NTC_BRD_RPLY
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 731
+	</delete>
+	
+	<!-- 조회수 증가  -->	 	
+   	<update id="cntUpdate" parameterType="int">
+	   	UPDATE TB_KW50_NTC_BRD_CNTNT
+	   	SET CNT = CNT+1
+	   	WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 730		
+   	</update>
+   	
+	<!-- Qna 댓글 쓰기 -->
+	<insert id="qnaRplyInsert" parameterType="CustomerVO">
+	   INSERT INTO TB_KW50_NTC_BRD_RPLY
+			(
+			  RPLY_ID
+			, CONTENT_ID
+			, BOARD_ID
+			, CONTENT
+			, RPLY_USER
+			, RPLY_SECRET_YN
+			, CREATE_OBJECT_TYPE
+			, CREATE_OBJECT_ID
+			, CREATE_PROGRAM_ID
+			, CREATE_TIMESTAMP
+			, LAST_UPDATE_OBJECT_TYPE
+			, LAST_UPDATE_OBJECT_ID
+			, LAST_UPDATE_PROGRAM_ID
+			, LAST_UPDATE_TIMESTAMP
+			, DELETE_TP
+			)
+		VALUES
+			(
+			 SQ_TB_KW50_NTC_BRD_CNTNT.NEXTVAL
+			, #{contentId}
+			, 731
+			, #{rplyContent}    
+			, #{mbrNm}
+			, 'N'
+			, 'U'
+			, #{mbrNm}
+			, 'SYSTEM'
+			, #{rplyRegDt}
+			, 'U'
+			, #{mbrNm}
+			, 'SYSTEM'
+			, SYSDATE
+			, 'N'
+			)
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="qnaRplyDelete" parameterType="CustomerVO">
+		DELETE TB_KW50_NTC_BRD_RPLY
+		WHERE RPLY_ID = #{rplyId}
+		AND CONTENT_ID = #{rplyContentId}
+		AND BOARD_ID = 731
+		AND RPLY_USER = #{mbrNm}
+	</delete>
+	
+	<select id="rplyCount" parameterType="int" resultType="int">
+	    SELECT count(*) replyCnt
+		FROM TB_KW50_NTC_BRD_RPLY
+		WHERE BOARD_ID = 731
+		AND CONTENT_ID = (SELECT CONTENT_ID FROM WHERE CONTENID_ID = )
+	</select>
+	
+	
+</mapper>

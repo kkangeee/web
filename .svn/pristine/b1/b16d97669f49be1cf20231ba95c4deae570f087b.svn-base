@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Login">
+
+	<!-- 자주하는 문의 쓰기 -->
+	<select id="selectLoginUser" parameterType="LoginVO" resultType="LoginVO">
+    		SELECT   BZ_RGST_NO
+    			   , BZ_CO_NM
+    			   , MBR_ID
+    			   , MBR_NM
+    			   , ROLE_AUTH_ID
+    			   , BDT
+    			   , FON_NO
+    			   , GNDR_TP
+			FROM TB_KW50_MBR_MGT
+			WHERE MBR_ID = #{mbrId}
+			AND PSWD = #{pswd}
+    </select>
+    
+    <select id="selectMypageLoginUser" parameterType="LoginVO" resultType="LoginVO">
+    		SELECT   BZ_RGST_NO
+    			   , BZ_CO_NM
+    			   , MBR_ID
+    			   , MBR_NM
+    			   , DECODE(ROLE_AUTH_ID, 'ADMIN', '협회관리자', 'COM000', '기업관리자','일반회원') AS ROLE_AUTH_ID
+    			   , BDT
+    			   , FON_NO
+    			   , GNDR_TP
+    			   , PSWD
+			FROM TB_KW50_MBR_MGT
+			WHERE MBR_ID = #{mbrId} AND PSWD = #{pswd}
+			AND BZ_RGST_NO = #{bzRgstNo}
+    </select>
+    
+    <update id="updateMypage" parameterType="LoginVO">
+		UPDATE 	TB_KW50_MBR_MGT
+		SET 	PSWD = #{pswd}
+		 	,FON_NO = #{fonNo}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE MBR_ID = #{mbrId} 
+			AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+    
+    
+    
+</mapper>

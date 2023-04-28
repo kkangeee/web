@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw90000u5100">
+	
+	<select id="page5100selectList" parameterType="KW90000U3100VO" resultType="Map">
+		 SELECT ROWNUM RNUM 
+		,SEQ
+		,MENU_ID
+		,MENU_NM 
+		,FOLD_YN
+		,PGM_ID
+		,MENU_SHOW_YN
+		,MENU_ORD
+		,MENU_LVL   
+		,HG_RK_MENU_ID  
+		FROM KW50APUSER.TB_KW50_MENU_MSTR
+	</select>
+
+
+</mapper>

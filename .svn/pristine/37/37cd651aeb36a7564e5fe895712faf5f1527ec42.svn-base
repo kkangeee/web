@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw90000u6100">
+	
+	<select id="page6100selectList" parameterType="loginVO" resultType="loginVO">
+		 SELECT ROWNUM RNUM 
+			,B.BZ_RGST_NO	
+			,B.MBR_ID	
+			,B.PSWD	
+			,B.MBR_NM	
+			,B.BZ_CO_NM	
+			,B.BDT	
+			,B.FON_NO	
+			,B.GNDR_TP
+			,B.ROLE_AUTH_ID
+			,B.MBR_TP
+			,B.MBR_APRV_YN	
+			,B.MBR_SEQ	
+			,B.EMPE_NO	
+		FROM 
+		(SELECT A.* FROM KW50APUSER.TB_KW50_MBR_MGT A WHERE DELETE_TP != 'Y'
+					<if test="searchType == '회원ID' and (keyword != null or keyword != '')">
+				    	AND MBR_ID LIKE '%' || #{keyword} || '%'	
+					</if>
+					<if test="searchType == '회원이름' and (keyword != null or keyword != '')">
+						    	AND MBR_NM LIKE '%' || #{keyword} || '%'		
+					</if>
+					<if test="searchType == '연락처' and (keyword != null or keyword != '')">
+						    	AND FON_NO LIKE '%' || #{keyword} || '%'
+					</if>
+					<if test="searchType == '전체' and (keyword != null or keyword != '')">
+						    	AND (MBR_ID LIKE '%' || #{keyword} || '%'
+						    	OR MBR_NM LIKE '%' || UPPER(#{keyword}) || '%'
+						    	OR FON_NO LIKE '%' || UPPER(#{keyword}) || '%') 
+					</if>
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+	</select>
+	
+	<select id="page6100infoList" parameterType="loginVO" resultType="loginVO">
+		 SELECT ROWNUM RNUM 
+			,B.BZ_RGST_NO	
+			,B.MBR_ID	
+			,B.PSWD	
+			,B.MBR_NM	
+			,B.BZ_CO_NM	
+			,B.BDT	
+			,B.FON_NO	
+			,B.GNDR_TP
+			,B.ROLE_AUTH_ID
+			,B.MBR_TP 
+			,B.MBR_APRV_YN	
+			,B.MBR_SEQ	
+			,B.EMPE_NO	
+		FROM 
+		(SELECT A.* FROM KW50APUSER.TB_KW50_MBR_MGT A WHERE DELETE_TP != 'Y'AND MBR_SEQ = #{comSearchValA} 
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<update id="page6100updateSave" parameterType="LoginVO">
+		UPDATE 	KW50APUSER.TB_KW50_MBR_MGT
+		SET 	BZ_RGST_NO = #{bzRgstNo}
+		 	,MBR_ID = #{mbrId}
+		 	,PSWD = #{pswd}
+		 	,MBR_NM = #{mbrNm}
+		 	,BZ_CO_NM = #{bzCoNm}
+		 	,BDT = #{bdt}
+		 	,FON_NO = #{fonNo}
+		 	,GNDR_TP = #{gndrTp}
+		 	,ROLE_AUTH_ID = #{roleAuthId}
+		 	,MBR_TP = #{mbrTp}
+		 	,MBR_APRV_YN = #{mbrAprvYn}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = #{mbrId}
+			,LAST_UPDATE_PROGRAM_ID ='/page/KW90000/KW90000U6100.do'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	MBR_SEQ = #{mbrSeq} 
+	</update> 
+	
+</mapper>

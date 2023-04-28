@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KW30000U5310">
+	<!-- List에서 Limit 안쓰고 ROW_NUMBER 사용한 곳은 Limit 사용 시 Order by 결과가 섞여서 일부러 
+		사용 -->
+	<!-- sql 공지사항 리스트 -->
+	<sql id="KW30000U5310List">
+	    SELECT ROWNUM AS rNum
+	   		 , B.BZ_RGST_NO
+			 , B.CONTENT_ID
+			 , B.EDU_KND
+             , B.TGT_PRCS_NM
+	         , B.EDU_SBJT_NM
+	         , B.CONTENT
+	         , B.eduImplStrDd
+	         , B.TGT_PPL_CNT		      
+			 , B.TCHR_NM
+			 , B.TCHR_AFLT
+		FROM (SELECT CONTENT_ID
+				   , BZ_RGST_NO
+				   , EDU_KND
+		           , TGT_PRCS_NM
+			       , EDU_SBJT_NM
+			       , CONTENT
+			       , (EDU_IMPL_STR_DD||'~'||EDU_IMPL_END_DD||'['||EDU_TM||'H]') AS eduImplStrDd
+			       , TGT_PPL_CNT		      
+				   , TCHR_NM
+				   , TCHR_AFLT
+ 		 FROM TB_KW50_EDU_MGT_WRK_PLC_TOT	
+		       <trim prefix="WHERE" prefixOverrides="AND|OR">
+		           			AND BOARD_ID = 51100
+		           			AND BZ_RGST_NO = #{searchBzRgstNo} 
+					<if test="keyword != null and keyword != '' ">		
+					    <if test="searchType=='all'">
+							AND (TITLE LIKE '%'|| #{keyword} || '%'
+							OR CONTENT LIKE '%'|| #{keyword} || '%'
+							OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+						</if>
+						<if test="searchType=='title'">
+							AND TITLE LIKE '%'|| #{keyword} || '%'
+						</if>
+						<if test="searchType=='content'">
+							AND CONTENT LIKE '%' || #{keyword} || '%'
+						</if>
+						<if test="searchType=='displayUser'">
+							AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+						</if>
+					</if>
+				</trim>	
+		      ORDER BY CREATE_TIMESTAMP) B  	   		    
+	</sql>
+
+	<!-- 리스트 호출 -->
+	<select id="selectKW30000U5310List" parameterType="KW30000U5000VO" resultType="KW30000U5000VO">
+      	 <include refid="KW30000U5310List"/>
+      	 ORDER BY rNum DESC
+         offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY 
+    </select>
+    
+	<!-- 총 게시글 수  -->
+	<select id="getBoardListCnt" resultType="int">
+        SELECT count(*) AS listCnt
+        FROM TB_KW50_EDU_MGT_WRK_PLC_TOT
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+		           			AND BOARD_ID = 51100
+		           			AND BZ_RGST_NO = #{searchBzRgstNo} 
+					<if test="keyword != null and keyword != '' ">		
+					    <if test="searchType=='all'">
+							AND (TITLE LIKE '%'|| #{keyword} || '%'
+							OR CONTENT LIKE '%'|| #{keyword} || '%'
+							OR DISPLAY_USER LIKE '%' || #{keyword} || '%')
+						</if>
+						<if test="searchType=='title'">
+							AND TITLE LIKE '%'|| #{keyword} || '%'
+						</if>
+						<if test="searchType=='content'">
+							AND CONTENT LIKE '%' || #{keyword} || '%'
+						</if>
+						<if test="searchType=='displayUser'">
+							AND DISPLAY_USER LIKE '%' || #{keyword} || '%'
+						</if>
+					</if>
+				</trim>	
+    </select>
+	
+	<!-- 교육관리 상세 페이지 조회 -->
+	<select id="KW30000U5310View" parameterType="KW30000U5000VO" resultType="KW30000U5000VO">
+		SELECT    CONTENT_ID
+				, BOARD_ID
+				, BZ_RGST_NO
+				, EDU_YEAR
+				, EDU_KND
+				, EDU_MTH
+				, EDU_SBJT_NM
+				, EDU_IMPL_STR_DD 
+				, EDU_IMPL_END_DD 
+				, EDU_TM
+				, TGT_PRCS_NM
+				, TGT_PPL_CNT
+				, CMPLTN_PPL_CNT
+				, TCHR_NM
+				, TCHR_AFLT
+				, CREATE_OBJECT_ID
+				, WRK_PLC_MGT_UNIQ_NO
+				, CONTENT
+				, BOARD_IMG_NAME
+				, BOARD_FILE_NAME
+				, BOARD_IMG
+				, BOARD_FILE
+				, NEXT_CONTENT_ID
+			 	, NEXT_EDU_SBJT_NM
+			 	, PRE_CONTENT_ID
+			 	, PRE_EDU_SBJT_NM
+		FROM (
+			  SELECT CONTENT_ID
+					, BOARD_ID
+					, BZ_RGST_NO
+					, EDU_YEAR
+					, EDU_KND
+					, EDU_MTH
+					, EDU_SBJT_NM
+					, TO_CHAR(EDU_IMPL_STR_DD, 'YYYY-MM-DD') AS EDU_IMPL_STR_DD 
+					, TO_CHAR(EDU_IMPL_END_DD, 'YYYY-MM-DD') AS EDU_IMPL_END_DD 
+					, EDU_TM
+					, TGT_PRCS_NM
+					, TGT_PPL_CNT
+					, CMPLTN_PPL_CNT
+					, TCHR_NM
+					, TCHR_AFLT
+					, CREATE_OBJECT_ID
+					, WRK_PLC_MGT_UNIQ_NO
+					, CONTENT
+					, BOARD_IMG_NAME
+					, BOARD_FILE_NAME
+					, BOARD_IMG
+					, BOARD_FILE
+					, LEAD(CONTENT_ID,1, '') OVER(ORDER BY CONTENT_ID DESC) AS PRE_CONTENT_ID
+					, LEAD(EDU_SBJT_NM,1, '') OVER(ORDER BY CONTENT_ID DESC) AS PRE_EDU_SBJT_NM  
+					, LAG(CONTENT_ID,1, '') OVER(ORDER BY CONTENT_ID DESC) AS NEXT_CONTENT_ID
+					, LAG(EDU_SBJT_NM,1, '') OVER(ORDER BY CONTENT_ID DESC) AS NEXT_EDU_SBJT_NM
+			  FROM TB_KW50_EDU_MGT_WRK_PLC_TOT
+			  WHERE BOARD_ID = 51100 
+			  )
+		WHERE CONTENT_ID = #{contentId}
+	</select>
+
+	<!-- 교육관리 수정 페이지 -->
+	<select id="KW30000U5310UpdateForm" parameterType="KW30000U5000VO" resultType="KW30000U5000VO">
+		SELECT    CONTENT_ID
+				, BOARD_ID
+				, BZ_RGST_NO
+				, EDU_YEAR
+				, EDU_KND
+				, EDU_MTH
+				, EDU_SBJT_NM
+				, TO_CHAR(EDU_IMPL_STR_DD, 'YYYY-MM-DD') AS EDU_IMPL_STR_DD 
+				, TO_CHAR(EDU_IMPL_END_DD, 'YYYY-MM-DD') AS EDU_IMPL_END_DD 
+				, EDU_TM
+				, TGT_PRCS_NM
+				, TGT_PPL_CNT
+				, CMPLTN_PPL_CNT
+				, TCHR_NM
+				, TCHR_AFLT
+				, CREATE_OBJECT_ID
+				, WRK_PLC_MGT_UNIQ_NO
+				, CONTENT
+				, BOARD_IMG_NAME
+				, BOARD_FILE_NAME
+				, BOARD_IMG
+				, BOARD_FILE
+		FROM TB_KW50_EDU_MGT_WRK_PLC_TOT
+		WHERE BOARD_ID = 51100
+		AND CONTENT_ID = #{contentId}	
+	</select>
+
+	<!-- 교육관리 insert -->
+	<insert id="KW30000U5310Insert" parameterType="KW30000U5000VO">
+	    INSERT INTO TB_KW50_EDU_MGT_WRK_PLC_TOT
+			(
+				  CONTENT_ID
+				, BOARD_ID   
+				, EDU_YEAR
+				, BZ_RGST_NO  
+				, EDU_KND 
+				, EDU_MTH 
+				, EDU_SBJT_NM 
+				, EDU_IMPL_STR_DD 
+				, EDU_IMPL_END_DD  
+				, EDU_TM   
+				, TGT_PRCS_NM   
+				, TGT_PPL_CNT  
+				, CMPLTN_PPL_CNT 
+				, TCHR_NM 
+				, TCHR_AFLT
+				, WRK_PLC_MGT_UNIQ_NO
+				, CONTENT
+				, BOARD_FILE
+				, BOARD_FILE_NAME
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+				)
+			VALUES
+			(
+				(SELECT NVL(MAX(TO_NUMBER(CONTENT_ID))+1, 1)
+				 FROM TB_KW50_EDU_MGT_WRK_PLC_TOT
+				 WHERE BOARD_ID = 51100)
+				, 51100
+				, TO_CHAR(SYSDATE, 'YYYY')
+				, #{bzRgstNo}
+				, #{eduKnd}
+				, #{eduMth}
+				, #{eduSbjtNm}
+				, #{eduImplStrDd}
+				, #{eduImplEndDd}
+				, #{eduTm}
+				, #{tgtPrcsNm}
+				, #{tgtPplCnt}
+				, #{cmpltnPplCnt}
+				, #{tchrNm}
+				, #{tchrAflt}
+				, (SELECT DISTINCT A.WRK_PLC_MGT_UNIQ_NO AS WRK_PLC_CD
+				   FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR A,
+						KH10APUSER.TB_KH10_BZ_CO_MSTR B
+				   WHERE A.BZ_UNIQ_NO = B.BZ_UNIQ_NO
+				   AND A.BZ_RGST_NO = 'bzRgstNo') 
+				, #{content}  
+				, #{boardFile}
+				, #{boardFileName}
+				, 'U'
+				, #{createObjectId}
+				, 'SYSTEM'
+				,  SYSDATE
+				, 'U'
+				, #{mbrNm}
+				, 'SYSTEM'
+				, SYSDATE
+				, 'N'
+			)
+	</insert>
+
+	<!-- 교육관리 수정 확인 -->
+	<update id="KW30000U5310Update" parameterType="KW30000U5000VO">
+		UPDATE KW50APUSER.TB_KW50_EDU_MGT_WRK_PLC_TOT
+		SET		
+			  EDU_KND = #{eduKnd} 
+			, EDU_MTH = #{eduMth} 
+			, EDU_SBJT_NM = #{eduSbjtNm} 
+			, EDU_IMPL_STR_DD = #{eduImplStrDd} 
+			, EDU_IMPL_END_DD = #{eduImplEndDd}  
+			, EDU_TM = #{eduTm}   
+			, TGT_PRCS_NM = #{tgtPrcsNm}    
+			, TGT_PPL_CNT = #{tgtPplCnt} 
+			, CMPLTN_PPL_CNT = #{cmpltnPplCnt}
+			, TCHR_NM = #{tchrNm} 
+			, TCHR_AFLT = #{tchrAflt}
+			, CONTENT = #{content}
+			, BOARD_FILE = #{boardFile} 
+			, BOARD_FILE_NAME = #{boardFileName}
+			, CREATE_OBJECT_ID = #{createObjectId}
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 51100
+	</update>
+	
+	<!-- 교육관리 삭제 -->
+	<delete id="KW30000U5310Delete" parameterType="KW30000U5000VO">
+		DELETE FROM KW50APUSER.TB_KW50_EDU_MGT_WRK_PLC_TOT   
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = 51100
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw10000u3100">
+
+	<select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_EMPE_INFO 
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+         		AND BZ_RGST_NO = #{searchBzRgstNo}
+		</trim>	  
+    </select>
+    
+    <!-- 단위사업체 -->
+	<select id="page3100selectUnitCoNm" parameterType="KW10000U3100VO" resultType="KW10000U3100VO">
+	    SELECT DISTINCT UNIT_CO_NM AS searchUnitCoNm
+		FROM TB_KW50_PRCS_INFO
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+         		AND BZ_RGST_NO = #{searchBzRgstNo}
+         		AND DELETE_TP = 'N'
+		</trim>	 
+		ORDER BY UNIT_CO_NM
+    </select>
+    
+    <!-- 공정명 -->
+	<select id="page3100selectPrcsNm" parameterType="KW10000U3100VO" resultType="KW10000U3100VO">
+	    SELECT DISTINCT PRCS_NM AS searchPrcsNm		
+		FROM TB_KW50_PRCS_INFO 
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+         		AND BZ_RGST_NO = #{searchBzRgstNo}
+         		AND DELETE_TP = 'N'
+       		<if test="comSearchValA != null and comSearchValA != '' "><!-- 단위사업체명  -->
+	    			AND UNIT_CO_NM = #{comSearchValA}				
+			</if>
+		</trim>	  
+		ORDER BY PRCS_NM
+    </select>
+    
+	<select id="page3100selectList" parameterType="KW10000U3100VO" resultType="KW10000U3100VO">
+		  SELECT  ROWNUM RNUM
+		  		, SEQ
+		  		, B.BZ_RGST_NO
+				, B.EMPE_NO
+				, B.NM
+				, B.GNDR								
+				, SUBSTR(B.BDT, 0, 10) AS bdt
+				, NVL(B.UNIT_CO_NM, '-') AS unitCoNm
+				, B.FON_NO
+				, B.PRCS_CD
+				, NVL(B.PRCS_NM, '-') AS prcsNm
+				, B.ROLE_NM
+				, B.EMP_FORM
+				, B.SRV_FORM
+				, NVL(TO_CHAR(B.TRSF_IN_DD, 'YYYY-MM-DD'), '-') AS trsfInDd
+				, NVL(TO_CHAR(B.END_DD, 'YYYY-MM-DD'), '-') AS endDd
+		 FROM (
+				 SELECT DISTINCT 
+				 		  A.SEQ
+				  		, A.BZ_RGST_NO
+						, A.EMPE_NO
+						, A.NM
+						, B.UNIT_CO_NM
+						, B.PRCS_NM  
+						, A.GNDR			
+						, A.BDT						  
+						, A.FON_NO
+						, A.PRCS_CD						   
+						, A.ROLE_NM
+						, A.EMP_FORM
+						, A.SRV_FORM
+						, A.TRSF_IN_DD
+						, A.END_DD	
+						, A.CREATE_TIMESTAMP	
+				  	FROM TB_KW50_EMPE_INFO A  
+					LEFT OUTER JOIN TB_KW50_PRCS_INFO B 
+					ON A.BZ_RGST_NO = B.BZ_RGST_NO 
+					AND A.UNIT_CO_NM = B.UNIT_CO_NM 
+					AND A.PRCS_NM = B.PRCS_NM
+				  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+			        AND A.BZ_RGST_NO = #{searchBzRgstNo}
+					</trim>
+				  ) B
+		ORDER BY ROWNUM DESC, CREATE_TIMESTAMP DESC  
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+		
+	<delete id="page3100delete" parameterType="KW10000U3100VO">
+		DELETE KW50APUSER.TB_KW50_EMPE_INFO
+		WHERE SEQ = #{seq}
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete> 
+	
+	<insert id="page3100insertSave" parameterType="KW10000U3100VO">
+		INSERT INTO TB_KW50_EMPE_INFO (
+				  SEQ
+				, BZ_RGST_NO
+				, EMPE_NO
+				, NM
+				, GNDR
+				, UNIT_CO_NM
+				, BDT
+				, FON_NO
+				, PRCS_NM
+				, ROLE_NM
+				, EMP_FORM
+				, SRV_FORM
+				, TRSF_IN_DD
+				, END_DD
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+		) VALUES (
+				(SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_EMPE_INFO  WHERE BZ_RGST_NO = #{bzRgstNo})
+				, #{bzRgstNo} 
+				, #{empeNo}
+				, #{nm} 
+				, #{gndr}
+				, #{unitCoNm} 
+				, #{bdt} 
+				, #{fonNo} 
+				, #{prcsNm} 
+				, #{roleNm} 
+				, #{empForm} 
+				, #{srvForm} 
+				, #{trsfInDd}
+				, #{endDd}  
+				, 'U' 
+				, #{mbrNm} 
+				, 'SYSTEM' 
+				, SYSDATE 
+				, 'U'
+				, #{mbrNm} 
+				, 'SYSTEM'
+				, SYSDATE
+				, 'N'
+		)
+	</insert> 
+	
+	<update id="page3100updateSave" parameterType="KW10000U3100VO">
+		UPDATE KW50APUSER.TB_KW50_EMPE_INFO
+		SET 	
+		 	  NM = #{nm}
+		 	, GNDR = #{gndr}
+		 	, BDT = #{bdt}
+		 	, FON_NO = #{fonNo}
+		 	, UNIT_CO_NM = #{unitCoNm}
+		 	, PRCS_NM = #{prcsNm}
+		 	, ROLE_NM = #{roleNm}
+		 	, EMP_FORM = #{empForm}
+		 	, SRV_FORM = #{srvForm}
+		 	, TRSF_IN_DD = #{trsfInDd}
+		 	, END_DD = #{endDd}
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE EMPE_NO = #{empeNo}
+		AND BZ_RGST_NO = #{bzRgstNo}
+		AND SEQ = #{seq}
+	</update> 
+</mapper>

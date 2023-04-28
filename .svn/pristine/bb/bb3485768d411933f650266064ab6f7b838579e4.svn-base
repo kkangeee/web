@@ -1,0 +1,315 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/jsp/include/common.jsp"%>
+
+<!-- ### HTML ###-->
+<!DOCTYPE html>
+<!-- #location 
+<div id="location" class="">
+	<ul>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();"
+				class="">고객지원</button>
+			<ul class="dropdown-list clear-able" style="display: none;">
+				<li><a href="/page/KW50010/KW10000U1100.do">사업장관리</a></li>
+				<li><a href="/page/KW50020/KW50020U010.do">유해인자관리</a></li>
+				<li><a href="/page/KW50030/KW50030U010.do">보건관리</a></li>
+				<li><a href="/page/KW50040//KW50040U010.do">내사업한눈에</a></li>
+				<li><a href="/page/KW50050//KW50050U010.do">스케쥴관리</a></li>
+				<li><a href="/page/KW50060//KW50060U010.do">정보마당</a></li>
+				<li><a href="/customer/notice/notice.do">고객지원</a></li>
+				<li><a href="#">마이페이지</a></li>
+
+			</ul>
+		</li>
+		<li>
+
+			<button onclick="$(this).toggleClass('active').next().slideToggle();">공지사항</button>
+
+			<ul class="dropdown-list clear-able">
+				<li><a href="/customer/notice/notice.do">공지사항</a></li>
+				<li><a href="/customer/faq/faq.do">자주하는문의</a></li>
+				<li><a href="/customer/qna/qna.do">QnA</a></li>
+			</ul>
+		</li>
+	</ul>
+</div>
+-->
+
+<!-- #container -->
+<div id="container">
+
+	<div class="headline sub_headline sub_headline07">
+		<div class="inner">
+			<h1>고객지원</h1>
+		</div>
+	</div>
+
+	<!-- .inner -->
+	<div class="inner">
+
+		<!-- #content section////////////////////////////// -->
+		<section id="content">
+		
+			<!-- ▼ 타이틀 영역 -->
+	        <div class="con_section ">
+	            <h2 class="con_sectionTit"><span class="subtit">Q&A</span></h2> 
+	        </div>
+			
+			<div class="button-group top" style="justify-content: flex-end;margin:0px">
+				<!-- 검색관련 -->
+				<span class="board-search">
+				<!-- <form name="form" id="form" action="#" onsubmit="return page.search(this)"> -->
+						<input type="hidden" name="pageNum" value="1"> 
+						<select name="searchType" id="keywordType">
+							<option value="all">전체</option> 
+							<option value="title">제목</option>
+							<option value="content">내용</option>  
+							<option value="displayUser">작성자</option>
+						</select> 
+						<input type="hidden" id="searchType" value="" />
+						<!-- 검색어 -->
+						<input type="text" class="form-control form-control-sm" name="keyword" id="keyword" onkeyup="enterkey()" placeholder="검색어를 입력하세요.">
+						<button type="submit" id="btnSearch" name="btnSearch">검색</button>
+						<input type="hidden" id="searchInput" value="" />
+				<!-- </form> -->
+				</span>
+			</div>
+			<input type="hidden" id="cty_val" value="">
+			<input type="hidden" id="ans_val" value="">
+			<form id="boardForm" name="boardForm" method="post">
+				<!--page totalCnt -->
+				<p id="totalCnt" class="allNB"></p>
+				<!--page totalCnt -->
+				<!-- 리스트 -->
+				<table class="board-list">
+					<colgroup>
+						<col style="width: 50px">
+						<col style="width: 120px">
+						<col style="width: 80px">
+						<col style="width: 80px">
+						<col style="width: 400px;">
+						<col style="width: 150px">
+						<col style="width: 60px">
+						<col style="width: 70px">
+					</colgroup>
+					<thead>
+						<tr>
+							<th>NO</th>
+							<th>게시일</th>
+							<th>유형</th>
+							<th>답변 여부</th>
+							<th>제목</th>
+							<th>작성자</th>
+							<th>조회</th>
+							<th>공개여부</th>
+						</tr>
+					</thead>
+
+					<!-- 리스트영역 -->
+					<tbody id="dataSection">
+					</tbody>
+					<!-- 리스트영역 -->
+
+				</table>
+				<!-- 페이징 -->
+				<div id="paginationBox" class="paging"></div>
+				<!-- 페이징 -->
+			</form>
+
+			<!-- 글쓰기 버튼 처리 -->
+			<div class="button-group bottom">
+				<c:if test="${sessionScope.mbrId eq 'admin'}">
+							<button type="button" class="primary" onclick="location.href='/customer/qna/writeFrom'">글쓰기</button>
+				</c:if>
+			</div>	
+			<!-- 글쓰기 버튼 처리 -->	
+		</section>
+
+	</div>
+	<!-- //.inner -->
+</div>
+<!-- 컨텐츠 -->
+
+<!-- //#container -->
+
+<div class="util-bottom">
+	<div class="inner">
+		<a class="btn-top" href="#wrap"
+			onclick="$(window).scrollTop(0); return false;">위로</a>
+	</div>
+</div>
+<!-- ### HTML ###-->
+<script type="text/javascript">
+	
+	//페이지 로딩시 리스트 호출
+	$(document).ready(function() {
+		getPage();
+	})
+	
+	//검색
+	$("#btnSearch").click(function() {
+		const searchType = $("#keywordType").val();
+		const search = $("#keyword").val();
+		
+		$("#searchType").val(searchType);
+		$("#searchInput").val(search);
+		
+		getPage();
+	});
+	
+	function ctySearch(){
+		let cty = $("#select_cty").val();
+		$("#cty_val").val(cty);
+		getPage();
+	}
+	
+	function ansSearch(){
+		let ans = $("#select_answer").val();
+		$("#ans_val").val(ans);
+		getPage();
+	}
+	
+	//검색 Enter Key
+	function enterkey() {
+		if (window.event.keyCode == 13) {
+	    	$("#btnSearch").click();
+	    }
+	}
+	
+	//페이지 리스트 출력
+	function getPage(page) {
+		//검색 값
+		let searchType = $("#searchType").val();
+		let search = $("#searchInput").val();
+		
+		$.ajax({
+					url : "/customer/qna/qnaList.do", //서비스 주소 
+					async: false,
+					data : { //서비스 처리에 필요한 인자값
+						page : page,
+						searchType : searchType,
+						keyword : search,
+						comSearchValA : $("#cty_val").val(),
+						comSearchValB : $("#ans_val").val()
+					},
+					success : function(res) {
+						const list = res['resultList'];
+						const pagination = res['pagination'];
+						//const rplyCont = res['rplyCont'];
+						var totalCnt = "";
+						var data = "";
+						var block = "";
+						//alert(rplyCont);
+						//페이지 번호 위치				
+						totalCnt += '전체 <strong class="tc_point mr20">'
+								+ pagination['totalCount']
+								+ '</strong>현재페이지 <strong class="tc_point"><span></span>'
+								+ pagination.cri['page']
+								+ '/'
+								+ (Math.ceil(pagination['totalCount']
+										/ pagination.cri['perPageNum']))
+								+ '</strong>'
+
+						// 테이블의 row를 삽입하는 부분
+						for (var i = 0; i < list.length; i++) {
+							
+								data += "<tr>";
+								data += "<td>" + list[i]['rNum'] + "</td>";
+								data += "<td>" + list[i]['regDt'] + "</td>";
+								data += "<td>" + list[i]['cate'] + "</td>";
+					
+								if(list[i]['rplyCnt'] === 0){
+									data += "<td>미확인</td>";
+								} else {
+									data += "<td>확인</td>";
+								}
+
+								if(list[i]['secretYn']== 'Y'){
+									if(list[i]['rplyCnt'] === 0){
+										data += "<td style='cursor: pointer;' data-chk='Y' data-dpUser='" + list[i]['displayUser'] + "' data-contentId='"+ list[i]['contentId'] + "' onClick='fn_view(this)'>" + list[i]['title'] + "</td>";
+									} else {
+										data += "<td style='cursor: pointer;' data-chk='Y' data-dpUser='" + list[i]['displayUser'] + "' data-contentId='"+ list[i]['contentId'] + "' onClick='fn_view(this)'>" + list[i]['title'] + "(" + list[i]['rplyCnt'] + ")</td>";
+									}
+									
+								} else {
+									if(list[i]['rplyCnt'] === 0){
+										data += "<td style='cursor: pointer;' data-chk='Y' data-dpUser='" + list[i]['displayUser'] + "' data-contentId='"+ list[i]['contentId'] + "' onClick='fn_view(this)'>" + list[i]['title'] + "</td>";
+									} else {
+										data += "<td style='cursor: pointer;' data-chk='Y' data-dpUser='" + list[i]['displayUser'] + "' data-contentId='"+ list[i]['contentId'] + "' onClick='fn_view(this)'>" + list[i]['title'] + "(" + list[i]['rplyCnt'] + ")</td>";
+									}
+								
+								}
+								data += "<td>" + list[i]['displayUser'] + "</td>";
+								data += "<td>" + list[i]['cnt'] + "</td>";
+								if(list[i]['secretYn']== 'Y'){
+									data += "<td>공개</td>";
+								} else {
+									data += "<td>비공개</td>";
+								}
+								data += "</tr>";
+						}
+
+						// 이전버튼 활성화 여부를 결정하는 부분
+						if(pagination['prev']) {
+							block += "<a href='javascript:getPage(" + pagination['page'] + ")'> << </a>";
+							block += "<a href='javascript:getPage(" + (pagination['startPage'] -1) + ")'> < </a>";							
+							// 시작 페이지 > 처리
+						} 
+						// 번호를 표시하는 부분
+						for (var i = pagination['startPage']; i < pagination['endPage'] +1; i++) {
+								block += "<a class='page-link' href='javascript:getPage(" + i + ")'>" + i + "</a>";
+						}
+						
+						// 다음페이지 여부
+						if(pagination['next'] && pagination['endPage'] > 0) {
+							block += "<a href='javascript:getPage(" + (pagination['endPage'] +1) + ")'> > </a>";
+							block += "<a href='javascript:getPage(" + (Math.ceil(pagination['totalCount'] / pagination.cri['perPageNum'])) + ")'> >> </a>";
+						} 
+
+						$("#totalCnt").html(totalCnt);
+						$("#dataSection").html(data);
+						$("#paginationBox").html(block);
+					}
+				})
+	}
+
+	//글 상세 보기
+	function fn_view(obj) {
+			let sessionId = $("#sessionId").val();
+			let chk = obj.getAttribute("data-chk");
+			let contentId = obj.getAttribute("data-contentId");
+			let dpUser = obj.getAttribute("data-dpUser");
+			console.log(sessionId);
+			console.log(chk);
+			console.log(dpUser);
+			
+			switch (chk) {
+			  case 'N':
+				  	switch (sessionId) {
+					  	case 'admin' : 
+					  		var form = document.getElementById("boardForm");
+							var url = "<c:url value='/customer/qna/view'/>?contentId=" + contentId;
+							form.action = url;
+							form.submit();
+					  		break;
+					  	case dpUser :
+					  		var form = document.getElementById("boardForm");
+							var url = "<c:url value='/customer/qna/view'/>?contentId=" + contentId;
+							form.action = url;
+							form.submit();
+					  		break;
+					  	default :
+					  		alert("비공개 글 입니다.");
+				  			return
+				  	}
+			    break;
+			  case 'Y':
+					var form = document.getElementById("boardForm");
+					var url = "<c:url value='/customer/qna/view'/>?contentId=" + contentId;
+					form.action = url;
+					form.submit();
+			    break;
+			}
+	}
+</script>

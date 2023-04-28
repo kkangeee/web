@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u7000">
+	
+	<select id="getBoardListCnt7100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_SUB_CON_MGT    
+        WHERE BOARD_ID = '71100'
+    </select>
+	
+	<select id="page7100selectList" parameterType="KW30000U7100VO" resultType="KW30000U7100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(IMPL_DT, 0, 10) AS IMPL_DT
+		,B.SUB_CON_ENTRP_NM
+		FROM 
+		(SELECT A.* FROM TB_KW50_SUB_CON_MGT A WHERE BOARD_ID = '71100'
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 7100 쓰기 -->
+	<insert id="page7100insertSave" parameterType="KW30000U7100VO">
+		insert into TB_KW50_SUB_CON_MGT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, IMPL_DT
+		, SUB_CON_ENTRP_NM
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_SUB_CON_MGT WHERE BOARD_ID = '71100')
+		, 71100
+		, #{bzRgstNo}
+		, #{implDt}
+		, #{subConEntrpNm}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 7100 수정 확인 -->
+	<update id="page7100updateSave" parameterType="KW30000U7100VO">
+		UPDATE TB_KW50_SUB_CON_MGT
+		SET IMPL_DT = #{implDt}
+		, SUB_CON_ENTRP_NM = #{subConEntrpNm}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '71100'
+	</update>
+	
+	<!-- 7100 삭제 -->
+	<delete id="page7100delete" parameterType="KW30000U7100VO">
+		DELETE FROM TB_KW50_SUB_CON_MGT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '71100'
+	</delete>
+
+	<select id="getBoardListCnt7200" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_SUB_CON_MGT    
+        WHERE BOARD_ID = '72100'
+    </select>
+	
+	<select id="page7200selectList" parameterType="KW30000U7100VO" resultType="KW30000U7100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(IMPL_DT, 0, 10) AS IMPL_DT
+		,B.SUB_CON_ENTRP_NM
+		FROM 
+		(SELECT A.* FROM TB_KW50_SUB_CON_MGT A WHERE BOARD_ID = '72100'
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 7200 쓰기 -->
+	<insert id="page7200insertSave" parameterType="KW30000U7100VO">
+		insert into TB_KW50_SUB_CON_MGT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, IMPL_DT
+		, SUB_CON_ENTRP_NM
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_SUB_CON_MGT WHERE BOARD_ID = '72100')
+		, 72100
+		, #{bzRgstNo}
+		, #{implDt}
+		, #{subConEntrpNm}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 7200 수정 확인 -->
+	<update id="page7200updateSave" parameterType="KW30000U7100VO">
+		UPDATE TB_KW50_SUB_CON_MGT
+		SET IMPL_DT = #{implDt}
+		, SUB_CON_ENTRP_NM = #{subConEntrpNm}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '72100'
+	</update>
+	
+	<!-- 7200 삭제 -->
+	<delete id="page7200delete" parameterType="KW30000U7100VO">
+		DELETE FROM TB_KW50_SUB_CON_MGT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '72100'
+	</delete>
+
+	<select id="getBoardListCnt7300" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_SUB_CON_MGT    
+        WHERE BOARD_ID = '73100'
+    </select>
+	
+	<select id="page7300selectList" parameterType="KW30000U7100VO" resultType="KW30000U7100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(IMPL_DT, 0, 10) AS IMPL_DT
+		,B.SUB_CON_ENTRP_NM
+		FROM 
+		(SELECT A.* FROM TB_KW50_SUB_CON_MGT A WHERE BOARD_ID = '73100'
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 7300 쓰기 -->
+	<insert id="page7300insertSave" parameterType="KW30000U7100VO">
+		insert into TB_KW50_SUB_CON_MGT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, IMPL_DT
+		, SUB_CON_ENTRP_NM
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_SUB_CON_MGT WHERE BOARD_ID = '73100')
+		, 73100
+		, #{bzRgstNo}
+		, #{implDt}
+		, #{subConEntrpNm}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 7300 수정 확인 -->
+	<update id="page7300updateSave" parameterType="KW30000U7100VO">
+		UPDATE TB_KW50_SUB_CON_MGT
+		SET IMPL_DT = #{implDt}
+		, SUB_CON_ENTRP_NM = #{subConEntrpNm}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '73100'
+	</update>
+	
+	<!-- 7300 삭제 -->
+	<delete id="page7300delete" parameterType="KW30000U7100VO">
+		DELETE FROM TB_KW50_SUB_CON_MGT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '73100'
+	</delete>
+	
+</mapper>

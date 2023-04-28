@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+	
+	<mvc:annotation-driven />
+	<mvc:default-servlet-handler />
+
+	<context:component-scan base-package="egovframework,iohp">
+		<context:include-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+		<context:exclude-filter expression="org.springframework.stereotype.Service" type="annotation"/>
+		<context:exclude-filter expression="org.springframework.stereotype.Repository" type="annotation"/>
+	</context:component-scan>
+	
+	<mvc:interceptors>
+	    <mvc:interceptor>
+	        <mvc:mapping path="/**/"/> <!-- 절대경로(/)부터 시작하면 중간경로가 있을 수 있기에 (**)으로 표시 -->
+	        <mvc:exclude-mapping path="/login/login.do"/> <!-- 예외 경로 지정(여러개일 수 있음으로...) -->
+	        <mvc:exclude-mapping path="/login/login"/> <!-- 예외 경로 지정(여러개일 수 있음으로...) -->
+	        <bean class="egovframework.com.cmm.AuthenticInterceptor" />
+	    </mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- For Pagination Tag -->
+	<bean class="egovframework.com.cmm.ImagePaginationRenderer" id="imageRenderer"/>
+
+	<bean class="egovframework.rte.ptl.mvc.tags.ui.pagination.DefaultPaginationManager" id="paginationManager">
+		<property name="rendererType">
+			<map>
+				<entry key="image" value-ref="imageRenderer"/>
+			</map>
+		</property>
+	</bean>
+	
+	 <!-- 파일 업로드 설정 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 파일 사이즈 설정 가능 byte 단위 
+		<property name="maxUploadSize" value="100000" />
+		-->
+	</bean>
+		
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="egovframework.com.cmm.web.EgovBindingInitializer"/>
+        </property>
+    </bean>
+	
+	<!-- for JFile -->
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1" p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" p:viewClass="org.springframework.web.servlet.view.JstlView"/>
+	
+</beans>
+
+
+
+    

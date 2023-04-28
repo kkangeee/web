@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw10000u2100">
+
+	<select id="getBoardListCnt" resultType="int">
+	     SELECT count(*) AS listCnt
+         FROM TB_KW50_PRCS_INFO
+         <trim prefix="WHERE" prefixOverrides="AND|OR">
+           	AND BZ_RGST_NO = #{searchBzRgstNo}
+	       	<choose>
+	       	      <when test="comSearchValC == '가동중' ">
+		           	   AND PRCS_MODI_DD IS NULL
+		           	   AND DELETE_TP = 'N'
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	               <when test="comSearchValC == '단위사업체전체' ">
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	               <when test="comSearchValC != null and comSearchValC != '' and comSearchValC != '단위사업체전체' and comSearchValC != '가동중' ">
+	                   AND UNIT_CO_NM= #{comSearchValC}
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	      	 </choose>
+	    </trim> 
+    </select>
+    
+     <!-- 단위사업체 -->
+	<select id="page2100selectUnitCoNm" parameterType="KW10000U2100VO" resultType="KW10000U2100VO">
+	    SELECT DISTINCT UNIT_CO_NM AS searchUnitCoNm
+		FROM TB_KW50_PRCS_INFO
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		ORDER BY UNIT_CO_NM
+    </select>
+    
+	<!-- 공정명 -->
+	<select id="page2100selectPrcsNm" parameterType="KW10000U3100VO" resultType="KW10000U3100VO">
+	    SELECT DISTINCT PRCS_NM AS searchPrcsNm		
+		FROM TB_KW50_PRCS_INFO 
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+           	AND BZ_RGST_NO = #{searchBzRgstNo}
+	       	<choose>
+	       	      <when test="comSearchValC == '가동중' ">
+		           	   AND PRCS_MODI_DD IS NULL
+		           	   AND DELETE_TP = 'N'
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	               <when test="comSearchValC == '단위사업체전체' ">
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	               <when test="comSearchValC != null and comSearchValC != '' and comSearchValC != '단위사업체전체' and comSearchValC != '가동중' ">
+	                   AND UNIT_CO_NM= #{comSearchValC}
+		           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+	               	       AND PRCS_NM = #{comSearchValD}
+	               	   </if>
+	               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+	               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+	               	   </if>
+	               </when>
+	      	 </choose>
+	    </trim>  
+    </select>
+    
+	<select id="page2100selectList" parameterType="KW10000U2100VO" resultType="KW10000U2100VO">
+		  	SELECT  ROWNUM RNUM
+		  		, B.BZ_RGST_NO 
+				, B.UNIT_CO_NO
+				, B.PRCS_SEQ AS SEQ
+				, B.UNIT_CO_NM
+				, B.PRCS_NM AS prcsNm
+				, B.WRK_DTL AS wrkDtl
+				, B.WRK_PLC_MGT_UNIQ_NO
+				, B.prcsRgstDd
+				, B.prcsModiDd
+				, B.DELETE_TP
+		  FROM (
+		  		SELECT  BZ_RGST_NO
+					  , UNIT_CO_NO
+					  , PRCS_SEQ
+					  , UNIT_CO_NM
+					  , PRCS_NM
+					  , WRK_DTL
+					  , WRK_PLC_MGT_UNIQ_NO
+					  , TO_CHAR(PRCS_RGST_DD,'YYYY-MM-DD') AS prcsRgstDd
+					  , NVL(TO_CHAR(PRCS_MODI_DD,'YYYY-MM-DD'), '-') AS prcsModiDd
+					  , DELETE_TP					
+			    FROM TB_KW50_PRCS_INFO
+			    <trim prefix="WHERE" prefixOverrides="AND|OR">
+		           	AND BZ_RGST_NO = #{searchBzRgstNo}
+			       	<choose>
+			       	      <when test="comSearchValC == '가동중' ">
+				           	   AND PRCS_MODI_DD IS NULL
+				           	   AND DELETE_TP = 'N'
+				           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+			               	       AND PRCS_NM = #{comSearchValD}
+			               	   </if>
+			               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+			               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+			               	   </if>
+			               </when>
+			               <when test="comSearchValC == '단위사업체전체' ">
+				           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+			               	       AND PRCS_NM = #{comSearchValD}
+			               	   </if>
+			               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+			               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+			               	   </if>
+			               </when>
+			               <when test="comSearchValC != null and comSearchValC != '' and comSearchValC != '단위사업체전체' and comSearchValC != '가동중' ">
+			                   	   AND UNIT_CO_NM= #{comSearchValC}
+				           	   <if test="comSearchValD != null and comSearchValD != '' and comSearchValD != '공정명전체' ">
+			               	       AND PRCS_NM = #{comSearchValD}
+			               	   </if>
+			               	   <if test="(comSearchValA != null and comSearchValA != '') and (comSearchValB != null and comSearchValB != '')  ">
+			               	       AND  PRCS_RGST_DD BETWEEN #{comSearchValA} AND #{comSearchValB} 
+			               	   </if>
+			               </when>
+			      	 </choose>
+			   </trim>
+			   ORDER BY UNIT_CO_NM, DELETE_TP DESC, PRCS_RGST_DD
+			   ) B
+		ORDER BY ROWNUM DESC  	
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page2100delete" parameterType="KW10000U2100VO">
+		UPDATE TB_KW50_PRCS_INFO
+		SET 	
+			  PRCS_MODI_DD = SYSDATE
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+			, DELETE_TP = 'Y'
+		WHERE PRCS_SEQ = #{seq}
+		AND BZ_RGST_NO = #{bzRgstNo} 
+	</delete> 
+	
+	<insert id="page2100insertSave" parameterType="KW10000U2100VO">
+	INSERT INTO TB_KW50_PRCS_INFO (
+				  PRCS_SEQ
+				, UNIT_CO_NM
+				, PRCS_NM 
+				, BZ_RGST_NO 
+				, UNIT_CO_NO						
+				, WRK_DTL 
+				, PRCS_RGST_DD
+				, WRK_PLC_MGT_UNIQ_NO
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+	) VALUES (
+				  (SELECT NVL(MAX(PRCS_SEQ), 0) + 1 FROM TB_KW50_PRCS_INFO) 
+				, #{unitCoNm} 
+				, #{prcsNm}
+				, #{bzRgstNo} 
+				, '0' 
+				, #{wrkDtl} 
+				, #{prcsRgstDd} 
+				, (SELECT WRK_PLC_MGT_UNIQ_NO FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR WHERE BZ_RGST_NO = #{bzRgstNo})	
+				, 'U' 
+				, #{mbrNm}  
+				, 'SYSTEM' 
+				, SYSDATE 
+				, 'U'
+				, #{mbrNm} 
+				, 'SYSTEM'
+				, SYSDATE
+				, 'N'
+			 )
+	</insert>
+	
+	<insert id="page2100insertHisSave" parameterType="KW10000U2100VO">
+	INSERT INTO TB_KW50_PRCS_INFO (
+				  PRCS_SEQ
+				, UNIT_CO_NM
+				, PRCS_NM 
+				, BZ_RGST_NO 
+				, UNIT_CO_NO						
+				, WRK_DTL 
+				, PRCS_RGST_DD
+				, PRCS_MODI_DD
+				, WRK_PLC_MGT_UNIQ_NO
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+	) VALUES (
+				  (SELECT NVL(MAX(PRCS_SEQ), 0) + 1 FROM TB_KW50_PRCS_INFO) 
+				, (SELECT UNIT_CO_NM FROM TB_KW50_PRCS_INFO WHERE BZ_RGST_NO = #{bzRgstNo} AND PRCS_SEQ = #{seq})
+				, (SELECT PRCS_NM FROM TB_KW50_PRCS_INFO WHERE BZ_RGST_NO = #{bzRgstNo} AND PRCS_SEQ = #{seq})  
+				, #{bzRgstNo} 
+				, '0' 
+				, (SELECT WRK_DTL FROM TB_KW50_PRCS_INFO WHERE BZ_RGST_NO = #{bzRgstNo} AND PRCS_SEQ = #{seq})  
+				, (SELECT PRCS_RGST_DD FROM TB_KW50_PRCS_INFO WHERE BZ_RGST_NO = #{bzRgstNo} AND PRCS_SEQ = #{seq}) 
+				, SYSDATE  
+				, (SELECT WRK_PLC_MGT_UNIQ_NO FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR WHERE BZ_RGST_NO = #{bzRgstNo})	
+				, 'U' 
+				, #{mbrNm}  
+				, 'SYSTEM' 
+				, SYSDATE 
+				, 'U'
+				, #{mbrNm} 
+				, 'SYSTEM'
+				, SYSDATE
+				, 'Y'
+			 )
+	</insert> 
+	
+	<update id="page2100updateSave" parameterType="KW10000U2100VO">
+		UPDATE TB_KW50_PRCS_INFO
+		SET 	
+			 UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,WRK_DTL = #{wrkDtl}
+		 	,PRCS_RGST_DD = #{prcsRgstDd}
+		 	,PRCS_MODI_DD = #{prcsModiDd}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			,LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			,LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE PRCS_SEQ  = #{seq}
+	</update> 
+	
+</mapper>

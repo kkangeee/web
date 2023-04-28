@@ -1,0 +1,50 @@
+package iohp.page.KW90000.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.PaginationHndlr;
+import egovframework.com.cmm.SearchHndlr;
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import iohp.customer.service.CustomerVO;
+import iohp.page.KW90000.service.KW90000U1100VO;
+
+@Repository("KW90000U1100DAO")
+public class KW90000U1100DAO extends EgovComAbstractDAO {
+	
+	/* 조회 */
+	/*
+	 * public List<KW90000U1100VO> KW90000U1100pageList(KW90000U1100VO
+	 * kw90000u1100vo) { return selectList("kw90000u1000.page1100", kw90000u1100vo);
+	 * }
+	 */ 
+	
+	/* 조회 */
+	public List<KW90000U1100VO> KW90000U1100selectList(SearchHndlr search) throws Exception {
+		System.out.println("ddddddddddddddddddddddddddddddddaaaaaaao"+ search);
+		return selectList("kw90000u1000.page1100selectList", search);
+	}
+	
+	//총 게시글 개수 확인
+		public int getBoardListCnt(SearchHndlr search) throws Exception {
+			return selectOne("kw90000u1000.getBoardListCnt1100", search);
+		}
+	
+	/* 삭제 */
+	public int KW90000U1100delete(KW90000U1100VO kw90000u1100vo) {
+		return update("kw90000u1000.page1100delete", kw90000u1100vo);
+	}
+	
+	/* 추가 */
+	public int KW90000U1100insertSave(KW90000U1100VO kw90000u1100vo) { 
+		return insert("kw90000u1000.page1100insertSave", kw90000u1100vo); 
+	}
+
+	/* 수정 */
+	public int KW90000U1100updateSave(KW90000U1100VO kw90000u1100vo) { 
+		return update("kw90000u1000.page1100updateSave", kw90000u1100vo); 
+	}
+	 
+	
+}

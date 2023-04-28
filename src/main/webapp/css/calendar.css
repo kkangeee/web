@@ -1,0 +1,127 @@
+.monthly_calendar {
+	margin-bottom: 50px;
+    border-bottom: 1px solid #eee;
+}
+.sort_area {
+}
+.sort_area .date_view {
+        text-align: center;
+}
+.sort_area .date_view .date {
+    font-size: 33px;
+    color: #333;
+}
+.sort_area .date_view .btn_area {
+    display: inline-block;
+    margin: 10px 0 0 5px;
+    vertical-align: top;
+}
+.sort_area .date_view .prev {
+    margin-right: -1px;
+    width: 25px;
+    background-position: 0 0;
+}
+.sort_area .date_view button {
+    height: 28px;
+    padding: 1px 9px 0 9px;
+    border: 1px solid #cbcbcb;
+    background: #fff url(https://ssl.pstatic.net/static/calendar/2016/sp_sortarea.png) no-repeat 0 0;
+    font-size: 12px;
+    color: #222;
+}
+.sort_area .date_view button:hover {
+    position: relative;
+    z-index: 1;
+    border-color: #bbb;
+    background-color: #ebebeb;
+}
+.sort_area .date_view .next {
+    margin-left: 5px;
+    width: 25px;
+    background-position: -30px 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.monthly_calendar .week {
+    padding: 0 14px;
+    color: #555;
+    table-layout: fixed;
+    width: 100%;
+    border-top: 1px solid #dadada;
+    border-bottom: 1px solid #f1f1f1;
+    background: #f8f8f8;
+    height: 31px;
+}
+.monthly_calendar .fifth .month_row {
+    height: 100px;
+}
+.monthly_calendar .grid {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    border-bottom: 1px solid #e6e6e6;
+}
+.sort_area .date_view .today {
+    min-width: 45px;
+    padding: 1px 4px 0 4px;
+    background-image: none;
+}
+.monthly_calendar .grid td {
+    vertical-align: top;
+}
+.monthly_calendar .grid .today_area  {
+    width: auto;
+    background: #f5fbfd;
+    border: 1px solid #222;
+}
+.monthly_calendar .schedule_list .date .sun, .schedule_list .date .holiday {
+    color: #f00;
+}
+.monthly_calendar .sat {
+    color: #1770f8;
+}
+.monthly_calendar .schedule_list .sun.disable, .schedule_list .holiday.disable {
+    color: #ff8383;
+}
+.monthly_calendar .schedule {
+    position: relative;
+    overflow: hidden;
+    height: 17px;
+    line-height: 18px;
+    margin: 0 2px 1px 0px;
+    white-space: nowrap;
+    display: block;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 2px 0 5px 5px;
+}
+.calendar_color_535cbb {
+    background-color: #535cbb!important;
+    color: #fff!important;
+    border-color: rgba(0,0,0,0.07)!important;
+}
+.monthly_calendar .schedule_list .disable {
+    color: #999;
+}
+.monthly_calendar .schedule_list .date strong {
+    display: inline-block;
+    float: left;
+    padding: 1px 0 0 8px;
+    font-weight: normal;
+    zoom: 1;
+    vertical-align: top;
+    cursor: pointer;
+}
+.monthly_calendar .grid td ~ td {
+    border-left: 1px solid #f4f4f4;
+    vertical-align: top;
+}
+.monthly_calendar .month_table {
+    
+}
+.monthly_calendar .table_container {
+    
+}

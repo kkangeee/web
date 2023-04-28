@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u5320">
+    
+    <select id="page5320selectList" parameterType="KW30000U5000VO" resultType="KW30000U5000VO">
+        SELECT ROWNUM AS rNum
+        	 , B.BZ_RGST_NO
+		     , B.WRK_PLC_NM AS wrkPlcMgtUniqNm
+		     , B.WRK_PLC_MGT_UNIQ_NO
+		     , B.PRCS_NM
+		     , B.TGT_PPL_EMPE_NO
+		     , B.TGT_PPL_NM
+		     , B.TGT_PPL_SEQ AS seq
+		     , B.EDU_KND
+		     , B.EDU_MTH
+		     , B.EDUIMPLSTRDD
+		     , B.EDUTM
+		  FROM (
+		        SELECT A.BZ_RGST_NO
+		             , B.WRK_PLC_NM
+		             , B.WRK_PLC_MGT_UNIQ_NO
+		             , A.PRCS_NM
+		             , A.TGT_PPL_EMPE_NO
+		             , A.TGT_PPL_NM
+		             , A.TGT_PPL_SEQ  
+		             , A.EDU_KND
+		             , A.EDU_MTH
+		             , TO_CHAR(A.EDU_IMPL_STR_DD, 'YYYY-MM-DD')||' ~ '||TO_CHAR(A.EDU_IMPL_END_DD, 'YYYY-MM-DD') AS EDUIMPLSTRDD
+		             , NVL(A.EDU_TM||'[H]', '0[H]')  AS EDUTM
+		          FROM KW50APUSER.TB_KW50_EDU_MGT_PSNL   A
+		               LEFT OUTER JOIN KH10APUSER.TB_KH10_WRK_PLC_MSTR   B
+		                               ON B.BZ_RGST_NO = A.BZ_RGST_NO
+		        WHERE A.BZ_RGST_NO = #{searchBzRgstNo}
+		        AND A.EDU_BRD_ID = 35320  
+		        ORDER BY A.CREATE_TIMESTAMP
+		       )    B
+		 WHERE B.BZ_RGST_NO = #{searchBzRgstNo} 
+		ORDER BY rNum DESC
+	 		offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY    	
+    </select>
+    
+    <select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM KW50APUSER.TB_KW50_EDU_MGT_PSNL
+        WHERE BZ_RGST_NO = #{searchBzRgstNo} 
+        AND EDU_BRD_ID = 35320     
+    </select>
+    
+    <delete id="page5320delete" parameterType="KW30000U5000VO">
+		DELETE  
+		FROM KW50APUSER.TB_KW50_EDU_MGT_PSNL
+		WHERE TGT_PPL_SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+		AND EDU_BRD_ID = 35320
+	</delete>
+	
+	<insert id="page5320insertSave" parameterType="KW30000U5000VO">
+		INSERT INTO KW50APUSER.TB_KW50_EDU_MGT_PSNL
+		(
+				  BZ_RGST_NO
+				, TGT_PPL_SEQ
+				, WRK_PLC_MGT_UNIQ_NO
+				, EDU_YEAR  
+				, PRCS_NM
+				, TGT_PPL_EMPE_NO
+				, TGT_PPL_NM
+				, CMPLTN_YN
+				, EDU_BRD_ID
+				, ATCH_FILE_PATH		
+				, ATCH_FILE_NM 
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+		) VALUES (                                                                                                                      
+				  #{bzRgstNo}
+				, (SELECT NVL(MAX(TGT_PPL_SEQ), 0) + 1 FROM KW50APUSER.TB_KW50_EDU_MGT_PSNL WHERE BZ_RGST_NO = #{bzRgstNo}) 
+				, (SELECT WRK_PLC_MGT_UNIQ_NO FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR WHERE BZ_RGST_NO = #{bzRgstNo})
+				, TO_CHAR(SYSDATE, 'YYYY') 
+				, #{prcsNm}
+				, #{tgtPplEmpeNo}
+				, #{tgtPplNm}
+				, #{cmpltnYn}
+				, 35320
+				, #{atchFilePath}
+				, #{atchFileNm}
+				, 'U'
+				, #{mbrNm}
+				, 'SYSTEM'
+				, SYSDATE
+				, 'U'
+				, #{mbrNm}
+				, 'SYSTEM'
+				, SYSDATE
+				, 'N'
+		 )
+	</insert> 
+	
+	<update id="page5320updateSave" parameterType="KW30000U5000VO">
+		UPDATE 	KW50APUSER.TB_KW50_EDU_MGT_PSNL
+		SET 
+			  PRCS_NM = #{prcsNm}
+		 	, TGT_PPL_EMPE_NO = #{tgtPplEmpeNo}
+		 	, TGT_PPL_NM = #{tgtPplNm}
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE TGT_PPL_SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+		AND EDU_BRD_ID = 35320
+	</update> 
+    
+</mapper>

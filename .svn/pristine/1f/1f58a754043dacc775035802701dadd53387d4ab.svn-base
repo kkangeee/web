@@ -1,0 +1,464 @@
+<%@ page language="java" contentType="text/html; charset=EUC-KR"
+	pageEncoding="EUC-KR"%>
+<%@ include file="/WEB-INF/jsp/include/common.jsp"%>
+<!DOCTYPE html>
+
+<!-- ### HTML ###-->
+<!-- #location -->
+<!-- <div id="location" class="">
+	<ul>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();"
+				class="">보건관리</button>
+			<ul class="dropdown-list clear-able" style="display: none;">
+				<li><a href="/page/KW30000/KW30000U1110.do">보건관리</a></li>
+			</ul>
+		</li>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();">안전보건관리</button>
+			<ul class="dropdown-list clear-able">
+				<li><a href="/page/KW30000/KW30000U1110.do">안전보건관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">건강관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">예방관리프로그램</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">작업환경관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">교육관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">산업재해관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">도급관리</a></li>
+				<li><a href="/page/KW30000/KW30000U1110.do">법정관리항목</a></li>
+			</ul>
+		</li>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();">안전보건관리체제</button>
+			<ul class="dropdown-list clear-able">
+				<li><a href="/page/KW30000/KW30000U1110.do">안전보건관리체제</a></li>
+				<li><a href="/page/KW30000/KW30000U1210.do">연간계획수립</a></li>
+				<li><a href="/page/KW30000/KW30000U1310.do">규정관리</a></li>
+			</ul>
+		</li>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();">안전보건조직구성</button>
+			<ul class="dropdown-list clear-able">
+				<li><a href="/page/KW30000/KW30000U1110.do">안전보건조직구성</a></li>
+				<li><a href="/page/KW30000/KW30000U1120.do">안전보건조직관리조직도</a></li>
+				<li><a href="/page/KW30000/KW30000U1130.do">산업안전보건위원회구성</a></li>
+				<li><a href="/page/KW30000/KW30000U1140.do">산업안전보건위원회조직도</a></li>
+				<li><a href="/page/KW30000/KW30000U1150.do">산업안전보건위원회회의록</a></li>
+				<li><a href="/page/KW30000/KW30000U1160.do">응급의료체계</a></li>
+				<li><a href="/page/KW30000/KW30000U1171.do">건강관리실관리</a></li>
+			</ul>
+		</li>
+	</ul>
+</div> -->
+<!-- #location -->
+
+<!-- #container -->
+<div id="container">
+	<div class="headline sub_headline sub_headline01">
+		<div class="inner">
+			<h1>보건관리</h1>
+		</div>
+	</div>
+	<div class="inner">
+		<!-- 하단여백 섹션으로 구분 -->
+		<section id="content">
+			<div class="con_area">
+
+				<!-- ▼ 타이틀 영역 -->
+				<div class="con_section ">
+					<h2 class="con_sectionTit">
+						안전보건관리 > <span class="subtit">안전보건관리체제</span>
+					</h2>
+				</div>
+				<!-- ▼ 정보입력 영역 -->
+				<div class="tab_wrap mt20">
+					<ul class="tab_base N7">
+						<li class="On"><a href="/page/KW30000/KW30000U1110.do"><span>안전보건조직구성</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1120.do"><span>안전보건조직관리조직도</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1130.do"><span>산업안전보건위원회구성</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1140.do"><span>산업안전보건위원회조직도</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1150.do"><span>산업안전보건위원회회의록</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1160.do"><span>응급의료체계</span></a></li>
+						<li><a href="/page/KW30000/KW30000U1171.do"><span>건강관리실관리</span></a></li>
+					</ul>
+				</div>
+				<div class="mt20">
+					<!-- #content section////////////////////////////// -->
+					<section id="content">
+						<div class="button-group top">
+							<!-- ▼ 전체검색 영역 -->
+							<span class="board-search">
+								<form name="form" id="form" action="?"
+									onsubmit="return page.search(this)">
+									<input type="hidden" name="pageNum" value="1"> 
+									<select name="searchType">
+										<option value="">전체</option>
+										<option value="">제목</option>
+										<option value="">내용</option>
+										<option value="">작성자</option>
+									</select> <input type="text" name="searchKeyword" value=""
+										placeholder="검색어를 입력하세요.">
+									<button type="submit" id="search">검색</button>
+								</form>
+							</span> 
+							<span class="board-search company-search">
+								<p>기준일자조회</p> 
+									<input type="date" name="date" id="sDate" class="w180">
+								<p class="ml10">~</p> 
+									<input type="date" name="date" id="nDate" class="w180" onkeyup="enterkey()"> 
+									<input type="hidden" id="put_sDate"> <input type="hidden" id="put_nDate">
+								<button type="submit" id="btnSearch">검색</button>
+							</span>
+
+							<!-- ▼ 버튼 영역 -->
+							<div class="btn_top">
+								<a href="javascript:void(0)" class="btn_round btn_plus btn_Tw" id="insertBtn"><span>추가</span></a> 
+								<a href="javascript:void(0)" class="btn_round btn_modi btn_Tw" id="updateBtn"><span>수정</span></a> 
+								<a href="javascript:void(0)" class="btn_round btn_del btn_Tw" id="deleteBtn"><span>삭제</span></a>
+								<a href="javascript:void(0)" class="btn_round btn_save btn_Tw" id="saveBtn" style="display: none;"><span>저장</span></a> 
+								<a href="javascript:void(0)" class="btn_round btn_prt btn_Tw print-button" onclick="printPage()" id="printBtn"><span>인쇄</span></a> 
+								<a href="javascript:void(0)" class="btn_round btn_prt btn_Tw" id="cancelBtn"><span>취소</span></a>
+							</div>
+						</div>
+						<form id="saveForm" enctype="multipart/form-data" method="post">
+							<table class="board-list" id="mainTable">
+								<colgroup>
+									<col style="width: 4%">
+									<col style="width: 5%">
+									<col style="width: 100px">
+									<col style="width: 50px">
+									<col style="width: 50px">
+									<col style="width: 50px">
+									<col style="width: 70px">
+									<col style="width: 70px">
+									<col style="width: 70px">
+									<col style="width: 70px">
+									<col style="width: 100px">
+									<!-- <col style="width: 60px"> -->
+								</colgroup>
+								<thead>
+									<tr>
+										<th style="height: 10px"><input type="checkbox"
+											name="agree1" value="Y" id="checkAll"></th>
+										<th>NO</th>
+										<th>역할</th>
+										<th>근로자명</th>
+										<th>사번</th>
+										<th>부서</th>
+										<th>선임날짜</th>
+										<th>선임종료</th>
+										<th>최종교육일자</th>
+										<th>교육유효기간</th>
+										<th>이수증</th>
+										<!-- <th>이력관리</th> -->
+										<input id="filePath" type="hidden"
+											value="${resultView1.boardFile}" name="boardFileName"
+											class="form-control" readonly />
+										<input id="fileName" type="hidden"
+											value="${resultView1.boardFileName}" name="boardFileName"
+											class="form-control" readonly />
+									</tr>
+								</thead>
+								<tbody id="dataSection" name="tbody">
+								</tbody>
+							</table>
+						</form>
+						<!-- 페이징 -->
+						<div id="paginationBox" class="paging"></div>
+					</section>
+				</div>
+			</div>
+
+
+
+		</section>
+	</div>
+	<!-- 컨텐츠 -->
+	<!-- //#container -->
+
+	<div class="util-bottom">
+		<div class="inner">
+			<a class="btn-top" href="#wrap"
+				onclick="$(window).scrollTop(0); return false;">위로</a>
+		</div>
+	</div>
+</div>
+<!-- ### HTML ###-->
+
+<script>
+common.checkAll();
+
+$(document).ready(function() {
+	getPage();
+})
+
+//날짜 조회
+$("#btnSearch").click(function() {
+	alert("Dddddddddd")
+	let sDate = $("#sDate").val();
+	let nDate = $("#nDate").val();
+	
+	$("#put_sDate").val(sDate);
+	$("#put_nDate").val(nDate);
+	
+	getPage();
+});
+
+
+function makeComobo(list) {
+	comboHtml = "<select>"
+	for (i in list) {
+		comboHtml += "<option value='"+list[i]["value"]+"'>"+list[i]["text"]+"</option>";
+	}
+	comboHtml += "</select>";
+	return comboHtml;
+}
+
+function getPage(page) {
+	var searchType = $("#searchType").val();
+	var search = $("#searchInput").val();
+	
+	//날짜 조건 추가
+	var comSearchValA = $("#put_sDate").val();
+	var comSearchValB = $("#put_nDate").val();
+	
+	$.ajax({
+				url : "/page/KW30000/KW30000U1110selectList", //서비스 주소 
+				data : {  //서비스 처리에 필요한 인자값
+					page : page,
+					searchType : searchType,
+					keyword : search,
+					comSearchValA : comSearchValA,
+					comSearchValB : comSearchValB
+				},
+				success : function(res) {
+					const list = res['resultList'];
+					const pagination = res['pagination'];
+					var totalCnt = "";
+					var data = "";
+					var block = "";
+					 
+					//페이지 번호 위치				
+					totalCnt += '전체 <strong class="tc_point mr20">' +pagination['listCnt']+ '</strong>현재페이지 <strong class="tc_point"><span></span>' +pagination['page']+ '/' +pagination['listCnt']+ '</strong>'
+					
+					if(list.length !== 0){	
+					// 테이블의 row를 삽입하는 부분
+					for (var i = 0; i < list.length; i++) {
+						data += '<tr>';
+						data += '<td><input type="checkbox" name="agree1" value="'+ list[i].seq+ '"></td>';
+						data += '<td style="display:none" class="seq">' + list[i].seq + '</td>';
+						data += '<td class="rnum">' + list[i].rnum + '</td>';
+						data += '<td class="roleNm">' + list[i].roleNm + '</td>';
+						data += '<td class="nm">' + list[i].nm + '</td>';
+						data += '<td class="empeNo">' + list[i].empeNo + '</td>';
+						data += '<td class="deptNm">' + list[i].deptNm + '</td>';
+						data += '<td class="asgnDd">' + list[i].asgnDd + '</td>';
+						data += '<td class="endDd">' + list[i].endDd + '</td>';
+						data += '<td class="fnlEduDd">' + list[i].fnlEduDd + '</td>';
+						data += '<td class="eduVlidStrDd">' + list[i].eduVlidStrDd+ '</td>';
+						 if(!list[i].boardFile == ""){
+							data += '<td><a href="'+ list[i].boardFile + '" download>'+ list[i].boardFileName +'</a></td>';
+						 } else {
+							data += '<td><span>파일 없음</span></td>';
+						} 
+						data += '</tr>';
+					}
+					} else {
+						data += "<tr id='deleteCol'>";
+						data += "<td colspan='11'>현재 선임된 근로자가 없습니다. 과거 선임된 근로자를 보시려면 조건을 선택해주세요. </td>";
+						data += "</tr>";						
+					} 
+					// 이전버튼 활성화 여부를 결정하는 부분
+					if (pagination['prev']) {
+						block += "<a href='javascript:getPage("
+								+ pagination['page'] + ")'> << </a>";
+						block += "<a href='javascript:getPage("
+								+ (pagination['startPage'] - 1)
+								+ ")'> < </a>";
+						// 시작 페이지 > 처리
+					}
+					// 번호를 표시하는 부분
+					for (var i = pagination['startPage']; i < pagination['endPage'] + 1; i++) {
+						block += "<a class='page-link' href='javascript:getPage("
+								+ i + ")'>" + i + "</a>";
+					}
+
+					// 다음페이지 여부
+					if (pagination['next'] && pagination['endPage'] > 0) {
+						block += "<a href='javascript:getPage("
+								+ (pagination['endPage'] + 1)
+								+ ")'> > </a>";
+						block += "<a href='javascript:getPage("
+								+ (Math.ceil(pagination['totalCount']
+										/ pagination.cri['perPageNum']))
+								+ ")'> >> </a>";
+					}
+											
+					$("#totalCnt").html(totalCnt);						
+					$("#dataSection").html(data);
+					$("#paginationBox").html(block);
+					// 물어보기
+					$("tbody").html(data);
+					$("#insertBtn").show();
+					$("#deleteBtn").show();
+					$("#updateBtn").show();
+					$("#printBtn").show();
+					$("#saveBtn").hide();
+					$("#cancelBtn").hide();
+				}
+			})
+}
+
+	//삭제 버튼 클릭시 ajax호출
+	$("#deleteBtn").on("click",function(){
+		if($("input[name=agree1]:checked").length == 0){
+			alert("삭제하실 데이터을 선택해주세요");
+			return
+		};
+		var arr =[];
+		for ( i=0;i<$("input[name=agree1]:checked").length;i++ ){
+			 arr.push({
+				 seq : $("input[name=agree1]:checked").eq(i).val()
+			 });
+		}
+		var param = {
+			"data" : JSON.stringify(arr)
+		};
+		
+		 if (confirm("삭제하시겠습니까?")) {
+			common.ajaxaa("/page/KW30000/KW30000U1110delete.do", param);
+			 getPage();
+	     }
+	});
+
+	function updateFile(seq) {
+		if ($("#file"+seq).length == 0 ) {
+			$("#saveForm").append('<input type="file" name="file'+seq+'" id="file'+seq+'" hidden>');
+		}
+		$("#file"+seq).click();
+	}
+	
+	//수정 버튼 클릭시 ajax호출
+	$("#updateBtn").on("click", function() {
+		if($("input[name=agree1]:checked").length == 0){
+			alert("수정하실 데이터을 선택해주세요");
+			return;
+		};
+		for (i = 0; i < $("input[name=agree1]:checked").length; i++) {
+			$target = $("input[name=agree1]:checked").eq(i).closest('tr');
+			var html = "";
+			html += '<tr>';
+			html += '<td><input type="checkbox" name="agree1" value="new" class="new"></td>';
+			html += '<td class="rnum"><input type="text" value="'+$target.find('.rnum').text()+'" readonly></td>';
+			html += '<td class="roleNm"><input type="text" value="'+$target.find('.roleNm').text()+'"></td>';
+			html += '<td class="nm"><input type="text" value="'+$target.find('.nm').text()+'" name="nm"></td>';
+			html += '<td class="empeNo"><input type="text" value="'+$target.find('.empeNo').text()+'" name="empeNo"></td>';
+			html += '<td class="deptNm"><input type="text" value="'+$target.find('.deptNm').text()+'"></td>';
+			html += '<td class="asgnDd"><input type="date" value="'+$target.find('.asgnDd').text()+'"></td>';
+			html += '<td class="endDd"><input type="date" value="'+$target.find('.endDd').text()+'"></td>';
+			html += '<td class="fnlEduDd"><input type="date" value="'+$target.find('.fnlEduDd').text()+'"></td>';
+			html += '<td class="eduVlidStrDd"><input type="date" value="'+$target.find('.eduVlidStrDd').text()+'"></td>';  
+			if($target.find('.boardFile').text() != "null"){ 
+				html += '<td><button type="button"  style="background-color : #f29886" onclick="updateFile(\''+$target.find('.seq').text()+'\')" class="btn_His2">파일 변경</button></td>';
+				html += '<td style="display:none"><input type="file" id="file\''+$target.find('.seq').text()+'\'" name="file\''+$target.find('.seq').text()+'\'"></td>';
+			} else {   
+				html += '<td><input class="input" type="file" name ="file"></td>';
+			} 
+			
+			html += '<td style="display:none" class="seq"><input type="text" value="'+$target.find('.seq').text()+'" readonly></td>';
+			html += '</tr>';
+
+			$target.before(html);
+			$target.hide();
+			
+		}
+			$(".new").prop("checked",true);
+			$("#deleteBtn").hide();
+			$("#updateBtn").hide();
+			$("#printBtn").hide();
+			$("#saveBtn").show();
+			$("#cancelBtn").show();
+	});
+	
+	//추가 버튼 클릭시 tr생성만(ajax안간다.)
+	$("#insertBtn").on("click",function() {
+		$("#deleteCol").remove();
+		var html = "";
+		html += '<tr>';
+		html += '<td><input type="checkbox" name="agree1" checked="checked" value="new"></td>';
+		html += '<td class="rnum"></td>';
+		html += '<td class="roleNm"><input type="text"></td>';
+		html += '<td class="nm"><input type="text"></td>';
+		html += '<td class="empeNo"><input type="text"></td>';
+		html += '<td class="deptNm"><input type="text"></td>';
+		html += '<td class="asgnDd"><input type="date" name="date" class="w140"></td>';
+		html += '<td class="endDd"><input type="date" name="date" class="w140"></td>';
+		html += '<td class="fnlEduDd"><input type="date" name="date" class="w140"></td>';
+		html += '<td class="eduVlidStrDd"><input type="date" name="date" class="w140"></td>';
+		html += '<td><input type="file" name ="file" class="boardFile"></td>';
+		//html += '<td></td>';
+		html += '</tr>';
+		
+		$("tbody").prepend(html);
+		$("#deleteBtn").hide();
+		$("#updateBtn").hide();
+		$("#printBtn").hide();
+		$("#saveBtn").show();
+		$("#cancelBtn").show();
+
+	});
+	
+	//저장(추가, 수정시 나오는 버튼) 버튼 클릭시 ajax호출 추가추가
+	$("#saveBtn").on("click", function() {
+		var arr = [];
+			for (i = 0; i < $("input[name=agree1][value='new']:checked").length; i++) {
+				$target = $("input[name=agree1][value='new']:checked").eq(i).closest('tr');
+				arr.push({
+					//seq없는건 insert
+					seq : $target.find('.seq input').val(),
+					rnum : $target.find('.rnum input').val(),
+					roleNm : $target.find('.roleNm input').val(),
+					nm : $target.find('.nm input').val(),
+					empeNo : $target.find('.empeNo input').val(),
+					deptNm : $target.find('.deptNm input').val(),
+					asgnDd : $target.find('.asgnDd input').val(),
+					endDd : $target.find('.endDd input').val(),
+					fnlEduDd : $target.find('.fnlEduDd input').val(),
+					eduVlidStrDd : $target.find('.eduVlidStrDd input').val()
+				});
+			}
+			var param = {
+				"data" : JSON.stringify(arr)
+			};
+
+			$("#insertBtn").show();
+			$("#deleteBtn").show();
+			$("#updateBtn").show();
+			$("#printBtn").show();
+			$("#saveBtn").hide();
+		
+		if (confirm("저장하시겠습니까?")) {
+			common.ajaxFileSend("/page/KW30000/KW30000U1110save.do", param, null, "saveForm");
+			//common.ajaxaa("/page/KW30000/KW30000U1110save.do", param);
+			 getPage();
+	     }
+	});
+	
+	$("#cancelBtn").on('click',function() {
+		getPage();
+	});
+	
+	$("#aa").on("click",function() {
+		/* document.getElementById("aa").select();
+		document.selection.clear();	 */
+		alert(document.getElementById("aa").select());
+	});
+		
+	//인쇄버튼
+	function printPage(){	 
+		 window.print();
+		}
+	
+	
+	
+	
+</script>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="KW80000U1100">
+	
+	<select id="getBoardListCnt1100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_SRV_MGT 
+        WHERE BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+
+
+	<select id="page1100selectList" parameterType="KW80000U1100VO" resultType="KW80000U1100VO">
+		 SELECT ROWNUM RNUM 
+			,B.SRV_ID	
+			,B.SEQ	
+			,B.BZ_RGST_NO	
+			,B.BZ_CO_NM	 
+			,B.SRV_NM	
+			,TO_CHAR(B.CON_DD, 'YYYY-MM-DD') AS CON_DD
+			,TO_CHAR(B.BZ_STR_DD, 'YYYY-MM-DD') AS BZ_STR_DD
+			,TO_CHAR(B.BZ_END_DD, 'YYYY-MM-DD') AS BZ_END_DD
+			,B.CON_SUM	
+			,B.BILL_ISU_BILG_NO	
+			,TO_CHAR(B.BILL_ISU_BILG_DD, 'YYYY-MM-DD') AS BILL_ISU_BILG_DD
+			,B.CHRG_PRSN_NM	
+		FROM 
+		(SELECT A.* FROM TB_KW50_SRV_MGT A 
+		WHERE BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1100delete" parameterType="KW80000U1100VO">
+		DELETE  
+		FROM TB_KW50_SRV_MGT
+		WHERE SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<insert id="page1100insertSave" parameterType="KW80000U1100VO">
+		INSERT INTO TB_KW50_SRV_MGT(
+			SRV_ID	
+			, SEQ	
+			, BZ_RGST_NO	
+			, BZ_CO_NM	 
+			, SRV_NM	
+			, CON_DD
+			, BZ_STR_DD
+			, BZ_END_DD
+			, CON_SUM	
+			, BILL_ISU_BILG_NO	
+			, BILL_ISU_BILG_DD
+			, CHRG_PRSN_NM	
+			, CREATE_OBJECT_TYPE
+			, CREATE_OBJECT_ID
+			, CREATE_PROGRAM_ID
+			, CREATE_TIMESTAMP
+			, LAST_UPDATE_OBJECT_TYPE
+			, LAST_UPDATE_OBJECT_ID
+			, LAST_UPDATE_PROGRAM_ID
+			, LAST_UPDATE_TIMESTAMP
+			 ) VALUES
+			 ('SRV010',
+			 (SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_SRV_MGT WHERE BZ_RGST_NO = #{bzRgstNo}) ,
+			 #{bzRgstNo},
+			 #{bzCoNm},
+			 #{srvNm},
+			 #{conDd},
+			 #{bzStrDd},
+			 #{bzEndDd},
+			 #{conSum},
+			 #{billIsuBilgNo},
+			 #{billIsuBilgDd},
+			 #{chrgPrsnNm},
+			 'U',
+			 'admin',
+			  'admin',
+			SYSDATE, 
+			'U',
+			  'admin',
+			  'admin',
+			SYSDATE
+			 )
+		 
+	</insert> 
+	
+	<update id="page1100updateSave" parameterType="KW80000U1100VO">
+		UPDATE 	TB_KW50_SRV_MGT
+		SET 	SRV_NM = #{srvNm}
+		 	,BZ_RGST_NO = #{bzRgstNo}
+		 	,BZ_CO_NM = #{bzCoNm}
+		 	,CON_DD = #{conDd}
+		 	,BZ_STR_DD = #{bzStrDd}
+		 	,BZ_END_DD = #{bzEndDd}
+		 	,CON_SUM = #{conSum}
+		 	,BILL_ISU_BILG_NO = #{billIsuBilgNo}
+		 	,BILL_ISU_BILG_DD = #{billIsuBilgDd}
+		 	,CHRG_PRSN_NM = #{chrgPrsnNm}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = 'admin'
+			,LAST_UPDATE_PROGRAM_ID ='admin'
+			,LAST_UPDATE_TIMESTAMP = sysdate
+		WHERE	SEQ = #{seq} 
+		AND BZ_RGST_NO = #{bzRgstNo}
+	</update> 
+	
+	
+</mapper>

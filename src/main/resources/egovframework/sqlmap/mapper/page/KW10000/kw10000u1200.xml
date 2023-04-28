@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw10000u1200">
+    
+    <select id="getBoardListCnt" resultType="int">
+	    SELECT DISTINCT count(*) AS listCnt
+		FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR A,
+			 KH10APUSER.TB_KH10_BZ_CO_MSTR B
+		WHERE A.BZ_UNIQ_NO = B.BZ_UNIQ_NO
+        AND B.BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+
+	<select id="page1200selectList" parameterType="KW10000U1200VO" resultType="KW10000U1200VO">
+		SELECT ROWNUM RNUM
+					, NVL(B.WRK_PLC_CD, '-') AS WRK_PLC_CD
+					, NVL(B.BZ_UNIQ_NO, '-') AS BZ_UNIQ_NO
+					, NVL(B.WRK_PLC_NM, '-') AS WRK_PLC_NM
+					, NVL(B.BZ_RGST_NO, '-') AS BZ_RGST_NO
+					, NVL(B.PLC_NO_ADD, '-') AS PLC_NO_ADD
+					, NVL(B.STRT_NM_ADD, '-') AS STRT_NM_ADD
+					, NVL(B.STRT_NM_DTL_ADD, '-') AS STRT_NM_DTL_ADD
+					, NVL(B.CREATE_OBJECT_ID, '-') AS CREATE_OBJECT_ID
+					, NVL(B.HEAD_NM, '-') AS HEAD_NM
+					, B.employCnt
+					, NVL(B.BZ_ITEM, '-') AS BZ_ITEM
+					, B.CREATE_TIME AS CREATE_TIME
+					, NVL(B.REP_FON_NO, '-') AS REP_FON_NO	 
+		FROM ( SELECT    DISTINCT
+						 A.WRK_PLC_MGT_UNIQ_NO AS WRK_PLC_CD
+					   , A.BZ_UNIQ_NO AS BZ_UNIQ_NO
+					   , A.WRK_PLC_NM AS WRK_PLC_NM
+					   , B.BZ_RGST_NO AS BZ_RGST_NO
+					   , A.PLC_NO_ADD AS PLC_NO_ADD
+					   , A.STRT_NM_ADD AS STRT_NM_ADD
+					   , A.STRT_NM_DTL_ADD AS STRT_NM_DTL_ADD
+					   , A.CREATE_OBJECT_ID AS CREATE_OBJECT_ID
+					   , A.HEAD_NM AS HEAD_NM
+					   , (A.OFC_WRKR_MAN_EMPE_CNT + A.OFC_WRKR_WMN_EMPE_CNT + A.PRD_WRK_MAN_EMPE_CNT + A.PRD_WRK_WMN_EMPE_CNT + A.MAN_EMPE_CNT_3 + A.WMN_EMPE_CNT_3 + A.MAN_EMPE_CNT_4+ A.WMN_EMPE_CNT_4) AS employCnt 
+					   ,(B.BZ_SCTR||'/'||B.INDS_TP||'/'||B.BZ_ITEM) AS BZ_ITEM
+					   , TO_CHAR(A.CREATE_TIMESTAMP,'YYYYMMDD') AS CREATE_TIME
+					   , NVL(A.REP_FON_NO,B.REP_FON_NO) AS REP_FON_NO
+				FROM KH10APUSER.TB_KH10_WRK_PLC_MSTR A,
+					 KH10APUSER.TB_KH10_BZ_CO_MSTR B
+				WHERE A.BZ_UNIQ_NO = B.BZ_UNIQ_NO
+				AND B.BZ_RGST_NO = '1148200907'
+		        ORDER BY A.WRK_PLC_NM
+		        ) B
+        ORDER BY ROWNUM DESC
+        OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY	
+	</select>
+	
+</mapper>

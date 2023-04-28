@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CommonPop">
+	<!-- 팝업창 리스트 -->
+	<select id="selectList"  parameterType="CommonPopVO" resultType="CommonPopVO">
+				SELECT BZ_RGST_NO
+					  ,BZ_CO_NM
+				      ,HEAD_NM 
+				FROM KH10APUSER.TB_KH10_BZ_CO_MSTR 
+				<trim prefix="WHERE" prefixOverrides="AND|OR">
+			       	<if test="keyword != null and keyword != '' ">		
+					    <if test="searchType=='1'.toString()">
+							 AND BZ_CO_NM LIKE '%'|| #{keyword} || '%'
+						</if>
+						<if test="searchType=='2'.toString()">
+							 AND BZ_RGST_NO LIKE '%'|| #{keyword} || '%'
+						</if>		
+					</if> 
+				</trim>
+				ORDER BY BZ_CO_NM 
+				OFFSET 0 ROWS FETCH FIRST 100 ROWS ONLY
+	</select>
+	
+	<select id="getBoardListCnt" resultType="int">
+        SELECT count(*) AS listCnt
+        FROM KH10APUSER.TB_KH10_BZ_CO_MSTR 
+    </select>
+	
+</mapper>

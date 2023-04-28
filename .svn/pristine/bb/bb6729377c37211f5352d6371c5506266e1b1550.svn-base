@@ -1,0 +1,228 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/WEB-INF/jsp/include/common.jsp"%>
+<!DOCTYPE html>
+
+<!-- #location -->
+<div id="location" class="">
+	<ul>
+		<li><a href="/">홈</a></li>
+		<li>
+			<button onclick="$(this).toggleClass('active').next().slideToggle();"
+				class="">마이페이지</button>
+			<ul class="dropdown-list clear-able" style="display: none;">
+				<li><a href="/mypage/MY80000U1100.do">마이페이지</a></li>
+			</ul>
+		</li>
+		<li>
+
+			<button onclick="$(this).toggleClass('active').next().slideToggle();">서비스관리</button>
+
+			<ul class="dropdown-list clear-able">
+				<li><a href="/mypage/MY80000U1100.do">서비스관리</a></li>
+				<li><a href="/mypage/MY80000U2100.do">내정보관리</a></li>
+				<li><a href="/mypage/MY80000U3100.do">견적요청 및 예약하기</a></li>
+				<li><a href="/mypage/MY80000U4100.do">계산서관리</a></li>
+			</ul>
+		</li>
+	</ul>
+</div>
+<!-- #location -->
+
+    <!-- #container -->
+    <div id="container">
+            
+        <div class="headline sub_headline sub_headline00">
+          <div class="inner">
+              <h1>마이페이지</h1>
+          </div>
+        </div>      
+    
+        <div class="inner">
+          <!-- 하단여백 섹션으로 구분 -->
+          <form action="/mypage/MY80000U2100Update" id="boardForm" method="POST">
+          <section id="content">
+           <div class="con_area">      
+
+        <!-- ▼ 안내 영역 -->
+        <div class="con_section ">
+            <h2 class="con_sectionTit">개인 정보수정</h2>            
+        </div>
+        
+        <!-- ▼ 정보입력 영역 -->
+        <div class="mt20">
+            <table class="board-list board-list_left" summary="회원가입을 위한 사업자정보 로그인정보 회원정보 입력">
+                <caption>회원가입을 위한 정보입력표</caption>
+                <colgroup>
+                    <col width="80px">
+                    <col width="150px">
+                    <col width="auto">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th colspan="2" class="tit"><label for="entsrNo" class="textCt">회원유형</label></th>
+                        <input type="hidden" name="roleAuthId" id="roleAuthId" value="${resultList.roleAuthId}">
+                        <td><input type="text" name="comRoleAuthId" id="comRoleAuthId" class="w300" disabled="disabled" value="${resultList.roleAuthId}"></td>
+                    </tr>
+                    <tr>
+                        <th rowspan="2" class="tit"><label for="entsrNo" class="textCt">사업자<br>정보</label></th>
+                        <th><label for="entsrNo"><span class="must"><b>필수입력</b></span>사업자등록번호</label></th>
+                        <td>
+                            <input type="hidden" name="bzRgstNo" value="${resultList.bzRgstNo}" class="w300">
+                            <input type="text" disabled="disabled" value="${resultList.bzRgstNo}" class="w300">
+                        </td>
+                    </tr>
+                        <tr>
+                        <th><label for="id"><span class="must"><b>필수입력</b></span>사업자명</label></th>
+                        <td>
+                            <input type="hidden" name="bzCoNm" class="w300" value="${resultList.bzCoNm}">                            
+                            <input type="text" class="w300" disabled="disabled" value="${resultList.bzCoNm}">                            
+                        </td>
+                    </tr>
+
+                    <tr> 
+                      <th rowspan="3" class="tit"><label for="login" class="textCt">로그인<br>정보</label></th>
+                        <th><label for="email"><span class="must"><b>필수입력</b></span>아이디(E-mail)</label></th>
+                        <td>
+                            <input type="hidden" name="mbrId" class="w300" value="${resultList.mbrId}" >
+                            <input type="email"  disabled="disabled" class="w300" value="${resultList.mbrId}" >
+                        </td>
+                    </tr>
+                    <tr>
+                      
+                        <th><label for="pw"><span class="must"><b>필수입력</b></span>비밀번호</label></th>
+                        <td>
+                            <input type="password" name="pswd" id="pswd" class="w300" autocomplete="new-password">
+                            <p class="guide3">※<span class="tc_point">숫자, 영문소문자, 특수문자(!@#%?&@*)세가지 조합</span>으로 8자 이상 20자 이하 입력(대문자 제외, 특수문자 한개 이상 사용)</p>
+                        </td>
+                    </tr>  
+                    <tr>
+                        <th><label for="pw_confirm"><span class="must"><b>필수입력</b></span>비밀번호확인</label></th>
+                        <td>
+                            <input type="password" name="scrtNoConfirm" id="scrtNoConfirm" class="w300">
+                        </td>
+                    </tr>
+                    <tr> 
+                      <th rowspan="4" class="tit"><label for="name" class="textCt">회원<br>정보</label></th>
+                        <th><label for="myslfConfAns"><span class="must"><b>필수입력</b></span>성명</label></th>
+                        <td>
+                            <input type="hidden" name="mbrNm" class="w300" value="${resultList.mbrNm}">
+                            <input type="text" class="w300" disabled="disabled" value="${resultList.mbrNm}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="date"><span class="must"><b>필수입력</b></span>생년월일</label></th>
+                        <td>
+                            <input type="hidden" name="bdt" id="date" class="w300" value="${resultList.bdt}">
+                            <input type="date" id="bdt" class="w300" disabled="disabled" value="${resultList.bdt}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><span class="must"><b>필수입력</b></span>휴대전화번호</th>
+                        <td>
+                        
+                            <input type="hidden" name="fonNo" id="fonNo" value="${resultList.fonNo}">
+                            <label for="mphonNo1" class="blind">휴대전화 앞번호 선택</label>
+                            <select name="mphonNo1" id="mphonNo1" class="w104">
+                                <option value="">선택</option>                                
+                                    <option value="010">010</option>                                
+                                    <option value="011">011</option>                                
+                                    <option value="016">016</option>                                
+                                    <option value="017">017</option>                                
+                                    <option value="018">018</option>                                
+                                    <option value="019">019</option>                                
+                            </select>
+                            <input type="text" name="mphonNo2" id="mphonNo2" class="w95" value=""><label for="mphonNo2" class="blind">중간번호</label>
+                            <input type="text" name="mphonNo3" id="mphonNo3" class="w95" value=""><label for="mphonNo3" class="blind">마직막번호</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label for="gender"></label><span class="must"><b>필수입력</b></span>성별</th>
+                        <td>
+                            <span class="checkbox-group">
+                              <label>
+                                <span class="input-checkbox">
+                                 <input type="hidden" name="gndrTp" id="gndrTp" value="${resultList.gndrTp}">
+                                  <input type="radio" name="man" id="gndrTp1" disabled="disabled" value="Y">
+                                  <i></i>
+                                </span>
+                               남
+                              </label>
+                              <label>
+                                <span class="input-checkbox">
+                                  <input type="radio" name="woman" id="gndrTp2"  disabled="disabled" value="N">
+                                  <i></i>
+                                </span>
+                                여
+                              </label>
+                            </span>
+                        </td>
+                    </tr>                    
+                   
+                </tbody>
+            </table>
+		
+        </div>
+    
+        <!-- ▼ 버튼 영역 -->
+        <div class="textCt pt60 pb100">
+        	<button class="btn_round btn_Blue w180" type="button" onclick="btn_write()">확인</button>
+            <button class="btn_round btn_Gray_ddd w180"  onclick="location.href='/main/main.do'" type="button">취소</button>
+            
+        </div>
+    </div>              
+          </section>
+ </form>
+        </div>
+<!-- 컨텐츠 -->      
+    <!-- //#container -->
+
+<div class="util-bottom">
+  <div class="inner">
+    <a class="btn-top" href="#wrap" onclick="$(window).scrollTop(0); return false;">위로</a>
+  </div>
+</div>
+
+
+<script>
+	function btn_write(){
+		 var pw = $("#pswd").val();
+		 var num = pw.search(/[0-9]/g);
+		 var eng = pw.search(/[a-z]/ig);
+		 var spe = pw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+
+		 if(pw.length < 8 || pw.length > 20){
+		 	alert("8자리 ~ 20자리 이내로 입력해주세요."); return;
+		 }else if(pw.search(/\s/) != -1){
+		 	alert("비밀번호는 공백 없이 입력해주세요."); return;
+		 }else if(num < 0 || eng < 0 || spe < 0 ){ 
+			 alert("영문,숫자, 특수문자를 혼합하여 입력해주세요."); return;
+		 }
+		 
+		if($("#pswd").val() != $("#scrtNoConfirm").val()){
+			alert("비밀번호 확인을 다시 해주세요.");
+			return;
+		};
+		//자바로 넘길때
+		var fonNum1 = ($("#mphonNo1").val() + $("#mphonNo2").val() + $("#mphonNo3").val());
+			$("#fonNo").val(fonNum1);
+			
+		$("#boardForm").submit()
+	};
+	
+	//가져올때
+var fonNum =  $("#fonNo").val().replace(/(^02.{0}|^01.{1}|[0-9]{3})([0-9]+)([0-9]{4})/,"$1-$2-$3");
+	fonNum = fonNum.split('-');
+	$("#mphonNo1").val(fonNum[0]).prop("selected", true);
+	$("#mphonNo2").val(fonNum[1]);
+	$("#mphonNo3").val(fonNum[2]);
+	
+	
+var gndrTp = $("#gndrTp").val();
+	if(gndrTp == 1){
+		$("#gndrTp1").attr('checked', 'checked');
+	}else{
+		$("#gndrTp2").attr('checked', 'checked');
+	}
+
+
+</script>

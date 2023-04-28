@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw50000u1100">
+
+	<select id="page1100SelectList" parameterType="KW50000U1100VO" resultType="KW50000U1100VO">
+			    SELECT  SEQ 
+					  , BZ_RGST_NO
+					  , TO_CHAR(STR_DT, 'YYYY-MM-DD HH24:MI:SS') AS STR_DT
+		 			  , TO_CHAR(END_DT, 'YYYY-MM-DD HH24:MI:SS') AS END_DT
+					  , TTL
+					  , SCH_TP
+					  , DTL
+				FROM TB_KW50_SCH_MGT
+	          	<trim prefix="WHERE" prefixOverrides="AND|OR">
+		        	AND BZ_RGST_NO = #{searchBzRgstNo}
+		      	</trim>	  
+	</select>
+	
+	<select id="page1100getSelect" parameterType="KW50000U1100VO" resultType="KW50000U1100VO">
+	    	SELECT  SEQ  
+	    		  , TTL
+				  , TO_CHAR(STR_DT, 'YYYY-MM-DD HH24:MI:SS') AS STR_DT
+				  , TO_CHAR(END_DT, 'YYYY-MM-DD HH24:MI:SS') AS END_DT
+				  , DTL
+			FROM KW50APUSER.TB_KW50_SCH_MGT
+			<trim prefix="WHERE" prefixOverrides="AND|OR">
+		        	AND BZ_RGST_NO = #{bzRgstNo}
+		        	AND SEQ = #{seq}
+		    </trim>	
+	</select>
+	
+	<insert id="page1100Insert" parameterType="KW10000U1300VO">
+		INSERT INTO TB_KW50_SCH_MGT (
+				  SEQ
+				, BZ_RGST_NO
+				, STR_DT
+				, END_DT
+				, TTL
+				, DTL
+				, SCH_TP
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+		) VALUES (
+				(SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_SCH_MGT) 
+				, #{bzRgstNo}
+				, TO_DATE(#{strDt}, 'YYYY-MM-DD HH24:MI:SS') 
+				, TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS')
+				, #{ttl}
+				, #{dtl}
+				, 'T'
+				, 'U' 
+				, #{mbrNm} 
+				, 'SYSTEM' 
+				, SYSDATE 
+				, 'U'
+				, #{mbrNm}
+				, 'SYSTEM' 
+				, SYSDATE
+				, 'N'
+		)
+	</insert> 
+	
+	<update id="page1300Update" parameterType="kw50000u1100vo">
+		UPDATE TB_KW50_SCH_MGT
+		SET	 
+			  TTL = #{ttl}
+			<if test="dtl != null and dtl != ''">
+			, DTL = #{dtl}
+			</if>	
+			, STR_DT = TO_DATE(#{strDt}, 'YYYY-MM-DD HH24:MI:SS')
+			, END_DT = TO_DATE(#{endDt}, 'YYYY-MM-DD HH24:MI:SS')
+			, LAST_UPDATE_OBJECT_TYPE = 'U'
+			, LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE BZ_RGST_NO = #{bzRgstNo}
+		AND SEQ = #{seq}	    
+	</update>
+	
+	<delete id="page1300Delete" parameterType="kw50000u1100vo">
+	    DELETE
+	    FROM TB_KW50_SCH_MGT
+	    WHERE BZ_RGST_NO = #{bzRgstNo}
+	    AND SEQ = #{seq}
+	</delete>
+	
+</mapper>

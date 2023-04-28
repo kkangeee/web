@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw90000u3100">
+
+	<select id="getBoardListCnt3100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_MENU_MSTR    
+        WHERE 1 = 1
+    </select>
+	
+	<select id="page3100selectList" parameterType="KW90000U3100VO" resultType="KW90000U3100VO">
+		 SELECT ROWNUM RNUM 
+		,A.SEQ
+		,A.MENU_ID
+		,A.MENU_NM
+		,A.FOLD_YN
+		,A.PGM_ID
+		,A.MENU_SHOW_YN
+		,A.MENU_ORD
+		,A.MENU_LVL
+		,A.HG_RK_MENU_ID AS HG_RK_MENU_ID
+		FROM TB_KW50_MENU_MSTR A  
+		ORDER BY MENU_ID
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+
+<!-- 3100 쓰기 -->
+	<insert id="page3100insertSave" parameterType="KW90000U3100VO">
+		INSERT INTO TB_KW50_MENU_MSTR
+		(
+		  SEQ
+		, MENU_ID
+		, MENU_NM
+		, FOLD_YN
+		, PGM_ID
+		, MENU_SHOW_YN
+		, MENU_ORD
+		, MENU_LVL
+		, HG_RK_MENU_ID
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		VALUES
+		(
+		  SQ_TB_KW50_MENU_MSTR.NEXTVAL 
+		, #{menuId}
+		, #{menuNm}
+		, #{foldYn}
+		, #{pgmId}
+		, #{menuShowYn}
+		, #{menuOrd}
+		, #{menuLvl}
+		, #{hgRkMenuId}
+		, 'C'
+		, #{mbrId}
+		, #{programId}
+		, SYSDATE
+		, 'C'
+		, #{mbrId}
+		, #{programId}
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 3100 수정 확인 -->
+	<update id="page3100updateSave" parameterType="KW90000U3100VO">
+		UPDATE TB_KW50_MENU_MSTR
+		SET MENU_ID = #{menuId}
+		  , MENU_NM = #{menuNm}
+		  , FOLD_YN = #{foldYn}
+		  , PGM_ID = #{pgmId}
+		  , MENU_SHOW_YN = #{menuShowYn}
+		  , MENU_ORD = #{menuOrd}
+		  , MENU_LVL = #{menuLvl}
+		  , HG_RK_MENU_ID = #{hgRkMenuId}
+		  , LAST_UPDATE_OBJECT_TYPE = 'U'
+		  , LAST_UPDATE_OBJECT_ID = #{mbrId}
+		  , LAST_UPDATE_PROGRAM_ID = #{programId}
+		  , LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+	</update>
+	
+	<!-- 3100 삭제 -->
+	<delete id="page3100delete" parameterType="KW90000U3100VO">
+		DELETE FROM TB_KW50_MENU_MSTR   
+		WHERE SEQ = #{seq}
+	</delete>
+	
+</mapper>

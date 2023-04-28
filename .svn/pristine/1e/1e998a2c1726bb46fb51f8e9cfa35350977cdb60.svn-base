@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u5000">
+	
+	<select id="getBoardListCnt5400" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_BZ_NTC_BRD_CNTNT    
+        WHERE BOARD_ID = '35400'
+    </select>
+	
+	<select id="page5400selectList" parameterType="KW30000U1310VO" resultType="KW30000U1310VO">
+		 SELECT ROWNUM RNUM 
+		,B.CONTENT_ID
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(CREATE_TIMESTAMP, 0, 10) AS createTimestamp
+		,B.TITLE	
+		,B.DISPLAY_USER
+		,B.CNT
+		,B.BZ_SCTR
+		,B.LRG_CLSS
+		FROM 
+		(SELECT A.* FROM TB_KW50_BZ_NTC_BRD_CNTNT A WHERE BOARD_ID = '35400'
+		 ORDER BY A.LAST_UPDATE_TIMESTAMP DESC) B  
+		  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<!-- 1310 상세 페이지 조회 -->
+	<select id="KW30000U5400View" parameterType="KW30000U1310VO" resultType="KW30000U1310VO">
+		SELECT CONTENT_ID
+		,TITLE
+		,CONTENT
+		,DISPLAY_USER
+		,SUBSTR(CREATE_TIMESTAMP, 0, 10) AS createTimestamp
+		,CNT
+		,BOARD_FILE_NAME
+		FROM TB_KW50_BZ_NTC_BRD_CNTNT
+		WHERE CONTENT_ID = #{contentId} 
+		AND BOARD_ID = '35400'
+	</select>
+
+	<!-- 조회수 증가  -->	 	
+   	<update id="cntUpdate5400" parameterType="int">
+	   	UPDATE TB_KW50_BZ_NTC_BRD_CNTNT
+	   	SET CNT = CNT+1
+	   	WHERE CONTENT_ID = #{contentId}
+	   	AND BOARD_ID = '35400'
+   	</update>
+
+<!-- 1310 쓰기 -->
+	<insert id="KW30000U5400Insert" parameterType="KW30000U1310VO">
+		insert into TB_KW50_BZ_NTC_BRD_CNTNT
+		(
+		CONTENT_ID
+		, BOARD_ID
+		, BZ_RGST_NO
+		, TITLE
+		, CNT
+		, CONTENT
+		, DISPLAY_USER
+		, BOARD_FILE_NAME
+		, AMND_DD
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(CONTENT_ID))+1, 1) FROM TB_KW50_BZ_NTC_BRD_CNTNT WHERE BOARD_ID = '35400')
+		, 35400
+		, '*'
+		, #{title}
+		, 0
+		, #{content}
+		, 'admin'
+		, #{boardFileName}
+		, SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 1310 수정 페이지 -->
+	<select id="KW30000U5400UpdateForm" parameterType="KW30000U1310VO" resultType="KW30000U1310VO">
+		SELECT CONTENT_ID
+		,TITLE
+		,CONTENT
+		,DISPLAY_USER
+		,SUBSTR(AMND_DD, 0, 10) AS AMND_DD
+		,CNT
+		,BOARD_FILE_NAME
+		FROM TB_KW50_BZ_NTC_BRD_CNTNT
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = '35400'
+	</select>
+	
+	<!-- 1310 수정 확인 -->
+	<update id="KW30000U5400Update" parameterType="KW30000U1310VO">
+		UPDATE TB_KW50_BZ_NTC_BRD_CNTNT
+		SET TITLE = #{title}
+		, CONTENT = #{content}
+		, BOARD_FILE_NAME = #{boardFileName}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = '35400'
+	</update>
+	
+	
+	<!-- 1310 삭제 -->
+	<delete id="KW30000U5400Delete" parameterType="KW30000U1310VO">
+		DELETE FROM TB_KW50_BZ_NTC_BRD_CNTNT   
+		WHERE CONTENT_ID = #{contentId}
+		AND BOARD_ID = '35400'
+	</delete>
+	
+	
+
+
+</mapper>

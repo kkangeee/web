@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw10000u1300">
+
+	<select id="getBoardListCnt" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_PTNR_CO_INFO  
+        <trim prefix="WHERE" prefixOverrides="AND|OR">
+           			AND BZ_RGST_NO = #{searchBzRgstNo}
+			<if test="comSearchValA != null and comSearchValA != '' "><!-- 단위사업체 정렬  -->
+			    	AND UNIT_CO_NM = #{comSearchValA} 			
+			</if>
+			<if test="comSearchValB != null and comSearchValB != '' "><!-- 공정명 정렬  -->
+			    	AND PRCS_NM = #{comSearchValB}				
+			</if>
+		</trim>	
+    </select>
+    
+	<select id="page1300selectList" parameterType="KW10000U1300VO" resultType="KW10000U1300VO">
+		  SELECT ROWNUM RNUM
+		  		,B.SEQ 
+				,B.BZ_RGST_NO
+				,B.PTNR_CO_BZ_RGST_NO
+				,B.PTNR_CO_NM
+				,B.HEAD_NM
+				,B.UNIT_CO_NO
+				,B.UNIT_CO_NM
+				,B.WRKR_CNT
+				,B.FON_NO
+				,B.PRCS_NM
+				,B.PRSN_CHRG		
+		  FROM (
+		  		  SELECT SEQ
+					   , BZ_RGST_NO 
+					   , PTNR_CO_BZ_RGST_NO
+					   , PTNR_CO_NM
+					   , HEAD_NM
+					   , UNIT_CO_NO
+					   , UNIT_CO_NM
+					   , WRKR_CNT
+					   , FON_NO
+					   , PRCS_NM
+					   , PRSN_CHRG
+				  FROM TB_KW50_PTNR_CO_INFO
+		          <trim prefix="WHERE" prefixOverrides="AND|OR">
+			           			AND BZ_RGST_NO = #{searchBzRgstNo}
+						<if test="comSearchValA != null and comSearchValA != '' "><!-- 단위사업체 정렬  -->
+						    	AND UNIT_CO_NM = #{comSearchValA}				
+						</if>
+						<if test="comSearchValB != null and comSearchValB != '' "><!-- 공정명 정렬  -->
+						    	AND PRCS_NM = #{comSearchValB}				
+						</if>
+			      </trim>	  
+			ORDER BY CREATE_TIMESTAMP ASC
+			) B
+		ORDER BY ROWNUM DESC	
+		OFFSET #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+	<delete id="page1300delete" parameterType="KW10000U1300VO">
+		DELETE  
+		FROM TB_KW50_PTNR_CO_INFO 
+		WHERE SEQ  = #{seq}
+	</delete> 
+	
+	<insert id="page1300insertSave" parameterType="KW10000U1300VO">
+		INSERT INTO TB_KW50_PTNR_CO_INFO (
+				  SEQ
+				, BZ_RGST_NO
+				, PTNR_CO_BZ_RGST_NO
+				, PTNR_CO_NM
+				, HEAD_NM
+				, UNIT_CO_NM
+				, WRKR_CNT
+				, FON_NO
+				, PRCS_NM
+				, PRSN_CHRG
+				, CREATE_OBJECT_TYPE
+				, CREATE_OBJECT_ID
+				, CREATE_PROGRAM_ID
+				, CREATE_TIMESTAMP
+				, LAST_UPDATE_OBJECT_TYPE
+				, LAST_UPDATE_OBJECT_ID
+				, LAST_UPDATE_PROGRAM_ID
+				, LAST_UPDATE_TIMESTAMP
+				, DELETE_TP
+		) VALUES (
+				(SELECT NVL(MAX(SEQ), 0) + 1 FROM TB_KW50_PTNR_CO_INFO) 
+				, #{bzRgstNo} 
+				, #{ptnrCoBzRgstno}
+				, #{ptnrCoNm} 
+				, #{headNm} 
+				, #{unitCoNm} 
+				, #{wrkrCnt}
+				, #{fonNo} 
+				, #{prcsNm} 
+				, #{prsnChrg} 
+				, 'U' 
+				, #{mbrNm} 
+				, 'SYSTEM' 
+				, SYSDATE 
+				, 'U'
+				, #{mbrNm}
+				, 'SYSTEM' 
+				, SYSDATE
+				, 'N'
+		)
+	</insert> 
+	
+	<update id="page1300updateSave" parameterType="KW10000U1300VO">
+		UPDATE 	TB_KW50_PTNR_CO_INFO
+		SET 	
+			 PTNR_CO_NM = #{ptnrCoNm}
+		 	,PTNR_CO_BZ_RGST_NO = #{ptnrCoBzRgstno}
+		 	,HEAD_NM = #{headNm}
+		 	,UNIT_CO_NM = #{unitCoNm}
+		 	,PRCS_NM = #{prcsNm}
+		 	,WRKR_CNT = #{wrkrCnt}
+		 	,PRSN_CHRG = #{prsnChrg}
+		 	,FON_NO = #{fonNo}
+			,LAST_UPDATE_OBJECT_TYPE = 'U'
+			,LAST_UPDATE_OBJECT_ID = #{mbrNm}
+			,LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+			,LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ  = #{seq}
+	</update> 
+	
+</mapper>

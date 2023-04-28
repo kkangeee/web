@@ -1,0 +1,62 @@
+package iohp.page.KW90000.service.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.com.cmm.PaginationHndlr;
+import egovframework.com.cmm.SearchHndlr;
+import iohp.page.KW90000.service.KW90000U1100Service;
+import iohp.page.KW90000.service.KW90000U1100VO;
+ 
+@Service("KW90000U1100Service")
+public class KW90000U1100ServiceImpl implements KW90000U1100Service {
+
+	@Resource(name = "KW90000U1100DAO")
+	private KW90000U1100DAO kw90000u1100DAO;
+
+	/*
+	 * @Override public List<KW90000U1100VO> KW90000U1100pageList(KW90000U1100VO
+	 * kw90000u1100vo) throws Exception { System.out.println("ddddddddddddddddddddd"
+	 * + kw90000u1100vo); return
+	 * kw90000u1100DAO.KW90000U1100pageList(kw90000u1100vo); }
+	 */
+  
+	/* 조회 */
+	@Override
+	public List<KW90000U1100VO> KW90000U1100select(SearchHndlr search) throws Exception {
+		List<KW90000U1100VO> result = kw90000u1100DAO.KW90000U1100selectList(search);
+		return result;
+	}
+	
+	/* 조회 개수 */
+	@Override
+	public int KW90000U1100selectCnt(SearchHndlr search) throws Exception {
+		search.setTableNm("TB_KW50_CD_STDD_MGT");
+		return kw90000u1100DAO.getBoardListCnt(search);
+	}
+	
+	/* 삭제 */
+	@Override
+	public int KW90000U1100delete(KW90000U1100VO kw90000u1100vo) throws Exception {
+		return kw90000u1100DAO.KW90000U1100delete(kw90000u1100vo);
+	}
+
+	/* 추가 */
+	 @Override 
+	 public int KW90000U1100insertSave(KW90000U1100VO kw90000u1100vo) throws Exception { 
+		 return kw90000u1100DAO.KW90000U1100insertSave(kw90000u1100vo); 
+	}
+	 
+	 /* 수정 */
+	 @Override 
+	 public int KW90000U1100updateSave(KW90000U1100VO kw90000u1100vo) throws Exception { 
+		 return kw90000u1100DAO.KW90000U1100updateSave(kw90000u1100vo); 
+	}
+	 
+	 
+
+
+}

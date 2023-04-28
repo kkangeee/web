@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="join">
+
+	<!-- 개인회원가입 -->
+	<insert id="joinPersonalInsert" parameterType="JoinVO">
+		INSERT INTO TB_KW50_MBR_MGT
+		(
+		BZ_RGST_NO
+		, MBR_ID
+		, PSWD
+		, MBR_NM
+		, BZ_CO_NM
+		, BDT
+		, FON_NO
+		, GNDR_TP
+		, ROLE_AUTH_ID
+		, MBR_TP
+		, MBR_APRV_YN
+		, MBR_SEQ
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP 
+		)
+		VALUES(
+		#{bzRgstNo}
+		, #{mbrId}
+		, #{pswd}
+		, #{mbrNm}
+		, #{bzCoNm}
+		, TO_DATE(#{bdt},'YYYY/MM/DD')
+		, #{fonNo}
+		, #{gndrTp}
+		, 'COM030'           <!-- 일반회원 -->
+		, #{mbrTp}
+		, #{mbrAprvYn}
+		, (SELECT NVL(MAX(TO_NUMBER(MBR_SEQ))+1, 1)
+		FROM TB_KW50_MBR_MGT)
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+	
+	<!-- 기업회원가입 -->
+	<insert id="joinCompanyInsert" parameterType="JoinVO">
+		INSERT INTO TB_KW50_MBR_MGT
+		(
+		BZ_RGST_NO
+		, MBR_ID
+		, PSWD
+		, MBR_NM
+		, BZ_CO_NM
+		, BDT
+		, FON_NO
+		, GNDR_TP
+		, ROLE_AUTH_ID     <!-- 관리자회원 -->
+		, MBR_TP
+		, MBR_APRV_YN
+		, MBR_SEQ
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP 
+		)
+		VALUES(
+		#{bzRgstNo}
+		, #{mbrId}
+		, #{pswd}
+		, #{mbrNm}
+		, #{bzCoNm}
+		, TO_DATE(#{bdt},'YYYY/MM/DD') 
+		, #{fonNo}
+		, #{gndrTp}
+		, 'COM000'           <!-- 일반회원 -->
+		, #{mbrTp}
+		, #{mbrAprvYn}
+		, (SELECT NVL(MAX(TO_NUMBER(MBR_SEQ))+1, 1)
+		FROM TB_KW50_MBR_MGT)
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'C'
+		, #{mbrId}
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+	
+	<select id="joinIdCheck" parameterType="String" resultType="int">
+	    SELECT count(MBR_ID)
+		FROM TB_KW50_MBR_MGT
+		WHERE MBR_ID = #{userId}
+	</select>
+
+
+
+</mapper>

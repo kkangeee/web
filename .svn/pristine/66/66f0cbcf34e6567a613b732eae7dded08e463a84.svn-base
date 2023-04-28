@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed Feb 01 15:11:03 
+	KST 2017 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kw30000u6000">
+	
+	<select id="getBoardListCnt6100" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_ACDNT_MGT    
+        WHERE BOARD_ID = '36200'
+        AND BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+	
+	<select id="page6100selectList" parameterType="KW30000U6100VO" resultType="KW30000U6100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(OCUR_DD, 0, 10) AS OCUR_DD
+		,B.NJRD_NM
+		,B.PRCS_NM
+		,B.ACDNT_TP
+		,B.WRTR_NM
+		FROM 
+		(SELECT A.* FROM TB_KW50_ACDNT_MGT A WHERE BOARD_ID = '36200' AND BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  
+		  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+<!-- 6100 쓰기 -->
+	<insert id="page6100insertSave" parameterType="KW30000U6100VO">
+		insert into TB_KW50_ACDNT_MGT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO
+		, OCUR_DD
+		, NJRD_NM
+		, PRCS_NM
+		, ACDNT_TP
+		, WRTR_NM
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_ACDNT_MGT WHERE BOARD_ID = '36200' AND BZ_RGST_NO = #{bzRgstNo})
+		, 36200
+		, #{bzRgstNo}
+		, #{ocurDd}
+		, #{njrdNm}
+		, #{prcsNm}
+		, #{acdntTp}
+		, #{wrtrNm}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+	
+	<!-- 6100 수정 확인 -->
+	<update id="page6100updateSave" parameterType="KW30000U6100VO">
+		UPDATE TB_KW50_ACDNT_MGT
+		SET OCUR_DD = #{ocurDd}
+		, NJRD_NM = #{njrdNm}
+		, PRCS_NM = #{prcsNm}
+		, ACDNT_TP = #{acdntTp}
+		, WRTR_NM = #{wrtrNm}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '36200'  AND BZ_RGST_NO = #{bzRgstNo}
+	</update>
+	
+	<!-- 6100 삭제 -->
+	<delete id="page6100delete" parameterType="KW30000U6100VO">
+		DELETE FROM TB_KW50_ACDNT_MGT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '36200'  AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<select id="getBoardListCnt6200" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_ACDNT_MGT    
+        WHERE BOARD_ID = '36100' AND BZ_RGST_NO = #{searchBzRgstNo}
+    </select>
+	
+	<select id="page6200selectList" parameterType="KW30000U6100VO" resultType="KW30000U6100VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BOARD_ID
+		,B.BZ_RGST_NO
+		,SUBSTR(OCUR_DD, 0, 10) AS OCUR_DD
+		,B.RTPR_NM
+		,B.PRCS_NM
+		,B.WRK_NM
+		,B.ACDNT_DTL
+		,B.FCTR_ANL
+		,B.ACDNT_ACTN
+		,B.WRTR_NM
+		FROM 
+		(SELECT A.* FROM TB_KW50_ACDNT_MGT A WHERE BOARD_ID = '36100' AND BZ_RGST_NO = #{searchBzRgstNo}
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  
+		  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+<!-- 6200 쓰기 -->
+	<insert id="page6200insertSave" parameterType="KW30000U6100VO">
+		insert into TB_KW50_ACDNT_MGT
+		(
+		SEQ
+		, BOARD_ID
+		, BZ_RGST_NO 
+		, OCUR_DD
+		, RTPR_NM
+		, PRCS_NM
+		, WRK_NM
+		, ACDNT_DTL
+		, FCTR_ANL
+		, ACDNT_ACTN
+		, WRTR_NM
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_ACDNT_MGT WHERE BOARD_ID = '36100' AND BZ_RGST_NO = #{bzRgstNo})
+		, 36100
+		, #{bzRgstNo}
+		, #{ocurDd}
+		, #{rtprNm}
+		, #{prcsNm}
+		, #{wrkNm}
+		, #{acdntDtl}
+		, #{fctrAnl}
+		, #{acdntActn}
+		, #{wrtrNm}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 6200 수정 확인 -->
+	<update id="page6200updateSave" parameterType="KW30000U6100VO">
+		UPDATE TB_KW50_ACDNT_MGT
+		SET OCUR_DD = #{ocurDd}   
+		, RTPR_NM = #{rtprNm}
+		, PRCS_NM = #{prcsNm}
+		, WRK_NM = #{wrkNm}
+		, ACDNT_DTL = #{acdntDtl}
+		, FCTR_ANL = #{fctrAnl}
+		, ACDNT_ACTN = #{acdntActn}
+		, WRTR_NM = #{wrtrNm}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '36100' AND BZ_RGST_NO = #{bzRgstNo}
+	</update>
+	
+	<!-- 6200 삭제 -->
+	<delete id="page6200delete" parameterType="KW30000U6100VO">
+		DELETE FROM TB_KW50_ACDNT_MGT   
+		WHERE SEQ = #{seq}
+		AND BOARD_ID = '36100' AND BZ_RGST_NO = #{bzRgstNo}
+	</delete>
+	
+	<select id="getBoardListCnt6300" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_ACDNT_FREE_MGT    
+    </select>
+
+	<select id="page6300selectList" parameterType="KW30000U6300VO" resultType="KW30000U6300VO">
+		 SELECT ROWNUM RNUM 
+		,B.SEQ
+		,B.BZ_RGST_NO
+		,SUBSTR(STR_DD, 0, 10) AS STR_DD
+		,B.CHRG_PRSN_NM
+		,B.PRCS_NM
+		,B.ONE_TMS_TGT_TM
+		,B.ONE_TMS_TGT_DAYS
+		,SUBSTR(ONE_TMS_ACHV_EXPCTN_DD, 0, 10) AS ONE_TMS_ACHV_EXPCTN_DD
+		FROM 
+		(SELECT A.* FROM TB_KW50_ACDNT_FREE_MGT A 
+		 ORDER BY A.CREATE_TIMESTAMP) B  
+		 ORDER BY RNUM DESC
+		  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+		
+<!-- 6300 쓰기 -->
+	<insert id="page6300insertSave" parameterType="KW30000U6300VO">
+		insert into TB_KW50_ACDNT_FREE_MGT
+		(
+		SEQ
+		, BZ_RGST_NO
+		, STR_DD
+		, CHRG_PRSN_NM
+		, PRCS_NM
+		, ONE_TMS_TGT_TM
+		, ONE_TMS_TGT_DAYS
+		, ONE_TMS_ACHV_EXPCTN_DD
+		, CREATE_OBJECT_TYPE
+		, CREATE_OBJECT_ID
+		, CREATE_PROGRAM_ID
+		, CREATE_TIMESTAMP
+		, LAST_UPDATE_OBJECT_TYPE
+		, LAST_UPDATE_OBJECT_ID
+		, LAST_UPDATE_PROGRAM_ID
+		, LAST_UPDATE_TIMESTAMP
+		, DELETE_TP
+		)
+		values
+		(
+		(SELECT NVL(MAX(TO_NUMBER(SEQ))+1, 1) FROM TB_KW50_ACDNT_FREE_MGT)
+		, #{bzRgstNo}
+		, #{strDd}
+		, #{chrgPrsnNm}
+		, #{prcsNm}
+		, #{oneTmsTgtTm}
+		, #{oneTmsTgtDays}
+		, #{oneTmsAchvExpctnDd}
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		,  SYSDATE
+		, 'U'
+		, 'admin'
+		, 'SYSTEM'
+		, SYSDATE
+		, 'N'
+		)
+	</insert>
+
+	<!-- 6300 수정 -->
+	<update id="page6300updateSave" parameterType="KW30000U6300VO">
+		UPDATE TB_KW50_ACDNT_FREE_MGT
+		SET STR_DD = #{strDd}
+		, CHRG_PRSN_NM = #{chrgPrsnNm}
+		, PRCS_NM = #{prcsNm}
+		, ONE_TMS_TGT_TM = #{oneTmsTgtTm}
+		, ONE_TMS_TGT_DAYS = #{oneTmsTgtDays}
+		, ONE_TMS_ACHV_EXPCTN_DD = #{oneTmsAchvExpctnDd}
+		, LAST_UPDATE_OBJECT_TYPE = 'U'
+		, LAST_UPDATE_OBJECT_ID = 'admin'
+		, LAST_UPDATE_PROGRAM_ID = 'SYSTEM'
+		, LAST_UPDATE_TIMESTAMP = SYSDATE
+		WHERE SEQ = #{seq}
+	</update>
+	
+	<!-- 6300 삭제 -->
+	<delete id="page6300delete" parameterType="KW30000U6300VO">
+		DELETE FROM TB_KW50_ACDNT_FREE_MGT   
+		WHERE SEQ = #{seq}
+	</delete>
+	
+	
+	<select id="getBoardListCnt6400" resultType="int">
+	    SELECT count(*) AS listCnt
+        FROM TB_KW50_ACDNT_FREE_MGT    
+    </select>
+	
+	<select id="page6400selectList" parameterType="KW30000U6300VO" resultType="KW30000U6300VO">
+		 SELECT ROWNUM RNUM 
+		,SUBSTR(CREATE_TIMESTAMP, 0, 10) AS createTimestamp
+		,B.TITLE	
+		FROM 
+		(SELECT A.* FROM TB_KW50_ACDNT_FREE_MGT A 
+		 ORDER BY A.CREATE_TIMESTAMP DESC) B  
+		  offset #{pageStart} ROWS FETCH FIRST #{perPageNum} ROWS ONLY
+	</select>
+	
+
+
+</mapper>

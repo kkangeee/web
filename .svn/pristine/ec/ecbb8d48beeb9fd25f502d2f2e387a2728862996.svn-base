@@ -1,0 +1,202 @@
+package iohp.customer.web;
+
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import egovframework.com.cmm.Paging;
+import egovframework.com.cmm.SearchHndlr;
+import iohp.customer.service.CustomerVO;
+import iohp.customer.service.QnaService;
+import iohp.login.service.LoginVO;
+
+
+/**
+ * 
+ */
+@RequestMapping("/customer/qna")
+@Controller
+public class QnaController {
+	
+	@Resource(name = "QnaService")
+	private QnaService qnaService;
+	/**
+	 * Q&A메인
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	
+	/* 게시판 - 리스트 출력*/
+	@RequestMapping("/qna.do")
+	public String qnaList(Model model) throws Exception {
+		model.addAttribute("act", "KW70000U0000");
+		model.addAttribute("act2", "KW70000U3000");
+		return "customer/qna";
+	}
+	
+	@RequestMapping(value = "/qnaList.do", produces = "application/json")
+	@ResponseBody
+	public ResponseEntity<HashMap<String, Object>> qnaListDo(SearchHndlr search) throws Exception {
+		
+		HashMap<String, Object> result = new HashMap<>();
+		
+		// 전체 게시글 개수를 얻어와 listCnt에 저장
+		int listCnt = qnaService.getBoardListCnt(search);
+
+		// 페이징 객체 - 추가
+        Paging paging = new Paging();
+        paging.setCri(search);
+        paging.setTotalCount(listCnt); 
+
+		// 페이징
+		result.put("pagination", paging);
+
+		// 게시글 화면 출력
+		result.put("resultList", qnaService.selectList(search));
+
+		return new ResponseEntity<HashMap<String, Object>>(result, HttpStatus.OK);
+	}
+	/*글쓰기 게시판 이동*/	
+	@RequestMapping("/writeFrom")
+	public String qnaWriteFrom(Model model, HttpSession session, HttpServletRequest request) throws Exception {
+		System.out.println("==================in");
+		model.addAttribute("act", "qna");
+		return "customer/qna_write";
+	}
+	/*글쓰기 확인 버튼*/
+	@RequestMapping("/write")
+	public String qnaWrite(CustomerVO customerVO, HttpSession session) throws Exception {
+		
+		/*---세션 사용자 입력---*/
+		LoginVO authUser = (LoginVO)session.getAttribute("authUser");		
+		customerVO.setMbrNm(authUser.getMbrNm());
+		/*----------------*/
+		qnaService.qnaInsert(customerVO);
+		
+		return "redirect:/customer/qna/qna.do";
+	}
+	
+	//게시글 상세보기	
+	@RequestMapping("/view")
+	public String qnaView(@ModelAttribute("customerVO") CustomerVO customerVO, Model model, HttpServletRequest req)
+			throws Exception {		
+		model.addAttribute("act", "qna");
+		
+		//해당 게시물 번호 받아오기
+		int contentId = Integer.parseInt(req.getParameter("contentId")); 
+		customerVO.setContentId(contentId);
+		//CustomerVO customerVO = noticeService.noticeUpdateForm(contentId);	
+		
+		CustomerVO resultVO = qnaService.qnaView(contentId);	
+		model.addAttribute("resultView1", resultVO);
+	
+		return "customer/qna_view";
+	}
+
+	/*댓글List*/
+	@RequestMapping(value = "/qnaListRply", produces = "application/json")
+	@ResponseBody
+	public  ResponseEntity<HashMap<String, Object>> qnaListRply(CustomerVO customerVO, HttpServletRequest req) throws Exception {
+	
+		int contentId = Integer.parseInt(req.getParameter("contentId")); 
+		HashMap<String, Object> result = new HashMap<>();
+		
+		List<CustomerVO> rplyResult = qnaService.selectRplyList(contentId);
+		result.put("rplyList", rplyResult);
+
+		return ResponseEntity.ok(result);
+	}
+	
+	// 댓글 작성 버튼 구현
+	@RequestMapping(value = "/rplywrite", produces = "application/json")
+	@ResponseBody
+	public ResponseEntity<CustomerVO> qnaRplyInsert(@RequestBody CustomerVO customerVO, HttpServletRequest req, HttpSession session) throws Exception {
+		
+		//세션값 가져오기
+		LoginVO loginVo = (LoginVO)session.getAttribute("authUser");
+									
+		customerVO.setMbrNm(loginVo.getMbrNm()); //session 사용자 이름 
+					
+		qnaService.qnaRplyInsert(customerVO);
+						
+		return ResponseEntity.ok(customerVO);
+	}
+	
+	/* 글 - 수정 폼 이동 */
+	@RequestMapping("/updateForm/{contentId}")
+	public String noticeUpdateForm(@PathVariable("contentId") int contentId, Model model, HttpServletRequest req)
+			throws Exception {
+		//네비 클릭 가이드
+		model.addAttribute("act", "qna");
+		
+		model.addAttribute("resultView1", qnaService.qnaUpdateForm(contentId));
+		
+		return "customer/qna_update";
+	}
+	
+	/* 글 - 수정 확인  */
+	@RequestMapping("/update")
+	public String noticeUpdate(CustomerVO customerVO, HttpSession session) throws Exception {
+		
+		/*---세션 사용자 입력---*/
+		LoginVO authUser = (LoginVO)session.getAttribute("authUser");		
+		customerVO.setMbrNm(authUser.getMbrNm());
+		/*----------------*/
+		System.out.println("::::::::" + customerVO);
+		qnaService.qnaUpdate(customerVO);
+		
+		int contentId = customerVO.getContentId(); //수정확인후 해당 페이지로 이동을 위해 contentId return 
+		
+		return "redirect:/customer/qna/view?contentId=" + contentId;
+	}
+	
+	/* 글 - 삭제 */
+	@RequestMapping("/delete")
+	public String qnaDelete(CustomerVO customerVO, Model model) throws Exception {
+		
+		if(qnaService.qnaDelete(customerVO) == true) {
+			return "redirect:/customer/qna/qna.do";
+		} else {
+			int contentId = customerVO.getContentId();
+			model.addAttribute("rePw", 0);
+			//해당 게시물 번호 받아오기
+			customerVO.setContentId(contentId);
+			model.addAttribute("resultView1", qnaService.qnaView(contentId));
+			return  "customer/qna_view";
+		}
+	}
+	
+	// 댓글 삭제하기
+	@RequestMapping(value = "/rplydelete", produces = "application/json")
+	@ResponseBody
+	public ResponseEntity<CustomerVO> deleteTest(@RequestBody CustomerVO customerVO, HttpServletRequest req, HttpSession session) throws Exception {
+		
+		//세션값 가져오기
+		LoginVO loginVo = (LoginVO)session.getAttribute("authUser");
+									
+		customerVO.setMbrNm(loginVo.getMbrNm()); //session 사용자 이름 
+		
+		//customerVO = qnaService.qnaRplyDelete(customerVO);
+		
+		qnaService.qnaRplyDelete(customerVO);
+		
+		return ResponseEntity.ok(customerVO);
+	}
+		
+}
